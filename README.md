@@ -51,9 +51,13 @@ flutter build apk --release
 # saída: build/app/outputs/flutter-apk/app-release.apk
 ```
 
-Requer Android SDK + JDK. Neste ambiente Linux o APK de release **não foi gerado** (sem Android SDK / Java). A pasta `android/` está no repositório; gera o APK na tua máquina com o comando acima.
+Neste Linux foi gerado um APK de release em:
 
-O executável Windows também **não se constrói neste Linux**; a pasta `windows/` está incluída. Num PC Windows: `flutter build windows`.
+`/workspace/cisco-quiz-app/build/app/outputs/flutter-apk/app-release.apk` (~51 MB)
+
+A pasta `build/` não vai para o Git. Para voltar a gerar: Android SDK 36 + JDK 21 e o comando acima.
+
+O executável Windows **não se constrói neste Linux**; a pasta `windows/` está incluída. Num PC Windows: `flutter build windows`.
 
 ## Estrutura
 
