@@ -16,7 +16,7 @@ class TopicDef {
 }
 
 const kTopicCatalog = <TopicDef>[
-  TopicDef('vlan', 'VLAN', 'VLAN', ['vlan', 'vlans', '802.1q']),
+  TopicDef('vlan', 'VLAN', 'VLAN', ['vlan', 'vlans', '802.1q', 'dot1q']),
   TopicDef('ospf', 'OSPF', 'OSPF', ['ospf']),
   TopicDef('eigrp', 'EIGRP', 'EIGRP', ['eigrp']),
   TopicDef('bgp', 'BGP', 'BGP', ['ebgp', 'ibgp', 'bgp']),
@@ -27,8 +27,9 @@ const kTopicCatalog = <TopicDef>[
     'spanning-tree',
     'spanning tree',
     'stp',
+    'bpdu',
   ]),
-  TopicDef('acl', 'ACL', 'ACL', ['access-list', 'access list', 'acls', 'acl']),
+  TopicDef('acl', 'ACL', 'ACL', ['access-list', 'access list', 'lista de acesso', 'acls', 'acl']),
   TopicDef('nat', 'NAT', 'NAT', [
     'port address translation',
     'network address translation',
@@ -51,6 +52,7 @@ const kTopicCatalog = <TopicDef>[
     'capwap',
     '802.11',
     'wireless',
+    'sem fios',
     'wlc',
     'wpa',
   ]),
@@ -192,7 +194,12 @@ String resolveTopic({String? jsonTopic, required String haystack}) {
 String topicLabel(String id, {required bool isPt}) {
   if (id == kOtherTopic) return isPt ? 'Outros' : 'Other';
   final def = _topicsById[id];
-  if (def == null) return id;
+  if (def == null) {
+    return id
+        .split('-')
+        .map((p) => p.isEmpty ? p : '${p[0].toUpperCase()}${p.substring(1)}')
+        .join(' ');
+  }
   return isPt ? def.labelPt : def.labelEn;
 }
 

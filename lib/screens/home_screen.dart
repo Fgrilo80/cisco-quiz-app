@@ -179,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _startReview() async {
     if (!await _confirmReplacePaused()) return;
-    final due = _dueQuestions()..shuffle();
+    final due = _dueQuestions();
     if (due.isEmpty) {
       if (!mounted) return;
       ScaffoldMessenger.of(context)
@@ -696,8 +696,13 @@ class _StatsCard extends StatelessWidget {
               )
             else ...[
               Text(
-                s.examsTaken(stats.examSessions),
+                s.statsLine(stats.sessions, (stats.accuracy * 100).round()),
                 style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                s.examsTaken(stats.examSessions),
+                style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
               ),
               if (stats.lastPctByCert.isNotEmpty) ...[
                 const SizedBox(height: 4),
