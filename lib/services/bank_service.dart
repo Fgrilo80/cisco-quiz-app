@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 import '../models/question.dart';
+import 'bank_parser.dart';
 import 'progress_store.dart';
 
 const bundledAsset = 'assets/cricket.json';
@@ -14,11 +15,7 @@ const bundledAsset = 'assets/cricket.json';
 class BankService extends ChangeNotifier {
   BankService();
 
-  Map<String, Map<String, List<Question>>> _data = {
-    'ccst': {'pt': [], 'en': []},
-    'ccna': {'pt': [], 'en': []},
-    'ccnp': {'pt': [], 'en': []},
-  };
+  Map<String, Map<String, List<Question>>> _data = emptyBank();
 
   bool loading = true;
   bool refreshing = false;
@@ -30,29 +27,31 @@ class BankService extends ChangeNotifier {
 
   int count(String cert, String lang) => questions(cert, lang).length;
 
-  int get total {
-    var n = 0;
-    for (final langs in _data.values) {
-      for (final list in langs.values) {
-        n += list.length;
-      }
-    }
-    return n;
-  }
+  int get total => bankQuestionCount(_data);
 
   Future<void> load() async {
     loading = true;
     loadError = null;
     notifyListeners();
     try {
-      final cached = await _readCached();
-      if (cached != null) {
-        _apply(cached);
-        source = 'cache';
-      } else {
+      var usedCache = false;
+      try {
+        final cached = await _readCached();
+        if (shouldUseCachedBank(cached)) {
+          _data = parseQuestionBank(cached);
+          source = 'cache';
+          usedCache = true;
+        }
+      } catch (_) {
+        // Corrupt cache must not block the offline bundle.
+      }
+      if (!usedCache) {
         final raw = await rootBundle.loadString(bundledAsset);
-        _apply(jsonDecode(raw));
+        _data = parseQuestionBank(jsonDecode(raw));
         source = 'bundle';
+      }
+      if (total == 0) {
+        loadError = 'empty';
       }
     } catch (e) {
       loadError = '$e';
@@ -73,9 +72,12 @@ class BankService extends ChangeNotifier {
         return false;
       }
       final decoded = jsonDecode(utf8.decode(response.bodyBytes));
-      if (!_looksValid(decoded)) return false;
-      _apply(decoded);
+      if (!bankHasExpectedShape(decoded)) return false;
+      final parsed = parseQuestionBank(decoded);
+      if (bankQuestionCount(parsed) == 0) return false;
+      _data = parsed;
       source = 'remote';
+      loadError = null;
       await _writeCached(response.bodyBytes);
       return true;
     } catch (_) {
@@ -84,36 +86,6 @@ class BankService extends ChangeNotifier {
       refreshing = false;
       notifyListeners();
     }
-  }
-
-  void _apply(dynamic decoded) {
-    if (decoded is! Map) return;
-    final next = <String, Map<String, List<Question>>>{};
-    for (final cert in const ['ccst', 'ccna', 'ccnp']) {
-      next[cert] = {'pt': [], 'en': []};
-      final block = decoded[cert];
-      if (block is! Map) continue;
-      for (final lang in const ['pt', 'en']) {
-        final list = block[lang];
-        if (list is! List) continue;
-        next[cert]![lang] = [
-          for (final item in list)
-            if (item is Map)
-              Question.fromJson(Map<String, dynamic>.from(item)),
-        ];
-      }
-    }
-    _data = next;
-  }
-
-  bool _looksValid(dynamic decoded) {
-    if (decoded is! Map) return false;
-    for (final cert in const ['ccst', 'ccna', 'ccnp']) {
-      final block = decoded[cert];
-      if (block is! Map) return false;
-      if (block['pt'] is! List || block['en'] is! List) return false;
-    }
-    return true;
   }
 
   Future<File?> _cacheFile() async {
@@ -129,9 +101,7 @@ class BankService extends ChangeNotifier {
     final file = await _cacheFile();
     if (file == null || !await file.exists()) return null;
     final text = await file.readAsString();
-    final decoded = jsonDecode(text);
-    if (!_looksValid(decoded)) return null;
-    return decoded;
+    return jsonDecode(text);
   }
 
   Future<void> _writeCached(List<int> bytes) async {

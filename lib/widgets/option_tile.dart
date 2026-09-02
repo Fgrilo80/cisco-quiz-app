@@ -48,51 +48,60 @@ class OptionTile extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Material(
-        color: fill,
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          onTap: onTap,
+      child: Semantics(
+        container: true,
+        excludeSemantics: true,
+        button: true,
+        selected: selected,
+        enabled: !revealed,
+        label: '$letter. $label',
+        child: Material(
+          color: fill,
           borderRadius: BorderRadius.circular(16),
-          child: Container(
-            constraints: const BoxConstraints(minHeight: 56),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: border, width: selected ? 2 : 1),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 36,
-                  height: 36,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: badge,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    letter,
-                    style: TextStyle(
-                      color: badgeFg,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15,
+          child: InkWell(
+            onTap: revealed ? null : onTap,
+            excludeFromSemantics: true,
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 56),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: border, width: selected ? 2 : 1),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: badge,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      letter,
+                      style: TextStyle(
+                        color: badgeFg,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      height: 1.3,
-                      color: Color(0xFFE2E8F0),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        height: 1.3,
+                        color: Color(0xFFE2E8F0),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

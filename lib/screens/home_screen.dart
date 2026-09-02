@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
       showingFeedback: false,
       startedAtMs: DateTime.now().millisecondsSinceEpoch,
     );
-    await widget.store.clearPaused();
+    await widget.store.savePaused(session);
     if (!mounted) return;
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -237,6 +237,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 15),
                 ),
+                if (bank.loadError != null) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    s.loadFail,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Color(0xFFF87171), fontSize: 14),
+                  ),
+                ],
                 if (paused != null) ...[
                   const SizedBox(height: 16),
                   _PausedBanner(

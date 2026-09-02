@@ -29,7 +29,7 @@ class QuizScreen extends StatefulWidget {
   State<QuizScreen> createState() => _QuizScreenState();
 }
 
-class _QuizScreenState extends State<QuizScreen> {
+class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
   late QuizSession session;
   Timer? _timer;
   bool paused = false;
@@ -40,9 +40,11 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     session = widget.session;
-    selected = session.answers[session.currentIndex];
+    selected = session.answers[session.currentIndex] ?? session.pendingSelection;
     paused = widget.startPaused;
+    _persist();
     if (!paused) {
       _startTimer();
     }
@@ -50,8 +52,18 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.paused) {
+      _persist();
+    }
   }
 
   void _startTimer() {
@@ -70,7 +82,10 @@ class _QuizScreenState extends State<QuizScreen> {
     });
   }
 
-  Future<void> _persist() => widget.store.savePaused(session);
+  Future<void> _persist() {
+    session.pendingSelection = selected;
+    return widget.store.savePaused(session);
+  }
 
   void _pause() {
     setState(() => paused = true);
@@ -93,6 +108,7 @@ class _QuizScreenState extends State<QuizScreen> {
     session.currentIndex = index;
     selected = session.answers[index];
     session.showingFeedback = selected != null;
+    session.pendingSelection = selected;
     setState(() {});
     _persist();
   }
@@ -100,6 +116,8 @@ class _QuizScreenState extends State<QuizScreen> {
   void _select(int index) {
     if (session.showingFeedback) return;
     setState(() => selected = index);
+    session.pendingSelection = index;
+    _persist();
   }
 
   void _onPrimary() {
@@ -255,11 +273,17 @@ class _QuizScreenState extends State<QuizScreen> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: FilledButton(
+                            style: FilledButton.styleFrom(
+                              minimumSize: const Size(0, 52),
+                            ),
                             onPressed: _onPrimary,
                             child: Text(
                               session.showingFeedback && session.isLast
                                   ? ui.finish
                                   : ui.next,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
                             ),
                           ),
                         ),

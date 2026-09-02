@@ -218,7 +218,7 @@ class _QuestionReview extends StatelessWidget {
                 ],
               ),
             ),
-          if (answer != null && answer != question.correct) ...[
+          if (_wrongPick(question, answer)) ...[
             const SizedBox(height: 4),
             Text(
               '${ui.yourAnswer}: ${question.options[answer!]}',
@@ -234,4 +234,10 @@ class _QuestionReview extends StatelessWidget {
       ),
     );
   }
+}
+
+bool _wrongPick(Question question, int? answer) {
+  if (answer == null) return false;
+  if (answer == question.correct) return false;
+  return answer >= 0 && answer < question.options.length;
 }

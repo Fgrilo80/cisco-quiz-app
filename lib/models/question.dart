@@ -26,6 +26,15 @@ class Question {
 
   bool get hasCli => cli != null && cli!.trim().isNotEmpty;
 
+  /// Usable in an exam: prompt, 2+ options, in-range correct index.
+  bool get isValid {
+    if (question.trim().isEmpty) return false;
+    if (options.length < 2) return false;
+    if (options.any((o) => o.trim().isEmpty)) return false;
+    if (correct < 0 || correct >= options.length) return false;
+    return true;
+  }
+
   bool isCorrect(int? answerIndex) =>
       answerIndex != null && answerIndex == correct;
 
@@ -40,9 +49,12 @@ class Question {
         ? rawOptions.map((e) => '$e').toList()
         : <String>[];
     final rawCorrect = json['correct'];
-    final correct = rawCorrect is int
-        ? rawCorrect
-        : int.tryParse('$rawCorrect') ?? 0;
+    final int correct;
+    if (rawCorrect is num) {
+      correct = rawCorrect.toInt();
+    } else {
+      correct = int.tryParse('$rawCorrect') ?? -1;
+    }
     String? cli;
     const keys = <String>[
       'cli',
@@ -62,7 +74,7 @@ class Question {
     return Question(
       question: '${json['question'] ?? ''}',
       options: options,
-      correct: correct.clamp(0, options.isEmpty ? 0 : options.length - 1),
+      correct: correct,
       explanation: '${json['explanation'] ?? ''}',
       difficulty: '${json['difficulty'] ?? ''}',
       cli: cli,

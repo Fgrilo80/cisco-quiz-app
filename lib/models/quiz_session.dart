@@ -3,6 +3,11 @@ import 'question.dart';
 const int quizLength = 50;
 const int quizSeconds = 45 * 60;
 
+int _asInt(dynamic value, int fallback) {
+  if (value is num) return value.toInt();
+  return int.tryParse('$value') ?? fallback;
+}
+
 class QuizSession {
   QuizSession({
     required this.cert,
@@ -13,6 +18,7 @@ class QuizSession {
     required this.timeLeftSeconds,
     required this.showingFeedback,
     required this.startedAtMs,
+    this.pendingSelection,
   });
 
   final String cert;
@@ -23,6 +29,9 @@ class QuizSession {
   int timeLeftSeconds;
   bool showingFeedback;
   final int startedAtMs;
+
+  /// Unconfirmed option on the current question (pause / process-death).
+  int? pendingSelection;
 
   int get length => questions.length;
 
@@ -51,6 +60,7 @@ class QuizSession {
         'timeLeftSeconds': timeLeftSeconds,
         'showingFeedback': showingFeedback,
         'startedAtMs': startedAtMs,
+        'pendingSelection': pendingSelection,
       };
 
   factory QuizSession.fromJson(Map<String, dynamic> json) {
@@ -59,6 +69,7 @@ class QuizSession {
         ? rawQs
             .whereType<Map>()
             .map((e) => Question.fromJson(Map<String, dynamic>.from(e)))
+            .where((q) => q.isValid)
             .toList()
         : <Question>[];
     final rawAnswers = json['answers'];
@@ -69,15 +80,33 @@ class QuizSession {
     while (answers.length < questions.length) {
       answers.add(null);
     }
+    final trimmed = answers.take(questions.length).toList();
+    for (var i = 0; i < trimmed.length; i++) {
+      final a = trimmed[i];
+      final n = questions[i].options.length;
+      if (a != null && (a < 0 || a >= n)) trimmed[i] = null;
+    }
+    final last = questions.isEmpty ? 0 : questions.length - 1;
+    var idx = _asInt(json['currentIndex'], 0).clamp(0, last);
+    var timeLeft = _asInt(json['timeLeftSeconds'], quizSeconds)
+        .clamp(0, quizSeconds);
+    var pending = json['pendingSelection'] == null
+        ? null
+        : int.tryParse('${json['pendingSelection']}');
+    if (pending != null && questions.isNotEmpty) {
+      final n = questions[idx].options.length;
+      if (pending < 0 || pending >= n) pending = null;
+    }
     return QuizSession(
       cert: '${json['cert'] ?? ''}',
       examLang: '${json['examLang'] ?? 'pt'}',
       questions: questions,
-      answers: answers.take(questions.length).toList(),
-      currentIndex: (json['currentIndex'] as num?)?.toInt() ?? 0,
-      timeLeftSeconds: (json['timeLeftSeconds'] as num?)?.toInt() ?? quizSeconds,
+      answers: trimmed,
+      currentIndex: idx,
+      timeLeftSeconds: timeLeft,
       showingFeedback: json['showingFeedback'] == true,
-      startedAtMs: (json['startedAtMs'] as num?)?.toInt() ?? 0,
+      startedAtMs: _asInt(json['startedAtMs'], 0),
+      pendingSelection: pending,
     );
   }
 }

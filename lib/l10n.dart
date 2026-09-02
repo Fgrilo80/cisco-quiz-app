@@ -119,6 +119,9 @@ class S {
   String get emptyBank => isPt
       ? 'Não há perguntas para este exame.'
       : 'There are no questions for this exam.';
+  String get loadFail => isPt
+      ? 'Não foi possível carregar a base de perguntas. Tenta atualizar ou reinstalar a app.'
+      : 'Could not load the question bank. Try refreshing or reinstalling the app.';
   String get resumeBanner => isPt
       ? 'Tens um exame em pausa'
       : 'You have a paused exam';
