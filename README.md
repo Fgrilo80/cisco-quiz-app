@@ -61,7 +61,7 @@ Neste Linux foi gerado um APK de release em:
 
 A pasta `build/` não vai para o Git. Para voltar a gerar: Android SDK 36 + JDK 21 e o comando acima.
 
-O executável Windows **não se constrói neste Linux**; a pasta `windows/` está incluída. Num PC Windows: `flutter build windows`. Em cada push para `app`, o workflow `.github/workflows/windows.yml` corre `flutter build windows` em `windows-latest` e publica a pasta Release como artefacto `cisco-quiz-windows`.
+O executável Windows **não se constrói neste Linux**; a pasta `windows/` está incluída. Num PC Windows: `flutter build windows --release` (saída típica: `build/windows/x64/runner/Release`).
 
 ## Estrutura
 
