@@ -42,7 +42,8 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     session = widget.session;
-    selected = session.answers[session.currentIndex] ?? session.pendingSelection;
+    selected =
+        session.answers[session.currentIndex] ?? session.pendingSelection;
     paused = widget.startPaused;
     _persist();
     if (!paused) {
@@ -107,7 +108,7 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
   void _loadIndex(int index) {
     session.currentIndex = index;
     selected = session.answers[index];
-    session.showingFeedback = selected != null;
+    session.showingFeedback = session.revealsAfterAnswer && selected != null;
     session.pendingSelection = selected;
     setState(() {});
     _persist();
@@ -120,31 +121,47 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
     _persist();
   }
 
+  void _needSelection() {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(ui.selectFirst)));
+  }
+
   void _onPrimary() {
-    if (session.showingFeedback) {
-      if (session.isLast) {
-        _finish();
-      } else {
-        _loadIndex(session.currentIndex + 1);
+    if (session.revealsAfterAnswer) {
+      if (session.showingFeedback) {
+        if (session.isLast) {
+          _finish();
+        } else {
+          _loadIndex(session.currentIndex + 1);
+        }
+        return;
       }
+      if (selected == null) {
+        _needSelection();
+        return;
+      }
+      session.answers[session.currentIndex] = selected;
+      setState(() => session.showingFeedback = true);
+      _persist();
       return;
     }
     if (selected == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(ui.selectFirst)),
-      );
+      _needSelection();
       return;
     }
     session.answers[session.currentIndex] = selected;
-    setState(() => session.showingFeedback = true);
-    _persist();
+    session.showingFeedback = false;
+    if (session.isLast) {
+      _finish();
+    } else {
+      _loadIndex(session.currentIndex + 1);
+    }
   }
 
   void _prev() {
     if (session.currentIndex == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(ui.firstQ)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(ui.firstQ)));
       return;
     }
     _loadIndex(session.currentIndex - 1);
@@ -176,6 +193,14 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
     );
   }
 
+  String _primaryLabel() {
+    if (session.isExam) {
+      return session.isLast ? ui.finish : ui.saveAndNext;
+    }
+    if (session.showingFeedback && session.isLast) return ui.finish;
+    return ui.next;
+  }
+
   String _clock(int seconds) {
     final m = (seconds ~/ 60).toString().padLeft(2, '0');
     final s = (seconds % 60).toString().padLeft(2, '0');
@@ -201,6 +226,7 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                     ui: ui,
                     cert: session.cert,
                     examLang: session.examLang,
+                    modeLabel: session.isExam ? ui.examMode : ui.practiceMode,
                     clock: _clock(session.timeLeftSeconds),
                     lowTime: lowTime,
                     index: session.currentIndex,
@@ -219,7 +245,9 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                               Chip(
                                 label: Text(q.difficulty),
                                 visualDensity: VisualDensity.compact,
-                                side: const BorderSide(color: Color(0xFF334155)),
+                                side: const BorderSide(
+                                  color: Color(0xFF334155),
+                                ),
                               ),
                             Chip(
                               label: Text(
@@ -261,10 +289,7 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                     padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                     child: Row(
                       children: [
-                        OutlinedButton(
-                          onPressed: _prev,
-                          child: Text(ui.prev),
-                        ),
+                        OutlinedButton(onPressed: _prev, child: Text(ui.prev)),
                         const SizedBox(width: 8),
                         OutlinedButton(
                           onPressed: _pause,
@@ -278,9 +303,7 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                             ),
                             onPressed: _onPrimary,
                             child: Text(
-                              session.showingFeedback && session.isLast
-                                  ? ui.finish
-                                  : ui.next,
+                              _primaryLabel(),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
@@ -292,11 +315,12 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                   ),
                 ],
               ),
-              if (paused) _PauseOverlay(
-                ui: ui,
-                onResume: _resume,
-                onHome: _goHomeKeepingProgress,
-              ),
+              if (paused)
+                _PauseOverlay(
+                  ui: ui,
+                  onResume: _resume,
+                  onHome: _goHomeKeepingProgress,
+                ),
             ],
           ),
         ),
@@ -310,6 +334,7 @@ class _Header extends StatelessWidget {
     required this.ui,
     required this.cert,
     required this.examLang,
+    required this.modeLabel,
     required this.clock,
     required this.lowTime,
     required this.index,
@@ -320,6 +345,7 @@ class _Header extends StatelessWidget {
   final S ui;
   final String cert;
   final String examLang;
+  final String modeLabel;
   final String clock;
   final bool lowTime;
   final int index;
@@ -360,7 +386,7 @@ class _Header extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '${ui.certTitle(cert)} · ${examLang.toUpperCase()}',
+                        '${ui.certTitle(cert)} · ${examLang.toUpperCase()} · $modeLabel',
                         style: const TextStyle(
                           color: Color(0xFF94A3B8),
                           fontSize: 11,
@@ -381,7 +407,9 @@ class _Header extends StatelessWidget {
                   fontFamily: 'monospace',
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
-                  color: lowTime ? const Color(0xFFF87171) : const Color(0xFFFBBF24),
+                  color: lowTime
+                      ? const Color(0xFFF87171)
+                      : const Color(0xFFFBBF24),
                 ),
               ),
               Text(
@@ -500,7 +528,11 @@ class _PauseOverlay extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.pause_circle_filled, size: 64, color: ciscoBlue),
+                const Icon(
+                  Icons.pause_circle_filled,
+                  size: 64,
+                  color: ciscoBlue,
+                ),
                 const SizedBox(height: 16),
                 Text(
                   ui.paused,
@@ -513,7 +545,10 @@ class _PauseOverlay extends StatelessWidget {
                 Text(
                   ui.pausedHint,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 15),
+                  style: const TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontSize: 15,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 FilledButton(onPressed: onResume, child: Text(ui.resume)),

@@ -7,11 +7,7 @@ import '../theme.dart';
 import '../widgets/cli_block.dart';
 
 class ResultsScreen extends StatelessWidget {
-  const ResultsScreen({
-    super.key,
-    required this.session,
-    required this.ui,
-  });
+  const ResultsScreen({super.key, required this.session, required this.ui});
 
   final QuizSession session;
   final S ui;
@@ -37,7 +33,7 @@ class ResultsScreen extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
           Text(
-            ui.doneTitle,
+            ui.doneHeading(exam: session.isExam),
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 28,
@@ -47,7 +43,7 @@ class ResultsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            '${ui.doneSub}\n${ui.certTitle(session.cert)} · ${session.examLang.toUpperCase()}',
+            '${ui.doneSub}\n${ui.certTitle(session.cert)} · ${session.examLang.toUpperCase()} · ${session.isExam ? ui.examMode : ui.practiceMode}',
             textAlign: TextAlign.center,
             style: const TextStyle(color: Color(0xFF94A3B8)),
           ),
@@ -158,13 +154,13 @@ class _QuestionReview extends StatelessWidget {
     final color = answer == null
         ? const Color(0xFF94A3B8)
         : ok
-            ? const Color(0xFF34D399)
-            : const Color(0xFFF87171);
+        ? const Color(0xFF34D399)
+        : const Color(0xFFF87171);
     final status = answer == null
         ? ui.unanswered
         : ok
-            ? ui.correct
-            : ui.incorrect;
+        ? ui.correct
+        : ui.incorrect;
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
       child: ExpansionTile(
@@ -195,14 +191,14 @@ class _QuestionReview extends StatelessWidget {
                     i == question.correct
                         ? Icons.check_circle
                         : i == answer
-                            ? Icons.cancel
-                            : Icons.circle_outlined,
+                        ? Icons.cancel
+                        : Icons.circle_outlined,
                     size: 18,
                     color: i == question.correct
                         ? const Color(0xFF34D399)
                         : i == answer
-                            ? const Color(0xFFF87171)
-                            : const Color(0xFF475569),
+                        ? const Color(0xFFF87171)
+                        : const Color(0xFF475569),
                   ),
                   const SizedBox(width: 8),
                   Expanded(

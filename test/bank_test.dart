@@ -12,23 +12,21 @@ void main() {
     final decoded = jsonDecode(file.readAsStringSync());
     expect(decoded, isA<Map>());
     final data = decoded as Map;
-    const expected = {
-      'ccst': 163,
-      'ccna': 157,
-      'ccnp': 160,
-    };
+    const expected = {'ccst': 171, 'ccna': 160, 'ccnp': 162};
     for (final cert in expected.keys) {
       for (final lang in const ['pt', 'en']) {
         final list = (data[cert] as Map)[lang] as List;
         expect(list, hasLength(expected[cert]));
-        final first = Question.fromJson(Map<String, dynamic>.from(list.first as Map));
+        final first = Question.fromJson(
+          Map<String, dynamic>.from(list.first as Map),
+        );
         expect(first.question, isNotEmpty);
         expect(first.options, isNotEmpty);
         expect(first.isValid, isTrue);
       }
     }
     final parsed = parseQuestionBank(decoded);
-    expect(bankQuestionCount(parsed), 960);
+    expect(bankQuestionCount(parsed), 986);
   });
 
   test('parses optional cli field', () {
@@ -60,11 +58,7 @@ void main() {
             'options': ['a', 'b'],
             'correct': 0,
           },
-          {
-            'question': 'No options',
-            'options': [],
-            'correct': 0,
-          },
+          {'question': 'No options', 'options': [], 'correct': 0},
           {
             'question': 'Out of range',
             'options': ['a', 'b'],

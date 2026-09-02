@@ -18,16 +18,32 @@ class S {
       : 'Master your Cisco certifications';
 
   String get subtitle => isPt
-      ? 'Cada exame tira 50 perguntas ao acaso. Sem contas, sem anúncios.'
-      : 'Each exam draws 50 random questions. No accounts, no ads.';
+      ? 'Prática com feedback imediato, ou exame de 50 perguntas. Sem contas, sem anúncios.'
+      : 'Practice with instant feedback, or a 50-question exam. No accounts, no ads.';
 
-  String get versionBadge => isPt ? 'VERSÃO 1.0 • 2026' : 'VERSION 1.0 • 2026';
+  String get versionBadge => isPt ? 'VERSÃO 1.1 • 2026' : 'VERSION 1.1 • 2026';
 
   String get portuguese => 'Português';
   String get english => 'English';
 
+  String get practiceMode => isPt ? 'Prática' : 'Practice';
+  String get examMode => isPt ? 'Exame' : 'Exam';
+
+  String get practiceHint => isPt
+      ? 'Mostra certo/errado e a explicação a seguir a cada resposta.'
+      : 'Shows right/wrong and the explanation after each answer.';
+
+  String get examHint => isPt
+      ? '50 perguntas, 45 minutos. Sem revelar até ao fim.'
+      : '50 questions, 45 minutes. No reveal until the end.';
+
   String get examPt => isPt ? 'Exame PT' : 'PT exam';
   String get examEn => isPt ? 'Exame EN' : 'EN exam';
+  String get practicePt => isPt ? 'Prática PT' : 'PT practice';
+  String get practiceEn => isPt ? 'Prática EN' : 'EN practice';
+
+  String startPt({required bool exam}) => exam ? examPt : practicePt;
+  String startEn({required bool exam}) => exam ? examEn : practiceEn;
 
   String get entryLevel => isPt ? 'ENTRY LEVEL' : 'ENTRY LEVEL';
   String get associate => 'ASSOCIATE';
@@ -52,12 +68,10 @@ class S {
   String questionsInBank(int n) =>
       isPt ? '$n perguntas na base' : '$n questions in the bank';
 
-  String countsLine(int ptCount, int enCount) =>
-      '$ptCount PT • $enCount EN';
+  String countsLine(int ptCount, int enCount) => '$ptCount PT • $enCount EN';
 
-  String unseenLine(int n) => isPt
-      ? '$n por ver neste ciclo'
-      : '$n unseen in this cycle';
+  String unseenLine(int n) =>
+      isPt ? '$n por ver neste ciclo' : '$n unseen in this cycle';
 
   String get refreshTitle =>
       isPt ? 'Atualizar base (opcional)' : 'Refresh bank (optional)';
@@ -81,8 +95,8 @@ class S {
   String get bankUrlLabel => isPt ? 'URL da base' : 'Bank URL';
 
   String get footer => isPt
-      ? '50 perguntas por exame • 45 minutos • Pausa guarda o progresso • Explicações no fim'
-      : '50 questions per exam • 45 minutes • Pause keeps progress • Explanations at the end';
+      ? 'Prática: feedback imediato • Exame: 50 perguntas, 45 min, revisão no fim • Labs CLI • Pausa guarda o progresso'
+      : 'Practice: instant feedback • Exam: 50 questions, 45 min, review at the end • CLI labs • Pause keeps progress';
 
   String get privacy => isPt
       ? 'Sem contas, anúncios, analítica ou telemetria.'
@@ -93,6 +107,7 @@ class S {
   String get prev => isPt ? 'Anterior' : 'Back';
   String get pause => isPt ? 'Pausar' : 'Pause';
   String get next => isPt ? 'Responder e avançar' : 'Answer and next';
+  String get saveAndNext => isPt ? 'Guardar e avançar' : 'Save and next';
   String get finish => isPt ? 'Finalizar exame' : 'Finish exam';
   String get selectFirst => isPt
       ? 'Seleciona uma opção antes de avançar.'
@@ -122,9 +137,8 @@ class S {
   String get loadFail => isPt
       ? 'Não foi possível carregar a base de perguntas. Tenta atualizar ou reinstalar a app.'
       : 'Could not load the question bank. Try refreshing or reinstalling the app.';
-  String get resumeBanner => isPt
-      ? 'Tens um exame em pausa'
-      : 'You have a paused exam';
+  String get resumeBanner =>
+      isPt ? 'Tens um exame em pausa' : 'You have a paused exam';
   String get resumeBannerAction => isPt ? 'Continuar' : 'Continue';
   String get discardPaused => isPt ? 'Descartar' : 'Discard';
   String get newExamReplaces => isPt
@@ -135,6 +149,10 @@ class S {
   String get misses => isPt ? 'ERROS' : 'WRONG';
   String get timeUsed => isPt ? 'TEMPO' : 'TIME';
   String get doneTitle => isPt ? 'Exame concluído' : 'Exam complete';
+  String get doneTitlePractice =>
+      isPt ? 'Prática concluída' : 'Practice complete';
+  String doneHeading({required bool exam}) =>
+      exam ? doneTitle : doneTitlePractice;
   String get doneSub =>
       isPt ? 'Aqui está o teu desempenho' : 'Here is how you did';
   String get redo => isPt ? 'Novo conjunto' : 'New set';
@@ -149,13 +167,27 @@ class S {
   String get excellent => isPt
       ? 'Excelente. Estás pronto para o exame.'
       : 'Excellent. You are exam-ready.';
-  String get veryGood =>
-      isPt ? 'Muito bom. Revisa o que falhou.' : 'Very good. Review what you missed.';
+  String get veryGood => isPt
+      ? 'Muito bom. Revisa o que falhou.'
+      : 'Very good. Review what you missed.';
   String get goodEffort => isPt
       ? 'Bom esforço. Foca nos pontos fracos.'
       : 'Good effort. Focus on the weak spots.';
   String get loading => isPt ? 'A carregar a base…' : 'Loading the bank…';
   String get uiLang => isPt ? 'Idioma da interface' : 'Interface language';
+
+  String get labsTitle => 'Labs';
+  String get labsSubtitle => isPt
+      ? 'Terminal IOS interativo — comandos show, não Packet Tracer.'
+      : 'Interactive IOS terminal — show commands, not Packet Tracer.';
+  String get labsIntro => isPt
+      ? 'Cada lab tem um terminal onde escreves comandos Cisco (? , enable, exit, show…). Descobre a resposta no output e escolhe a opção. Serve no telemóvel (scroll e teclado grande) e no Windows.'
+      : 'Each lab has a terminal where you type Cisco commands (?, enable, exit, show…). Find the answer in the output and pick an option. Works on phone (scroll and large input) and Windows.';
+  String get labHint => isPt ? 'Comando útil' : 'Useful command';
+  String get labAnswer => isPt ? 'A tua resposta' : 'Your answer';
+  String get labCheck => isPt ? 'Verificar' : 'Check';
+  String get labBack => isPt ? 'Voltar aos labs' : 'Back to labs';
+  String get labsOpen => isPt ? 'Abrir Labs' : 'Open Labs';
 
   String scoreComment(double pct) {
     if (pct >= 0.85) return excellent;

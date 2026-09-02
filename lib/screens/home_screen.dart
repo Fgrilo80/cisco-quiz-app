@@ -7,14 +7,11 @@ import '../services/progress_store.dart';
 import '../services/quiz_picker.dart';
 import '../theme.dart';
 import '../widgets/cert_card.dart';
+import 'labs_screen.dart';
 import 'quiz_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({
-    super.key,
-    required this.bank,
-    required this.store,
-  });
+  const HomeScreen({super.key, required this.bank, required this.store});
 
   final BankService bank;
   final ProgressStore store;
@@ -26,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late S s;
   QuizSession? paused;
+  QuizMode _mode = QuizMode.practice;
 
   @override
   void initState() {
@@ -83,7 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final pool = widget.bank.questions(cert, lang);
     if (pool.isEmpty) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s.emptyBank)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(s.emptyBank)));
       return;
     }
     final seen = widget.store.loadSeen(cert, lang);
@@ -98,16 +97,14 @@ class _HomeScreenState extends State<HomeScreen> {
       timeLeftSeconds: quizSeconds,
       showingFeedback: false,
       startedAtMs: DateTime.now().millisecondsSinceEpoch,
+      mode: _mode,
     );
     await widget.store.savePaused(session);
     if (!mounted) return;
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => QuizScreen(
-          session: session,
-          store: widget.store,
-          ui: s,
-        ),
+        builder: (_) =>
+            QuizScreen(session: session, store: widget.store, ui: s),
       ),
     );
     if (!mounted) return;
@@ -134,6 +131,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _discardPaused() async {
     await widget.store.clearPaused();
     setState(() => paused = null);
+  }
+
+  Future<void> _openLabs() async {
+    await Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (_) => LabsScreen(ui: s)));
   }
 
   Future<void> _refresh() async {
@@ -165,7 +167,10 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(width: 10),
             const Text(
               'Cisco Quiz',
-              style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: -0.4),
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.4,
+              ),
             ),
           ],
         ),
@@ -203,7 +208,10 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFF0F172A),
                       borderRadius: BorderRadius.circular(999),
@@ -235,14 +243,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   '${s.subtitle}\n${s.questionsInBank(bank.total)}',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 15),
+                  style: const TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontSize: 15,
+                  ),
                 ),
                 if (bank.loadError != null) ...[
                   const SizedBox(height: 12),
                   Text(
                     s.loadFail,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Color(0xFFF87171), fontSize: 14),
+                    style: const TextStyle(
+                      color: Color(0xFFF87171),
+                      fontSize: 14,
+                    ),
                   ),
                 ],
                 if (paused != null) ...[
@@ -255,6 +269,83 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
                 const SizedBox(height: 20),
+                Center(
+                  child: SegmentedButton<QuizMode>(
+                    showSelectedIcon: false,
+                    segments: [
+                      ButtonSegment(
+                        value: QuizMode.practice,
+                        label: Text(s.practiceMode),
+                      ),
+                      ButtonSegment(
+                        value: QuizMode.exam,
+                        label: Text(s.examMode),
+                      ),
+                    ],
+                    selected: {_mode},
+                    onSelectionChanged: (v) => setState(() => _mode = v.first),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _mode.isExam ? s.examHint : s.practiceHint,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  child: InkWell(
+                    onTap: _openLabs,
+                    borderRadius: BorderRadius.circular(24),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: ciscoBlue.withValues(alpha: 0.18),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: const Icon(Icons.terminal, color: ciscoBlue),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  s.labsTitle,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  s.labsSubtitle,
+                                  style: const TextStyle(
+                                    color: Color(0xFF94A3B8),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Icon(
+                            Icons.chevron_right,
+                            color: Color(0xFF94A3B8),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
                 for (final cert in const ['ccst', 'ccna', 'ccnp']) ...[
                   CertCard(
                     cert: cert,
@@ -263,6 +354,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     enCount: bank.count(cert, 'en'),
                     unseenPt: _unseen(cert, 'pt'),
                     unseenEn: _unseen(cert, 'en'),
+                    exam: _mode.isExam,
                     onStart: (lang) => _start(cert, lang),
                   ),
                   const SizedBox(height: 14),
@@ -275,8 +367,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.cloud_download_outlined,
-                                color: Color(0xFF34D399)),
+                            const Icon(
+                              Icons.cloud_download_outlined,
+                              color: Color(0xFF34D399),
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
@@ -304,10 +398,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               ? const SizedBox(
                                   width: 18,
                                   height: 18,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
                                 )
                               : const Icon(Icons.sync),
-                          label: Text(bank.refreshing ? s.refreshing : s.refreshNow),
+                          label: Text(
+                            bank.refreshing ? s.refreshing : s.refreshNow,
+                          ),
                         ),
                         const SizedBox(height: 12),
                         Container(
@@ -334,13 +432,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   s.footer,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Color(0xFF64748B), fontSize: 12),
+                  style: const TextStyle(
+                    color: Color(0xFF64748B),
+                    fontSize: 12,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   s.privacy,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Color(0xFF475569), fontSize: 12),
+                  style: const TextStyle(
+                    color: Color(0xFF475569),
+                    fontSize: 12,
+                  ),
                 ),
               ],
             ),
@@ -377,6 +481,7 @@ class _PausedBanner extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               '${s.certTitle(session.cert)} · ${session.examLang.toUpperCase()} · '
+              '${session.isExam ? s.examMode : s.practiceMode} · '
               '${session.currentIndex + 1}/${session.length}',
               style: const TextStyle(color: Color(0xFFCBD5E1)),
             ),

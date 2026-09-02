@@ -13,6 +13,7 @@ class CertCard extends StatelessWidget {
     required this.unseenPt,
     required this.unseenEn,
     required this.onStart,
+    this.exam = false,
   });
 
   final String cert;
@@ -22,6 +23,7 @@ class CertCard extends StatelessWidget {
   final int unseenPt;
   final int unseenEn;
   final void Function(String lang) onStart;
+  final bool exam;
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +107,11 @@ class CertCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(icon, size: 36, color: palette.accent.withValues(alpha: 0.75)),
+                Icon(
+                  icon,
+                  size: 36,
+                  color: palette.accent.withValues(alpha: 0.75),
+                ),
               ],
             ),
             const SizedBox(height: 14),
@@ -145,7 +151,7 @@ class CertCard extends StatelessWidget {
                       minimumSize: const Size.fromHeight(50),
                     ),
                     onPressed: ptCount == 0 ? null : () => onStart('pt'),
-                    child: Text(s.examPt),
+                    child: Text(s.startPt(exam: exam)),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -155,7 +161,7 @@ class CertCard extends StatelessWidget {
                       minimumSize: const Size.fromHeight(50),
                     ),
                     onPressed: enCount == 0 ? null : () => onStart('en'),
-                    child: Text(s.examEn),
+                    child: Text(s.startEn(exam: exam)),
                   ),
                 ),
               ],

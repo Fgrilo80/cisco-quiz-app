@@ -3,6 +3,24 @@ import 'question.dart';
 const int quizLength = 50;
 const int quizSeconds = 45 * 60;
 
+enum QuizMode {
+  practice,
+  exam;
+
+  bool get isExam => this == QuizMode.exam;
+
+  bool get isPractice => this != QuizMode.exam;
+
+  static QuizMode parse(dynamic value) {
+    switch ('$value'.toLowerCase()) {
+      case 'exam':
+        return QuizMode.exam;
+      default:
+        return QuizMode.practice;
+    }
+  }
+}
+
 int _asInt(dynamic value, int fallback) {
   if (value is num) return value.toInt();
   return int.tryParse('$value') ?? fallback;
@@ -19,6 +37,7 @@ class QuizSession {
     required this.showingFeedback,
     required this.startedAtMs,
     this.pendingSelection,
+    this.mode = QuizMode.practice,
   });
 
   final String cert;
@@ -29,6 +48,7 @@ class QuizSession {
   int timeLeftSeconds;
   bool showingFeedback;
   final int startedAtMs;
+  final QuizMode mode;
 
   /// Unconfirmed option on the current question (pause / process-death).
   int? pendingSelection;
@@ -38,6 +58,13 @@ class QuizSession {
   Question get current => questions[currentIndex];
 
   bool get isLast => currentIndex >= length - 1;
+
+  bool get isExam => mode.isExam;
+
+  bool get isPractice => mode.isPractice;
+
+  /// Practice reveals after each answer; exam waits until the results screen.
+  bool get revealsAfterAnswer => isPractice;
 
   int get answeredCount => answers.where((a) => a != null).length;
 
@@ -52,25 +79,26 @@ class QuizSession {
   int get usedSeconds => (quizSeconds - timeLeftSeconds).clamp(0, quizSeconds);
 
   Map<String, dynamic> toJson() => {
-        'cert': cert,
-        'examLang': examLang,
-        'questions': questions.map((q) => q.toJson()).toList(),
-        'answers': answers,
-        'currentIndex': currentIndex,
-        'timeLeftSeconds': timeLeftSeconds,
-        'showingFeedback': showingFeedback,
-        'startedAtMs': startedAtMs,
-        'pendingSelection': pendingSelection,
-      };
+    'cert': cert,
+    'examLang': examLang,
+    'questions': questions.map((q) => q.toJson()).toList(),
+    'answers': answers,
+    'currentIndex': currentIndex,
+    'timeLeftSeconds': timeLeftSeconds,
+    'showingFeedback': showingFeedback,
+    'startedAtMs': startedAtMs,
+    'pendingSelection': pendingSelection,
+    'mode': mode.name,
+  };
 
   factory QuizSession.fromJson(Map<String, dynamic> json) {
     final rawQs = json['questions'];
     final questions = rawQs is List
         ? rawQs
-            .whereType<Map>()
-            .map((e) => Question.fromJson(Map<String, dynamic>.from(e)))
-            .where((q) => q.isValid)
-            .toList()
+              .whereType<Map>()
+              .map((e) => Question.fromJson(Map<String, dynamic>.from(e)))
+              .where((q) => q.isValid)
+              .toList()
         : <Question>[];
     final rawAnswers = json['answers'];
     final answers = <int?>[
@@ -88,8 +116,10 @@ class QuizSession {
     }
     final last = questions.isEmpty ? 0 : questions.length - 1;
     var idx = _asInt(json['currentIndex'], 0).clamp(0, last);
-    var timeLeft = _asInt(json['timeLeftSeconds'], quizSeconds)
-        .clamp(0, quizSeconds);
+    var timeLeft = _asInt(
+      json['timeLeftSeconds'],
+      quizSeconds,
+    ).clamp(0, quizSeconds);
     var pending = json['pendingSelection'] == null
         ? null
         : int.tryParse('${json['pendingSelection']}');
@@ -107,6 +137,7 @@ class QuizSession {
       showingFeedback: json['showingFeedback'] == true,
       startedAtMs: _asInt(json['startedAtMs'], 0),
       pendingSelection: pending,
+      mode: QuizMode.parse(json['mode']),
     );
   }
 }
