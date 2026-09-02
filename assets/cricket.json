@@ -1958,6 +1958,102 @@
         "correct": 1,
         "explanation": "6 GHz oferece canais novos e menos ocupados; a penetração é em geral pior que 2,4 GHz. Planeia-se mais APs e cobertura, não só débito de pico.",
         "difficulty": "Médio"
+      },
+      {
+        "question": "Num switch de acesso, a porta Gi1/0/12 fica em estado err-disabled e o syslog mostra %PM-4-ERR_DISABLE: bpduguard. Qual é a causa mais provável?",
+        "options": [
+          "O cabo UTP tem só 2 pares ligados",
+          "Foi ligado um switch/hub (ou PC com bridging) que enviou BPDUs numa porta de acesso com BPDU Guard",
+          "O PoE excede o orçamento do PSU",
+          "O DNS do cliente está em falta"
+        ],
+        "correct": 1,
+        "explanation": "BPDU Guard desativa (err-disable) portas de acesso que recebem BPDUs — típico quando alguém liga outro switch. Recuperação: corrigir a topologia e fazer errdisable recovery ou shut/no shut.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "Um AP Wi-Fi 6E exige WPA3 na banda de 6 GHz. O cliente só tem WPA2. O que acontece no SSID só-6 GHz?",
+        "options": [
+          "Associa com WEP automaticamente",
+          "Não associa: 6 GHz exige WPA3 (SAE); o cliente tem de ser 6E e WPA3",
+          "Associa se o canal for DFS",
+          "Funciona só com IPv6"
+        ],
+        "correct": 1,
+        "explanation": "Na banda de 6 GHz o Wi-Fi Alliance exige WPA3. Clientes só-WPA2 ficam de fora desse SSID (podem usar 2,4/5 GHz se o AP anunciar SSIDs nessas bandas).",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "Ferramenta de cabo: mapa OK, mas certificação falha em NEXT elevado entre pares. Qual interpretação CCST é a mais correta?",
+        "options": [
+          "O switch está sem PoE",
+          "Há diafonia excessiva (pares mal torcidos/terminação má); tipicamente não passa Cat5e/Cat6",
+          "O DNS está errado",
+          "É só um problema de VLAN"
+        ],
+        "correct": 1,
+        "explanation": "NEXT (near-end crosstalk) alto indica interferência entre pares — terminacão má, destorção excessiva ou cabo danificado. Re-terminar ou substituir o cabo; não é um sintoma de VLAN/DNS.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "PC obtém IP via DHCP, ping ao gateway falha, e `arp -a` não mostra o MAC do gateway. Qual passo de troubleshooting é o mais útil a seguir?",
+        "options": [
+          "Mudar só o tema do Windows",
+          "Verificar L2 no segmento (cabo/VLAN/porta err-disabled/ARP) antes de culpar DNS ou a Internet",
+          "Desativar o IPv6 em todos os hosts da empresa",
+          "Atualizar o firmware da impressora"
+        ],
+        "correct": 1,
+        "explanation": "Sem ARP do gateway não há L2 até ao default gateway. Confirma cabo, VLAN correta, estado da porta e se o gateway está no mesmo broadcast domain — DNS/HTTP só depois.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "PoE: um AP Class 4 (802.3at) não liga num switch só 802.3af. Qual é a explicação mais correta?",
+        "options": [
+          "O SSID está errado",
+          "802.3af (~15,4 W) pode ser insuficiente para Class 4/at (~30 W); precisa de PSE at/bt ou injector adequado",
+          "Falta de rota estática no AP",
+          "O cabo Cat6 não transporta PoE"
+        ],
+        "correct": 1,
+        "explanation": "Tipo/classe PoE limita a potência. Dispositivos at/bt em portas só-af podem não negociar potência suficiente. Cat5e/Cat6 transportam PoE; o limite é o PSE.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "Um utilizador liga-se ao Wi-Fi certo, recebe IP, mas o portal cativo não abre e a Internet falha. Ping a 8.8.8.8 funciona. Qual hipótese CCST é a mais plausível?",
+        "options": [
+          "Falha total de Layer 1 no AP",
+          "Problema de DNS ou de redirecionamento HTTP do portal (resolução/nome), não de encaminhamento IP básico",
+          "O switch perdeu todas as VLANs nativas",
+          "O cabo do core tem só 10 Mbps"
+        ],
+        "correct": 1,
+        "explanation": "Ping a um IP público OK indica encaminhamento básico. Portais cativos dependem de DNS/HTTP redirect — DNS errado, HTTPS estrito ou bloqueio do domínio do portal são causas típicas.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "Em troubleshooting, `ipconfig` mostra APIPA 169.254.x.x. O que isto indica tipicamente num PC Ethernet corporativo?",
+        "options": [
+          "O DHCP funcionou e atribuiu um endereço público",
+          "O cliente não obteve lease DHCP (sem servidor/relay/VLAN/cabo) e auto-configurou link-local IPv4",
+          "O BGP do ISP caiu",
+          "O Wi-Fi 6E está obrigatório"
+        ],
+        "correct": 1,
+        "explanation": "169.254.0.0/16 é APIPA: o host desistiu do DHCP. Verifica cabo, VLAN de acesso, interface up, servidor DHCP e ip helper-address no gateway da VLAN.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "Um telefone IP PoE liga-se, mas o PC atrás do telefone (passthrough) não tem rede. O telefone tem voz OK. Qual verificação é a mais relevante?",
+        "options": [
+          "Aumentar só a potência do rádio Wi-Fi",
+          "VLAN de dados no switch (e no telefone), cabo PC↔telefone, e se a porta está em access/trunk com voice VLAN correta",
+          "Desativar Spanning Tree em todo o campus",
+          "Mudar o hostname do router de borda"
+        ],
+        "correct": 1,
+        "explanation": "Telefone+PC no mesmo cabo usa voice VLAN + data VLAN (ou multi-VLAN no telefone). Voz OK com dados mortos aponta para VLAN de dados/cabo PC ou config do telefone — não para Wi-Fi.",
+        "difficulty": "Difícil"
       }
     ],
     "en": [
@@ -3918,6 +4014,102 @@
         "correct": 1,
         "explanation": "6 GHz offers new, less crowded channels; wall penetration is usually worse than 2.4 GHz. Plan denser APs for coverage, not only peak rate.",
         "difficulty": "Medium"
+      },
+      {
+        "question": "Access switch port Gi1/0/12 is err-disabled and syslog shows %PM-4-ERR_DISABLE: bpduguard. What is the most likely cause?",
+        "options": [
+          "The UTP cable only has 2 pairs connected",
+          "A switch/hub (or a PC bridging) sent BPDUs on an access port with BPDU Guard enabled",
+          "PoE exceeds the PSU budget",
+          "The client is missing DNS"
+        ],
+        "correct": 1,
+        "explanation": "BPDU Guard err-disables access ports that receive BPDUs — typical when someone plugs in another switch. Fix the topology, then recover with errdisable recovery or shut/no shut.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "A Wi-Fi 6E AP requires WPA3 on the 6 GHz band. The client only supports WPA2. What happens on a 6 GHz-only SSID?",
+        "options": [
+          "It associates with WEP automatically",
+          "It will not associate: 6 GHz requires WPA3 (SAE); the client must be 6E and WPA3-capable",
+          "It associates if the channel is DFS",
+          "It only works with IPv6"
+        ],
+        "correct": 1,
+        "explanation": "Wi-Fi Alliance requires WPA3 on 6 GHz. WPA2-only clients cannot join that SSID (they may still use 2.4/5 GHz SSIDs if the AP offers them).",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "Cable tester: wire map OK, but certification fails with high NEXT between pairs. What is the best CCST interpretation?",
+        "options": [
+          "The switch has no PoE",
+          "Excessive crosstalk (poor twist/termination); typically fails Cat5e/Cat6 certification",
+          "DNS is wrong",
+          "It is only a VLAN problem"
+        ],
+        "correct": 1,
+        "explanation": "High NEXT means pair-to-pair interference — bad termination, untwist, or damaged cable. Re-terminate or replace; it is not a VLAN/DNS symptom.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "PC gets DHCP IP, ping to the gateway fails, and `arp -a` shows no gateway MAC. What is the most useful next troubleshooting step?",
+        "options": [
+          "Only change the Windows theme",
+          "Check L2 on the segment (cable/VLAN/err-disabled port/ARP) before blaming DNS or the Internet",
+          "Disable IPv6 on every host in the company",
+          "Update the printer firmware"
+        ],
+        "correct": 1,
+        "explanation": "No gateway ARP means no L2 path to the default gateway. Verify cable, correct VLAN, port status, and same broadcast domain — DNS/HTTP come later.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "PoE: a Class 4 (802.3at) AP will not power on a switch that is 802.3af-only. What is the best explanation?",
+        "options": [
+          "The SSID is wrong",
+          "802.3af (~15.4 W) can be insufficient for Class 4/at (~30 W); you need an at/bt PSE or a suitable injector",
+          "The AP is missing a static route",
+          "Cat6 cable cannot carry PoE"
+        ],
+        "correct": 1,
+        "explanation": "PoE type/class caps available power. at/bt PDs on af-only ports may not get enough power. Cat5e/Cat6 carry PoE fine — the PSE is the limit.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "User joins the right Wi-Fi, gets an IP, but the captive portal never opens and Internet browsing fails. Ping to 8.8.8.8 works. Which CCST hypothesis is most plausible?",
+        "options": [
+          "Complete Layer 1 failure on the AP",
+          "DNS or captive-portal HTTP redirect/name resolution issue — not basic IP forwarding",
+          "The switch lost every native VLAN",
+          "The core cable is stuck at 10 Mbps"
+        ],
+        "correct": 1,
+        "explanation": "Successful ping to a public IP means basic forwarding works. Captive portals need DNS/HTTP redirect — bad DNS, strict HTTPS, or a blocked portal domain are common causes.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "Troubleshooting: `ipconfig` shows APIPA 169.254.x.x. What does this typically mean on a corporate Ethernet PC?",
+        "options": [
+          "DHCP worked and assigned a public address",
+          "The client got no DHCP lease (server/relay/VLAN/cable issue) and auto-configured IPv4 link-local",
+          "The ISP BGP session is down",
+          "Wi-Fi 6E is mandatory"
+        ],
+        "correct": 1,
+        "explanation": "169.254.0.0/16 is APIPA: the host gave up on DHCP. Check cable, access VLAN, interface up, DHCP server, and ip helper-address on the VLAN gateway.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "A PoE IP phone powers up and has voice, but the PC daisy-chained behind the phone has no network. Which check is most relevant?",
+        "options": [
+          "Only increase Wi-Fi radio power",
+          "Data VLAN on the switch (and phone), PC↔phone cable, and whether the port is access/trunk with the correct voice VLAN",
+          "Disable Spanning Tree across the whole campus",
+          "Rename the edge router hostname"
+        ],
+        "correct": 1,
+        "explanation": "Phone+PC on one cable uses voice VLAN + data VLAN (or phone multi-VLAN). Voice OK / data dead points to data VLAN, PC cable, or phone config — not Wi-Fi.",
+        "difficulty": "Hard"
       }
     ]
   },
@@ -5816,6 +6008,45 @@
         "correct": 1,
         "explanation": "OSPFv3 usa FF02::5 (AllSPFRouters) e FF02::6 (AllDRouters), análogos a 224.0.0.5/6 do OSPFv2, mas em IPv6 link-local multicast.",
         "difficulty": "Difícil"
+      },
+      {
+        "question": "A saída de `show ip interface brief` mostra Serial0/0/0 como administratively down / down. O que falta tipicamente?",
+        "options": [
+          "Só configurar BGP",
+          "A interface está em shutdown — falta `no shutdown` (além de IP/encapsulamento se necessário)",
+          "O cabo de consola está invertido",
+          "O NTP está dessincronizado"
+        ],
+        "correct": 1,
+        "explanation": "administratively down significa shutdown na interface. `no shutdown` traz para up/down ou up/up conforme o protocolo de linha.",
+        "difficulty": "Médio",
+        "cli": true
+      },
+      {
+        "question": "Em `show etherchannel summary`, uma porta aparece como `(I)` independente. O que isto indica?",
+        "options": [
+          "O EtherChannel está perfeito em todas as portas",
+          "Essa porta não faz parte do bundle (config/mismatch LACP/PAgP ou bundling falhou)",
+          "A VLAN nativa é 1 em todo o lado",
+          "O STP está desligado"
+        ],
+        "correct": 1,
+        "explanation": "Flags como (I) Independent significam que a porta não entrou no port-channel — tipicamente mismatch de modo LACP, VLANs, velocidade/duplex ou config inconsistente.",
+        "difficulty": "Difícil",
+        "cli": true
+      },
+      {
+        "question": "Que informação `show cdp neighbors detail` NÃO fornece diretamente?",
+        "options": [
+          "Hostname e plataforma do vizinho",
+          "Endereço IP de gestão do vizinho (se anunciado)",
+          "A tabela completa de rotas BGP do AS remoto",
+          "Interface local e remota da ligação"
+        ],
+        "correct": 2,
+        "explanation": "CDP/LLDP dão adjacência L2/L3 de gestão (ID, plataforma, IPs, capabilities). Tabelas BGP completas vêm de `show ip bgp` / sessão BGP, não de CDP.",
+        "difficulty": "Médio",
+        "cli": true
       }
     ],
     "en": [
@@ -7712,6 +7943,45 @@
         "correct": 1,
         "explanation": "OSPFv3 uses FF02::5 (AllSPFRouters) and FF02::6 (AllDRouters), the IPv6 link-local multicast analogs of OSPFv2’s 224.0.0.5/6.",
         "difficulty": "Hard"
+      },
+      {
+        "question": "`show ip interface brief` shows Serial0/0/0 as administratively down / down. What is typically missing?",
+        "options": [
+          "Only configure BGP",
+          "The interface is shut down — need `no shutdown` (plus IP/encapsulation if required)",
+          "The console cable is reversed",
+          "NTP is out of sync"
+        ],
+        "correct": 1,
+        "explanation": "administratively down means the interface is in shutdown. `no shutdown` moves it toward up/down or up/up depending on line protocol.",
+        "difficulty": "Medium",
+        "cli": true
+      },
+      {
+        "question": "In `show etherchannel summary`, a port shows as `(I)` independent. What does that mean?",
+        "options": [
+          "The EtherChannel is perfect on every member",
+          "That port is not in the bundle (LACP/PAgP mismatch or bundling failed)",
+          "Native VLAN is 1 everywhere",
+          "STP is disabled"
+        ],
+        "correct": 1,
+        "explanation": "Flags like (I) Independent mean the port did not join the port-channel — often LACP mode mismatch, VLAN, speed/duplex, or inconsistent member config.",
+        "difficulty": "Hard",
+        "cli": true
+      },
+      {
+        "question": "Which information does `show cdp neighbors detail` NOT provide directly?",
+        "options": [
+          "Neighbor hostname and platform",
+          "Neighbor management IP (if advertised)",
+          "The full remote AS BGP table",
+          "Local and remote interfaces for the link"
+        ],
+        "correct": 2,
+        "explanation": "CDP/LLDP give L2 adjacency / management identity (ID, platform, IPs, capabilities). Full BGP tables come from `show ip bgp` / BGP sessions, not CDP.",
+        "difficulty": "Medium",
+        "cli": true
       }
     ]
   },
@@ -9644,6 +9914,30 @@
         "correct": 0,
         "explanation": "Mesmo em IPv6-only, o OSPF Router ID é 32 bits. Sem endereços IPv4, o IOS pode falhar a eleição automática do RID — define-se com router-id A.B.C.D.",
         "difficulty": "Difícil"
+      },
+      {
+        "question": "Em automação de rede Cisco, RESTCONF tipicamente transporta dados YANG sobre o quê?",
+        "options": [
+          "Só SNMP v1 em UDP/161",
+          "HTTP/HTTPS com payloads JSON ou XML modelados em YANG",
+          "Telnet sem autenticação",
+          "Apenas TFTP"
+        ],
+        "correct": 1,
+        "explanation": "RESTCONF expõe datastores YANG via HTTP/HTTPS (JSON/XML). NETCONF usa SSH/XML; gNMI é outro caminho. SNMP continua separado para monitorização clássica.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "QoS: numa política com policing a 10 Mbps e tráfego burst muito acima, o que acontece ao excesso tipicamente (sem shaping)?",
+        "options": [
+          "É sempre colocado em fila infinita sem perda",
+          "Pode ser dropado ou remarcado conforme a polícia (conform/exceed/violate) — policing não suaviza o burst como o shaping",
+          "Converte-se automaticamente em OSPF",
+          "Aumenta o MTU para 9000"
+        ],
+        "correct": 1,
+        "explanation": "Policing mede a taxa e dropa/remarca excesso; shaping atrasa (bufferiza) para suavizar. Burst grande com police ⇒ drops/remark, não fila infinita.",
+        "difficulty": "Difícil"
       }
     ],
     "en": [
@@ -11573,6 +11867,30 @@
         ],
         "correct": 0,
         "explanation": "Even in IPv6-only networks the OSPF Router ID is 32 bits. With no IPv4 addresses, IOS may fail automatic RID election — set it with router-id A.B.C.D.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "In Cisco network automation, RESTCONF typically carries YANG data over what?",
+        "options": [
+          "SNMPv1 on UDP/161 only",
+          "HTTP/HTTPS with JSON or XML payloads modeled in YANG",
+          "Unauthenticated Telnet",
+          "TFTP only"
+        ],
+        "correct": 1,
+        "explanation": "RESTCONF exposes YANG datastores over HTTP/HTTPS (JSON/XML). NETCONF uses SSH/XML; gNMI is another path. SNMP remains separate for classic monitoring.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "QoS: with a 10 Mbps policer and a much larger burst, what typically happens to the excess (no shaping)?",
+        "options": [
+          "It is always queued forever with no loss",
+          "It may be dropped or remarked per the policy (conform/exceed/violate) — policing does not smooth bursts like shaping",
+          "It automatically becomes OSPF",
+          "MTU increases to 9000"
+        ],
+        "correct": 1,
+        "explanation": "Policing meters rate and drops/remarks excess; shaping delays (buffers) to smooth. A large burst under a policer means drops/remarks, not an infinite queue.",
         "difficulty": "Hard"
       }
     ]
