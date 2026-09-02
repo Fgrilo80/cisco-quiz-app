@@ -3,14 +3,23 @@ import 'package:flutter/material.dart';
 import '../l10n.dart';
 import '../models/question.dart';
 import '../models/quiz_session.dart';
+import '../services/progress_store.dart';
+import '../services/quiz_filters.dart';
 import '../theme.dart';
 import '../widgets/cli_block.dart';
+import 'quiz_screen.dart';
 
 class ResultsScreen extends StatelessWidget {
-  const ResultsScreen({super.key, required this.session, required this.ui});
+  const ResultsScreen({
+    super.key,
+    required this.session,
+    required this.ui,
+    required this.store,
+  });
 
   final QuizSession session;
   final S ui;
+  final ProgressStore store;
 
   String _clock(int seconds) {
     final m = (seconds ~/ 60).toString().padLeft(2, '0');
@@ -33,7 +42,7 @@ class ResultsScreen extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
           Text(
-            ui.doneHeading(exam: session.isExam),
+            ui.doneHeading(exam: session.isExam, review: session.isReview),
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 28,
@@ -43,7 +52,7 @@ class ResultsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            '${ui.doneSub}\n${ui.certTitle(session.cert)} · ${session.examLang.toUpperCase()} · ${session.isExam ? ui.examMode : ui.practiceMode}',
+            '${ui.doneSub}\n${ui.certTitle(session.cert)} · ${session.examLang.toUpperCase()} · ${ui.modeLabel(session.mode.name)}',
             textAlign: TextAlign.center,
             style: const TextStyle(color: Color(0xFF94A3B8)),
           ),
@@ -63,6 +72,37 @@ class ResultsScreen extends StatelessWidget {
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 16),
+          if (session.missedQuestions.isNotEmpty) ...[
+            FilledButton(
+              onPressed: () async {
+                final missed = [...session.missedQuestions]..shuffle();
+                final picked = missed.take(quizLength).toList();
+                final duration = sessionSecondsFor(picked.length);
+                final next = QuizSession(
+                  cert: session.cert,
+                  examLang: session.examLang,
+                  questions: picked,
+                  answers: List<int?>.filled(picked.length, null),
+                  currentIndex: 0,
+                  timeLeftSeconds: duration,
+                  showingFeedback: false,
+                  startedAtMs: DateTime.now().millisecondsSinceEpoch,
+                  mode: QuizMode.review,
+                  durationSeconds: duration,
+                );
+                await store.savePaused(next);
+                if (!context.mounted) return;
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute<void>(
+                    builder: (_) =>
+                        QuizScreen(session: next, store: store, ui: ui),
+                  ),
+                );
+              },
+              child: Text(ui.retryMissed),
+            ),
+            const SizedBox(height: 8),
+          ],
           FilledButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(ui.redo),

@@ -3,12 +3,12 @@ import 'package:cisco_quiz/services/quiz_picker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Question q(String text) => Question(
-      question: text,
-      options: const ['a', 'b', 'c', 'd'],
-      correct: 1,
-      explanation: 'e',
-      difficulty: 'Fácil',
-    );
+  question: text,
+  options: const ['a', 'b', 'c', 'd'],
+  correct: 1,
+  explanation: 'e',
+  difficulty: 'Fácil',
+);
 
 void main() {
   test('prefers unseen questions until the pool is exhausted', () {
@@ -30,5 +30,17 @@ void main() {
     final pool = [q('only')];
     final picked = pickQuestions(pool: pool, seenIds: {}, count: 50);
     expect(picked, hasLength(1));
+  });
+
+  test('pickWeakQuestions prefers missed ids and stays at or below 50', () {
+    final pool = [for (var i = 0; i < 80; i++) q('Q$i')];
+    final miss = {for (var i = 0; i < 10; i++) pool[i].id: 100 - i};
+    final picked = pickWeakQuestions(pool: pool, missTimes: miss, count: 50);
+    expect(picked, hasLength(10));
+    expect(picked.every((e) => miss.containsKey(e.id)), isTrue);
+
+    final many = {for (final item in pool) item.id: 1};
+    final capped = pickWeakQuestions(pool: pool, missTimes: many, count: 50);
+    expect(capped, hasLength(50));
   });
 }

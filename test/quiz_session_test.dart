@@ -117,4 +117,47 @@ void main() {
     expect(loaded.mode, QuizMode.exam);
     expect(loaded.revealsAfterAnswer, isFalse);
   });
+
+  test('missedQuestions lists incorrect and unanswered', () {
+    final session = QuizSession(
+      cert: 'ccna',
+      examLang: 'pt',
+      questions: [q('Q0'), q('Q1'), q('Q2')],
+      answers: [1, 0, null],
+      currentIndex: 2,
+      timeLeftSeconds: 100,
+      showingFeedback: false,
+      startedAtMs: 1,
+      durationSeconds: 180,
+      mode: QuizMode.review,
+    );
+    expect(session.missedQuestions.map((e) => e.question).toList(), [
+      'Q1',
+      'Q2',
+    ]);
+    expect(session.isReview, isTrue);
+    expect(session.revealsAfterAnswer, isTrue);
+    expect(session.usedSeconds, 80);
+    expect(session.durationSeconds, 180);
+  });
+
+  test('fromJson keeps durationSeconds and review mode', () {
+    final original = QuizSession(
+      cert: 'ccna',
+      examLang: 'pt',
+      questions: [q('Hello')],
+      answers: [null],
+      currentIndex: 0,
+      timeLeftSeconds: 90,
+      showingFeedback: false,
+      startedAtMs: 5,
+      mode: QuizMode.review,
+      durationSeconds: 180,
+    );
+    final loaded = QuizSession.fromJson(original.toJson());
+    expect(loaded.mode, QuizMode.review);
+    expect(loaded.durationSeconds, 180);
+    expect(loaded.timeLeftSeconds, 90);
+    expect(loaded.revealsAfterAnswer, isTrue);
+  });
 }

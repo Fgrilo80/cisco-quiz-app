@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../l10n.dart';
+import '../models/question.dart';
 import '../models/quiz_session.dart';
+import '../models/quiz_stats.dart';
 import '../services/bank_service.dart';
 import '../services/progress_store.dart';
+import '../services/quiz_filters.dart';
 import '../services/quiz_picker.dart';
 import '../theme.dart';
 import '../widgets/cert_card.dart';
@@ -24,12 +27,16 @@ class _HomeScreenState extends State<HomeScreen> {
   late S s;
   QuizSession? paused;
   QuizMode _mode = QuizMode.practice;
+  String _difficulty = '';
+  String _topic = '';
 
   @override
   void initState() {
     super.initState();
     s = S.of(widget.store.uiLang);
     paused = widget.store.loadPaused();
+    _difficulty = widget.store.filterDifficulty;
+    _topic = widget.store.filterTopic;
     widget.bank.addListener(_onBank);
   }
 
@@ -48,10 +55,51 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => s = S.of(code));
   }
 
+  List<Question> _pool(String cert, String lang) => applyFilters(
+    widget.bank.questions(cert, lang),
+    difficulty: _difficulty,
+    topic: _topic,
+  );
+
   int _unseen(String cert, String lang) {
-    final pool = widget.bank.questions(cert, lang);
+    final pool = _pool(cert, lang);
     final seen = widget.store.loadSeen(cert, lang);
     return pool.where((q) => !seen.contains(q.id)).length;
+  }
+
+  List<Question> _dueQuestions() {
+    final ids = widget.store.dueSrsIds();
+    return applyFilters(
+      widget.bank.questionsByIds(ids),
+      difficulty: _difficulty,
+      topic: _topic,
+    );
+  }
+
+  Iterable<Question> get _allInLang sync* {
+    for (final cert in const ['ccst', 'ccna', 'ccnp']) {
+      yield* widget.bank.questions(cert, s.code);
+      yield* widget.bank.questions(cert, s.code == 'pt' ? 'en' : 'pt');
+    }
+  }
+
+  int get _filteredTotal {
+    var n = 0;
+    for (final cert in const ['ccst', 'ccna', 'ccnp']) {
+      n += _pool(cert, 'pt').length;
+      n += _pool(cert, 'en').length;
+    }
+    return n;
+  }
+
+  Future<void> _setDifficulty(String value) async {
+    setState(() => _difficulty = value);
+    await widget.store.setFilters(difficulty: value);
+  }
+
+  Future<void> _setTopic(String value) async {
+    setState(() => _topic = value);
+    await widget.store.setFilters(topic: value);
   }
 
   Future<bool> _confirmReplacePaused() async {
@@ -76,29 +124,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return ok == true;
   }
 
-  Future<void> _start(String cert, String lang) async {
-    if (!await _confirmReplacePaused()) return;
-    final pool = widget.bank.questions(cert, lang);
-    if (pool.isEmpty) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(s.emptyBank)));
-      return;
+  (String, String) _locate(Question q) {
+    for (final cert in const ['ccst', 'ccna', 'ccnp']) {
+      for (final lang in const ['pt', 'en']) {
+        if (widget.bank.questions(cert, lang).any((x) => x.id == q.id)) {
+          return (cert, lang);
+        }
+      }
     }
-    final seen = widget.store.loadSeen(cert, lang);
-    final picked = pickQuestions(pool: pool, seenIds: seen, count: quizLength);
-    await widget.store.addSeen(cert, lang, picked.map((q) => q.id));
-    final session = QuizSession(
-      cert: cert,
-      examLang: lang,
-      questions: picked,
-      answers: List<int?>.filled(picked.length, null),
-      currentIndex: 0,
-      timeLeftSeconds: quizSeconds,
-      showingFeedback: false,
-      startedAtMs: DateTime.now().millisecondsSinceEpoch,
-      mode: _mode,
-    );
+    return ('ccna', s.code);
+  }
+
+  Future<void> _pushSession(QuizSession session) async {
     await widget.store.savePaused(session);
     if (!mounted) return;
     await Navigator.of(context).push(
@@ -109,6 +146,62 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     if (!mounted) return;
     setState(() => paused = widget.store.loadPaused());
+  }
+
+  Future<void> _start(String cert, String lang) async {
+    if (!await _confirmReplacePaused()) return;
+    final pool = _pool(cert, lang);
+    if (pool.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(s.noFilterMatch)));
+      return;
+    }
+    final seen = widget.store.loadSeen(cert, lang);
+    final n = filteredExamCount(pool.length);
+    final picked = pickQuestions(pool: pool, seenIds: seen, count: n);
+    await widget.store.addSeen(cert, lang, picked.map((q) => q.id));
+    final duration = sessionSecondsFor(picked.length);
+    final session = QuizSession(
+      cert: cert,
+      examLang: lang,
+      questions: picked,
+      answers: List<int?>.filled(picked.length, null),
+      currentIndex: 0,
+      timeLeftSeconds: duration,
+      showingFeedback: false,
+      startedAtMs: DateTime.now().millisecondsSinceEpoch,
+      mode: _mode,
+      durationSeconds: duration,
+    );
+    await _pushSession(session);
+  }
+
+  Future<void> _startReview() async {
+    if (!await _confirmReplacePaused()) return;
+    final due = _dueQuestions()..shuffle();
+    if (due.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(s.retryEmpty)));
+      return;
+    }
+    final picked = due.take(quizLength).toList();
+    final loc = _locate(picked.first);
+    final duration = sessionSecondsFor(picked.length);
+    final session = QuizSession(
+      cert: loc.$1,
+      examLang: loc.$2,
+      questions: picked,
+      answers: List<int?>.filled(picked.length, null),
+      currentIndex: 0,
+      timeLeftSeconds: duration,
+      showingFeedback: false,
+      startedAtMs: DateTime.now().millisecondsSinceEpoch,
+      mode: QuizMode.review,
+      durationSeconds: duration,
+    );
+    await _pushSession(session);
   }
 
   Future<void> _resume() async {
@@ -151,6 +244,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final bank = widget.bank;
+    final stats = widget.store.loadStats();
+    final dueCount = _dueQuestions().length;
+    final topics = topicsPresentIn(_allInLang);
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -282,7 +378,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         label: Text(s.examMode),
                       ),
                     ],
-                    selected: {_mode},
+                    selected: {
+                      _mode == QuizMode.review ? QuizMode.practice : _mode,
+                    },
                     onSelectionChanged: (v) => setState(() => _mode = v.first),
                   ),
                 ),
@@ -295,6 +393,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontSize: 13,
                   ),
                 ),
+                const SizedBox(height: 16),
+                _FilterCard(
+                  s: s,
+                  difficulty: _difficulty,
+                  topic: _topic,
+                  topics: topics,
+                  filteredTotal: _filteredTotal,
+                  onDifficulty: _setDifficulty,
+                  onTopic: _setTopic,
+                ),
+                const SizedBox(height: 12),
+                _StatsCard(s: s, stats: stats),
+                if (dueCount > 0) ...[
+                  const SizedBox(height: 12),
+                  _RetryCard(s: s, count: dueCount, onRetry: _startReview),
+                ],
                 const SizedBox(height: 16),
                 Card(
                   child: InkWell(
@@ -350,8 +464,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   CertCard(
                     cert: cert,
                     s: s,
-                    ptCount: bank.count(cert, 'pt'),
-                    enCount: bank.count(cert, 'en'),
+                    ptCount: _pool(cert, 'pt').length,
+                    enCount: _pool(cert, 'en').length,
                     unseenPt: _unseen(cert, 'pt'),
                     unseenEn: _unseen(cert, 'en'),
                     exam: _mode.isExam,
@@ -452,6 +566,216 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+class _FilterCard extends StatelessWidget {
+  const _FilterCard({
+    required this.s,
+    required this.difficulty,
+    required this.topic,
+    required this.topics,
+    required this.filteredTotal,
+    required this.onDifficulty,
+    required this.onTopic,
+  });
+
+  final S s;
+  final String difficulty;
+  final String topic;
+  final List<String> topics;
+  final int filteredTotal;
+  final ValueChanged<String> onDifficulty;
+  final ValueChanged<String> onTopic;
+
+  @override
+  Widget build(BuildContext context) {
+    final diffs = <(String, String)>[
+      ('', s.filterAll),
+      (kDifficultyEasy, s.difficultyEasy),
+      (kDifficultyMedium, s.difficultyMedium),
+      (kDifficultyHard, s.difficultyHard),
+    ];
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              s.filterTitle,
+              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              s.filterDifficulty,
+              style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+            ),
+            const SizedBox(height: 6),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final d in diffs)
+                  ChoiceChip(
+                    label: Text(d.$2),
+                    selected: difficulty == d.$1,
+                    onSelected: (_) => onDifficulty(d.$1),
+                    visualDensity: VisualDensity.compact,
+                  ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              s.filterTopic,
+              style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+            ),
+            const SizedBox(height: 6),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                ChoiceChip(
+                  label: Text(s.filterAll),
+                  selected: topic.isEmpty,
+                  onSelected: (_) => onTopic(''),
+                  visualDensity: VisualDensity.compact,
+                ),
+                for (final id in topics)
+                  ChoiceChip(
+                    label: Text(topicLabel(id, isPt: s.isPt)),
+                    selected: topic == id,
+                    onSelected: (_) => onTopic(id),
+                    visualDensity: VisualDensity.compact,
+                  ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              s.filteredCount(filteredTotal),
+              style: const TextStyle(color: Color(0xFF64748B), fontSize: 12),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatsCard extends StatelessWidget {
+  const _StatsCard({required this.s, required this.stats});
+
+  final S s;
+  final QuizStats stats;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.insights, color: ciscoBlue, size: 22),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    s.statsTitle,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            if (stats.isEmpty)
+              Text(
+                s.statsEmpty,
+                style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+              )
+            else ...[
+              Text(
+                s.examsTaken(stats.examSessions),
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              if (stats.lastPctByCert.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  s.lastByCertLine(
+                    [
+                      for (final cert in const ['ccst', 'ccna', 'ccnp'])
+                        if (stats.lastPctByCert[cert] != null)
+                          '${s.certTitle(cert)} ${stats.lastPctByCert[cert]}%',
+                    ].join(' · '),
+                  ),
+                  style: const TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+              if (stats.lastFiveAvg != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  s.lastFiveLine(stats.lastFiveAvg!),
+                  style: const TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ],
+            const SizedBox(height: 6),
+            Text(
+              s.statsLocal,
+              style: const TextStyle(color: Color(0xFF64748B), fontSize: 11),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RetryCard extends StatelessWidget {
+  const _RetryCard({
+    required this.s,
+    required this.count,
+    required this.onRetry,
+  });
+
+  final S s;
+  final int count;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: const Color(0xFF7C3AED).withValues(alpha: 0.16),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              s.retryDue(count),
+              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              s.retryHint,
+              style: const TextStyle(color: Color(0xFFCBD5E1), fontSize: 13),
+            ),
+            const SizedBox(height: 10),
+            FilledButton(onPressed: onRetry, child: Text(s.reviewWeak)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _PausedBanner extends StatelessWidget {
   const _PausedBanner({
     required this.s,
@@ -481,7 +805,7 @@ class _PausedBanner extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               '${s.certTitle(session.cert)} · ${session.examLang.toUpperCase()} · '
-              '${session.isExam ? s.examMode : s.practiceMode} · '
+              '${s.modeLabel(session.mode.name)} · '
               '${session.currentIndex + 1}/${session.length}',
               style: const TextStyle(color: Color(0xFFCBD5E1)),
             ),

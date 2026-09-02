@@ -29,6 +29,33 @@ class BankService extends ChangeNotifier {
 
   int get total => bankQuestionCount(_data);
 
+  Iterable<Question> get allQuestions sync* {
+    for (final langs in _data.values) {
+      for (final list in langs.values) {
+        yield* list;
+      }
+    }
+  }
+
+  Question? byId(String id) {
+    for (final q in allQuestions) {
+      if (q.id == id) return q;
+    }
+    return null;
+  }
+
+  /// Resolve SRS ids against the loaded bank, preserving due order.
+  List<Question> questionsByIds(Iterable<String> ids) {
+    final index = <String, Question>{};
+    for (final q in allQuestions) {
+      index.putIfAbsent(q.id, () => q);
+    }
+    return [
+      for (final id in ids)
+        if (index[id] != null) index[id]!,
+    ];
+  }
+
   Future<void> load() async {
     loading = true;
     loadError = null;

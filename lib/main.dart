@@ -15,11 +15,7 @@ Future<void> main() async {
 }
 
 class CiscoQuizApp extends StatelessWidget {
-  const CiscoQuizApp({
-    super.key,
-    required this.bank,
-    required this.store,
-  });
+  const CiscoQuizApp({super.key, required this.bank, required this.store});
 
   final BankService bank;
   final ProgressStore store;

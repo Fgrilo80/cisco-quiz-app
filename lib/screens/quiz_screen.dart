@@ -6,6 +6,7 @@ import '../l10n.dart';
 import '../models/question.dart';
 import '../models/quiz_session.dart';
 import '../services/progress_store.dart';
+import '../services/quiz_filters.dart';
 import '../theme.dart';
 import '../widgets/cli_block.dart';
 import '../widgets/option_tile.dart';
@@ -169,6 +170,7 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
 
   Future<void> _finish({bool fromTimeout = false}) async {
     _timer?.cancel();
+    await widget.store.recordSessionResults(session);
     await widget.store.clearPaused();
     if (!mounted) return;
     if (fromTimeout) {
@@ -188,7 +190,8 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
     if (!mounted) return;
     await Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(
-        builder: (_) => ResultsScreen(session: session, ui: ui),
+        builder: (_) =>
+            ResultsScreen(session: session, ui: ui, store: widget.store),
       ),
     );
   }
@@ -226,7 +229,7 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                     ui: ui,
                     cert: session.cert,
                     examLang: session.examLang,
-                    modeLabel: session.isExam ? ui.examMode : ui.practiceMode,
+                    modeLabel: ui.modeLabel(session.mode.name),
                     clock: _clock(session.timeLeftSeconds),
                     lowTime: lowTime,
                     index: session.currentIndex,
@@ -249,6 +252,13 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                                   color: Color(0xFF334155),
                                 ),
                               ),
+                            Chip(
+                              label: Text(
+                                topicLabel(topicOf(q), isPt: ui.isPt),
+                              ),
+                              visualDensity: VisualDensity.compact,
+                              side: const BorderSide(color: Color(0xFF334155)),
+                            ),
                             Chip(
                               label: Text(
                                 '${session.currentIndex + 1}/${session.length}',

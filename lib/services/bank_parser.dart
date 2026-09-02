@@ -16,10 +16,10 @@ bool bankHasExpectedShape(dynamic decoded) {
 }
 
 Map<String, Map<String, List<Question>>> emptyBank() => {
-      'ccst': {'pt': [], 'en': []},
-      'ccna': {'pt': [], 'en': []},
-      'ccnp': {'pt': [], 'en': []},
-    };
+  'ccst': {'pt': [], 'en': []},
+  'ccna': {'pt': [], 'en': []},
+  'ccnp': {'pt': [], 'en': []},
+};
 
 /// Parses the GitHub / bundled JSON, dropping malformed items instead of
 /// silently turning a bad `correct` index into a scored answer.
@@ -34,8 +34,7 @@ Map<String, Map<String, List<Question>>> parseQuestionBank(dynamic decoded) {
       if (list is! List) continue;
       next[cert]![lang] = [
         for (final item in list)
-          if (item is Map)
-            Question.fromJson(Map<String, dynamic>.from(item)),
+          if (item is Map) Question.fromJson(Map<String, dynamic>.from(item)),
       ].where((q) => q.isValid).toList();
     }
   }

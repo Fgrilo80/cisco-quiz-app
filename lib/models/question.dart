@@ -7,6 +7,7 @@ class Question {
     required this.explanation,
     required this.difficulty,
     this.cli,
+    this.topic,
   });
 
   final String question;
@@ -17,6 +18,9 @@ class Question {
 
   /// Optional CLI / show-command output to render in a monospace block.
   final String? cli;
+
+  /// Optional topic from JSON. When missing, the app derives one from keywords.
+  final String? topic;
 
   /// Stable id used to remember seen questions (normalized prompt).
   String get id {
@@ -71,6 +75,11 @@ class Question {
         break;
       }
     }
+    String? topic;
+    final rawTopic = json['topic'] ?? json['topics'] ?? json['category'];
+    if (rawTopic is String && rawTopic.trim().isNotEmpty) {
+      topic = rawTopic.trim();
+    }
     return Question(
       question: '${json['question'] ?? ''}',
       options: options,
@@ -78,15 +87,17 @@ class Question {
       explanation: '${json['explanation'] ?? ''}',
       difficulty: '${json['difficulty'] ?? ''}',
       cli: cli,
+      topic: topic,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'question': question,
-        'options': options,
-        'correct': correct,
-        'explanation': explanation,
-        'difficulty': difficulty,
-        if (hasCli) 'cli': cli,
-      };
+    'question': question,
+    'options': options,
+    'correct': correct,
+    'explanation': explanation,
+    'difficulty': difficulty,
+    if (hasCli) 'cli': cli,
+    if (topic != null && topic!.trim().isNotEmpty) 'topic': topic,
+  };
 }

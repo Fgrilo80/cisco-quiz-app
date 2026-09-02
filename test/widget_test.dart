@@ -9,5 +9,21 @@ void main() {
     expect(S.en.pause, 'Pause');
     expect(S.pt.appTitle.toLowerCase().contains('cricket'), isFalse);
     expect(S.en.appTitle.toLowerCase().contains('cricket'), isFalse);
+    expect(S.pt.reviewWeak, 'Rever fracas');
+    expect(S.en.reviewWeak, 'Review weak');
+    expect(S.pt.difficultyEasy, 'Fácil');
+    expect(S.en.difficultyEasy, 'Easy');
+    expect(S.pt.retryMissed.toLowerCase().contains('cricket'), isFalse);
+  });
+
+  test('new UI strings stay Cisco Quiz and never Cricket', () {
+    for (final ui in [S.pt, S.en]) {
+      expect(ui.appTitle, 'Cisco Quiz');
+      expect(ui.filterTitle.toLowerCase().contains('cricket'), isFalse);
+      expect(ui.retryMissed.toLowerCase().contains('cricket'), isFalse);
+      expect(ui.statsTitle.toLowerCase().contains('cricket'), isFalse);
+      expect(ui.reviewMode.toLowerCase().contains('cricket'), isFalse);
+      expect(ui.versionBadge.contains('1.2'), isTrue);
+    }
   });
 }

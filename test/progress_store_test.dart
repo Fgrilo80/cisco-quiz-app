@@ -45,4 +45,41 @@ void main() {
     await store.clearPaused();
     expect(store.loadPaused(), isNull);
   });
+
+  test('persists difficulty and topic filters', () async {
+    SharedPreferences.setMockInitialValues({});
+    final store = await ProgressStore.create();
+    expect(store.filterDifficulty, '');
+    expect(store.filterTopic, '');
+    await store.setFilters(difficulty: 'easy', topic: 'ospf');
+    expect(store.filterDifficulty, 'easy');
+    expect(store.filterTopic, 'ospf');
+  });
+
+  test('unanswered items are not written to SRS', () async {
+    SharedPreferences.setMockInitialValues({});
+    final store = await ProgressStore.create();
+    const question = Question(
+      question: 'OSPF area?',
+      options: ['0', '1', '2', '3'],
+      correct: 0,
+      explanation: 'backbone',
+      difficulty: 'Médio',
+    );
+    final session = QuizSession(
+      cert: 'ccna',
+      examLang: 'pt',
+      questions: const [question],
+      answers: [null],
+      currentIndex: 0,
+      timeLeftSeconds: 500,
+      showingFeedback: false,
+      startedAtMs: 1,
+    );
+    await store.recordSessionResults(session, nowMs: 10);
+    expect(store.missedSrsIds(), isEmpty);
+    expect(store.dueSrsIds(nowMs: 10), isEmpty);
+    expect(store.loadStats().sessions, 1);
+    expect(store.loadStats().correct, 0);
+  });
 }

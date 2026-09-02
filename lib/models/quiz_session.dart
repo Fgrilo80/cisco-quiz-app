@@ -5,16 +5,21 @@ const int quizSeconds = 45 * 60;
 
 enum QuizMode {
   practice,
-  exam;
+  exam,
+  review;
 
   bool get isExam => this == QuizMode.exam;
 
-  bool get isPractice => this != QuizMode.exam;
+  bool get isPractice => this == QuizMode.practice;
+
+  bool get isReview => this == QuizMode.review;
 
   static QuizMode parse(dynamic value) {
     switch ('$value'.toLowerCase()) {
       case 'exam':
         return QuizMode.exam;
+      case 'review':
+        return QuizMode.review;
       default:
         return QuizMode.practice;
     }
@@ -38,7 +43,8 @@ class QuizSession {
     required this.startedAtMs,
     this.pendingSelection,
     this.mode = QuizMode.practice,
-  });
+    int? durationSeconds,
+  }) : durationSeconds = durationSeconds ?? quizSeconds;
 
   final String cert;
   final String examLang;
@@ -49,6 +55,7 @@ class QuizSession {
   bool showingFeedback;
   final int startedAtMs;
   final QuizMode mode;
+  final int durationSeconds;
 
   /// Unconfirmed option on the current question (pause / process-death).
   int? pendingSelection;
@@ -63,8 +70,10 @@ class QuizSession {
 
   bool get isPractice => mode.isPractice;
 
-  /// Practice reveals after each answer; exam waits until the results screen.
-  bool get revealsAfterAnswer => isPractice;
+  bool get isReview => mode.isReview;
+
+  /// Practice and review reveal after each answer; exam waits until results.
+  bool get revealsAfterAnswer => !isExam;
 
   int get answeredCount => answers.where((a) => a != null).length;
 
@@ -76,7 +85,29 @@ class QuizSession {
     return n;
   }
 
-  int get usedSeconds => (quizSeconds - timeLeftSeconds).clamp(0, quizSeconds);
+  List<Question> get missedQuestions {
+    final missed = <Question>[];
+    for (var i = 0; i < questions.length; i++) {
+      if (!questions[i].isCorrect(answers[i])) missed.add(questions[i]);
+    }
+    return missed;
+  }
+
+  List<Question> get hitQuestions {
+    final hits = <Question>[];
+    for (var i = 0; i < questions.length; i++) {
+      if (questions[i].isCorrect(answers[i])) hits.add(questions[i]);
+    }
+    return hits;
+  }
+
+  int get scorePercent {
+    if (questions.isEmpty) return 0;
+    return ((correctCount / questions.length) * 100).round();
+  }
+
+  int get usedSeconds =>
+      (durationSeconds - timeLeftSeconds).clamp(0, durationSeconds);
 
   Map<String, dynamic> toJson() => {
     'cert': cert,
@@ -89,6 +120,7 @@ class QuizSession {
     'startedAtMs': startedAtMs,
     'pendingSelection': pendingSelection,
     'mode': mode.name,
+    'durationSeconds': durationSeconds,
   };
 
   factory QuizSession.fromJson(Map<String, dynamic> json) {
@@ -116,10 +148,11 @@ class QuizSession {
     }
     final last = questions.isEmpty ? 0 : questions.length - 1;
     var idx = _asInt(json['currentIndex'], 0).clamp(0, last);
-    var timeLeft = _asInt(
-      json['timeLeftSeconds'],
+    final duration = _asInt(
+      json['durationSeconds'],
       quizSeconds,
-    ).clamp(0, quizSeconds);
+    ).clamp(60, quizSeconds);
+    var timeLeft = _asInt(json['timeLeftSeconds'], duration).clamp(0, duration);
     var pending = json['pendingSelection'] == null
         ? null
         : int.tryParse('${json['pendingSelection']}');
@@ -138,6 +171,7 @@ class QuizSession {
       startedAtMs: _asInt(json['startedAtMs'], 0),
       pendingSelection: pending,
       mode: QuizMode.parse(json['mode']),
+      durationSeconds: duration,
     );
   }
 }

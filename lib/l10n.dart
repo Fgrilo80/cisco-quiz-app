@@ -18,24 +18,25 @@ class S {
       : 'Master your Cisco certifications';
 
   String get subtitle => isPt
-      ? 'Prática com feedback imediato, ou exame de 50 perguntas. Sem contas, sem anúncios.'
-      : 'Practice with instant feedback, or a 50-question exam. No accounts, no ads.';
+      ? 'Prática com feedback imediato, ou exame de 50 perguntas. Filtros, revisão de erros e labs CLI. Sem contas, sem anúncios.'
+      : 'Practice with instant feedback, or a 50-question exam. Filters, missed-question review and CLI labs. No accounts, no ads.';
 
-  String get versionBadge => isPt ? 'VERSÃO 1.1 • 2026' : 'VERSION 1.1 • 2026';
+  String get versionBadge => isPt ? 'VERSÃO 1.2 • 2026' : 'VERSION 1.2 • 2026';
 
   String get portuguese => 'Português';
   String get english => 'English';
 
   String get practiceMode => isPt ? 'Prática' : 'Practice';
   String get examMode => isPt ? 'Exame' : 'Exam';
+  String get reviewMode => isPt ? 'Revisão' : 'Review';
 
   String get practiceHint => isPt
       ? 'Mostra certo/errado e a explicação a seguir a cada resposta.'
       : 'Shows right/wrong and the explanation after each answer.';
 
   String get examHint => isPt
-      ? '50 perguntas, 45 minutos. Sem revelar até ao fim.'
-      : '50 questions, 45 minutes. No reveal until the end.';
+      ? 'Até 50 perguntas, 45 minutos. Sem revelar até ao fim.'
+      : 'Up to 50 questions, 45 minutes. No reveal until the end.';
 
   String get examPt => isPt ? 'Exame PT' : 'PT exam';
   String get examEn => isPt ? 'Exame EN' : 'EN exam';
@@ -95,8 +96,8 @@ class S {
   String get bankUrlLabel => isPt ? 'URL da base' : 'Bank URL';
 
   String get footer => isPt
-      ? 'Prática: feedback imediato • Exame: 50 perguntas, 45 min, revisão no fim • Labs CLI • Pausa guarda o progresso'
-      : 'Practice: instant feedback • Exam: 50 questions, 45 min, review at the end • CLI labs • Pause keeps progress';
+      ? 'Prática: feedback imediato • Exame: até 50 perguntas, 45 min • Filtros • Rever fracas • Labs CLI • Pausa guarda o progresso'
+      : 'Practice: instant feedback • Exam: up to 50 questions, 45 min • Filters • Review weak • CLI labs • Pause keeps progress';
 
   String get privacy => isPt
       ? 'Sem contas, anúncios, analítica ou telemetria.'
@@ -151,8 +152,12 @@ class S {
   String get doneTitle => isPt ? 'Exame concluído' : 'Exam complete';
   String get doneTitlePractice =>
       isPt ? 'Prática concluída' : 'Practice complete';
-  String doneHeading({required bool exam}) =>
-      exam ? doneTitle : doneTitlePractice;
+  String get doneTitleReview => isPt ? 'Revisão concluída' : 'Review complete';
+  String doneHeading({required bool exam, bool review = false}) {
+    if (review) return doneTitleReview;
+    return exam ? doneTitle : doneTitlePractice;
+  }
+
   String get doneSub =>
       isPt ? 'Aqui está o teu desempenho' : 'Here is how you did';
   String get redo => isPt ? 'Novo conjunto' : 'New set';
@@ -189,6 +194,50 @@ class S {
   String get labBack => isPt ? 'Voltar aos labs' : 'Back to labs';
   String get labsOpen => isPt ? 'Abrir Labs' : 'Open Labs';
 
+  String get filterTitle => isPt ? 'Filtros' : 'Filters';
+  String get filterDifficulty => isPt ? 'Dificuldade' : 'Difficulty';
+  String get filterTopic => isPt ? 'Tópico' : 'Topic';
+  String get filterAll => isPt ? 'Todas' : 'All';
+  String get difficultyEasy => isPt ? 'Fácil' : 'Easy';
+  String get difficultyMedium => isPt ? 'Médio' : 'Medium';
+  String get difficultyHard => isPt ? 'Difícil' : 'Hard';
+  String get topicOther => isPt ? 'Outros' : 'Other';
+  String filteredCount(int n) => isPt
+      ? '$n perguntas com estes filtros (máx. 50 por exame)'
+      : '$n questions with these filters (max 50 per exam)';
+  String get noFilterMatch => isPt
+      ? 'Nenhuma pergunta com estes filtros. Escolhe outra combinação.'
+      : 'No questions match these filters. Try another combination.';
+
+  String get retryMissed => isPt ? 'Repetir erros' : 'Retry missed';
+  String get reviewWeak => isPt ? 'Rever fracas' : 'Review weak';
+  String retryDue(int n) => isPt ? 'Rever fracas ($n)' : 'Review weak ($n)';
+  String get retryHint => isPt
+      ? 'Repete as que falhaste. O intervalo aumenta quando acertas (SRS local).'
+      : 'Retry what you missed. The interval grows when you get it right (local SRS).';
+  String get retryEmpty => isPt
+      ? 'Ainda não há erros para rever neste dispositivo.'
+      : 'There are no missed questions to review on this device yet.';
+
+  String get statsTitle =>
+      isPt ? 'Estatísticas neste dispositivo' : 'Stats on this device';
+  String statsLine(int sessions, int pct) => isPt
+      ? '$sessions sessões · $pct% de acertos'
+      : '$sessions sessions · $pct% correct';
+  String lastScoreLine(String cert, int pct) =>
+      isPt ? 'Último: $cert $pct%' : 'Last: $cert $pct%';
+  String examsTaken(int n) => isPt ? '$n exames' : '$n exams';
+  String lastFiveLine(int pct) =>
+      isPt ? 'Média das últimas 5: $pct%' : 'Last 5 average: $pct%';
+  String lastByCertLine(String parts) =>
+      isPt ? 'Último: $parts' : 'Last: $parts';
+  String get statsEmpty => isPt
+      ? 'Ainda sem sessões neste dispositivo.'
+      : 'No sessions on this device yet.';
+  String get statsLocal => isPt
+      ? 'Só neste telemóvel. Nada é enviado.'
+      : 'On this device only. Nothing is sent.';
+
   String scoreComment(double pct) {
     if (pct >= 0.85) return excellent;
     if (pct >= 0.70) return veryGood;
@@ -204,6 +253,17 @@ class S {
         return 'CCNP';
       default:
         return 'CCNA';
+    }
+  }
+
+  String modeLabel(String mode) {
+    switch (mode) {
+      case 'exam':
+        return examMode;
+      case 'review':
+        return reviewMode;
+      default:
+        return practiceMode;
     }
   }
 }
