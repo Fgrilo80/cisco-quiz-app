@@ -6047,6 +6047,102 @@
         "explanation": "CDP/LLDP dão adjacência L2/L3 de gestão (ID, plataforma, IPs, capabilities). Tabelas BGP completas vêm de `show ip bgp` / sessão BGP, não de CDP.",
         "difficulty": "Médio",
         "cli": true
+      },
+      {
+        "question": "No blueprint CCNA 200-301 v1.1, Generative AI e Predictive AI entram sobretudo em que domínio de conhecimento?",
+        "options": [
+          "Automation and Programmability (e conceitos de gestão/operação assistida por AI)",
+          "Só em Security Fundamentals (15%)",
+          "Só em IP Connectivity (25%)",
+          "Só em Network Access (STP)"
+        ],
+        "correct": 0,
+        "explanation": "Cisco posicionou AI/ML e automação no domínio de Automation and Programmability (~10%), alinhado com operação e gestão de rede modernas — não substitui OSPF/STP.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Qual contraste prático entre Generative AI e Predictive AI num contexto de operações de rede?",
+        "options": [
+          "Generative AI só funciona offline; Predictive AI só em cloud pública",
+          "Predictive AI estima tendências/anomalias a partir de dados; Generative AI produz texto/código/sugestões novas a partir de prompts",
+          "São sinónimos absolutos no blueprint Cisco",
+          "Generative AI substitui completamente o protocolo OSPF"
+        ],
+        "correct": 1,
+        "explanation": "Predictive: forecasting e deteção (capacidade, falhas). Generative: criar conteúdo/configurações/explicações. Ambos aparecem no discurso do CCNA v1.1; nenhum substitui protocolos de encaminhamento.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Machine Learning numa plataforma de assurance de rede (ex.: análise de telemetria) serve tipicamente para quê?",
+        "options": [
+          "Substituir o spanning-tree no acesso",
+          "Atribuir automaticamente endereços IPv4 públicos a todos os hosts",
+          "Aprender padrões de baseline e destacar desvios/anomalias mais cedo do que limiares estáticos sozinhos",
+          "Cifrar frames entre switches com WEP"
+        ],
+        "correct": 2,
+        "explanation": "ML em assurance usa histórico para baseline e anomalias (latência, drops, clientes Wi-Fi). Não altera L2/L3 de encaminhamento nem substitui STP/OSPF.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "No CCNA atual, Terraform entra no tema de Infrastructure as Code. O que o distingue tipicamente de Ansible num exame conceptual?",
+        "options": [
+          "Terraform só gere Windows; Ansible só routers",
+          "Terraform usa apenas Telnet; Ansible usa só SNMP",
+          "Chef e Puppet voltaram a ser obrigatórios e substituem Terraform",
+          "Terraform declara o estado desejado da infraestrutura (often cloud/API); Ansible é sobretudo procedural/automação de configuração em dispositivos"
+        ],
+        "correct": 3,
+        "explanation": "Blueprint recente enfatiza Terraform e removeu Chef/Puppet como nomes a memorizar. Terraform = IaC declarativo (estado); Ansible = playbooks/automação tipicamente agentless via SSH/API.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "BPDU Filter numa porta de acesso — qual efeito típico?",
+        "options": [
+          "Impede o envio/receção de BPDUs nessa porta (comportamento distinto de BPDU Guard)",
+          "Força a porta a ser sempre root bridge",
+          "Ativa automaticamente PortFast em todas as portas trunk",
+          "Converte a VLAN nativa em VLAN 1 de forma permanente"
+        ],
+        "correct": 0,
+        "explanation": "BPDU Filter suprime BPDUs na interface. BPDU Guard, por contraste, err-disable se receber BPDU. São features diferentes; misturá-las é erro clássico de exame.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "API northbound dum controlador SDN: qual método de autenticação é comum em REST modernas (conceito CCNA)?",
+        "options": [
+          "Apenas ARP estático no cliente",
+          "Tokens (ex.: Bearer/OAuth2) ou chaves de API sobre HTTPS — não credenciais em claro em HTTP",
+          "Somente community SNMP pública",
+          "WEP partilhado entre controlador e switch"
+        ],
+        "correct": 1,
+        "explanation": "APIs REST de controladores usam HTTPS + autenticação (tokens/OAuth/API keys). SNMP communities e WEP não são o modelo de API northbound moderno.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Containers e VRFs no CCNA: qual afirmação é a mais correta?",
+        "options": [
+          "Um container é o mesmo que uma VRF no IOS",
+          "VRFs só existem em switches L2 sem IP",
+          "Containers isolam processos/apps no host; VRFs isolam tabelas de encaminhamento no dispositivo — conceitos de virtualização em camadas diferentes",
+          "Containers substituem necessariamente o protocolo BGP"
+        ],
+        "correct": 2,
+        "explanation": "Virtualização no blueprint cobre hosts (VMs/containers) e rede (VRF). Não são a mesma tecnologia; BGP continua independente.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Cloud device management no CCNA (ex.: gestão de dispositivos via cloud) implica tipicamente o quê para o admin?",
+        "options": [
+          "Que o spanning-tree deixa de ser necessário no campus",
+          "Que todos os switches passam a ser Layer 1 hubs",
+          "Que IPv6 fica proibido na LAN",
+          "Gestão/monitorização centralizada fora do site (com conectividade e controlo de acesso à consola cloud), sem eliminar a necessidade de L2/L3 locais corretos"
+        ],
+        "correct": 3,
+        "explanation": "Gestão cloud centraliza inventário/config/telemetria, mas a rede local (VLANs, routing, STP, segurança) continua a ter de funcionar. Não desliga fundamentos.",
+        "difficulty": "Fácil"
       }
     ],
     "en": [
@@ -7982,6 +8078,102 @@
         "explanation": "CDP/LLDP give L2 adjacency / management identity (ID, platform, IPs, capabilities). Full BGP tables come from `show ip bgp` / BGP sessions, not CDP.",
         "difficulty": "Medium",
         "cli": true
+      },
+      {
+        "question": "In the CCNA 200-301 v1.1 blueprint, Generative AI and Predictive AI mainly fall under which knowledge domain?",
+        "options": [
+          "Automation and Programmability (and AI-assisted ops/management concepts)",
+          "Security Fundamentals only (15%)",
+          "IP Connectivity only (25%)",
+          "Network Access only (STP)"
+        ],
+        "correct": 0,
+        "explanation": "Cisco places AI/ML with Automation and Programmability (~10%). It does not replace OSPF/STP fundamentals.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is a practical contrast between Generative AI and Predictive AI in network operations?",
+        "options": [
+          "Generative AI works only offline; Predictive AI only in public cloud",
+          "Predictive AI estimates trends/anomalies from data; Generative AI creates new text/code/suggestions from prompts",
+          "They are absolute synonyms in the Cisco blueprint",
+          "Generative AI fully replaces the OSPF protocol"
+        ],
+        "correct": 1,
+        "explanation": "Predictive: forecasting and anomaly detection. Generative: creating content/configs/explanations. Neither replaces routing protocols.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Machine Learning on a network assurance platform (e.g. telemetry analysis) is typically used to:",
+        "options": [
+          "Replace spanning tree on the access layer",
+          "Automatically assign public IPv4 addresses to every host",
+          "Learn baseline patterns and flag deviations/anomalies earlier than static thresholds alone",
+          "Encrypt switch-to-switch frames with WEP"
+        ],
+        "correct": 2,
+        "explanation": "ML builds baselines and spots anomalies (latency, drops, Wi-Fi clients). It does not change L2/L3 forwarding or replace STP/OSPF.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "On current CCNA, Terraform appears under Infrastructure as Code. How does it typically differ from Ansible at a conceptual exam level?",
+        "options": [
+          "Terraform only manages Windows; Ansible only routers",
+          "Terraform uses only Telnet; Ansible uses only SNMP",
+          "Chef and Puppet are mandatory again and replace Terraform",
+          "Terraform declares desired infrastructure state (often cloud/API); Ansible is mainly procedural device configuration automation"
+        ],
+        "correct": 3,
+        "explanation": "Recent blueprints emphasize Terraform and dropped Chef/Puppet name-dropping. Terraform = declarative IaC; Ansible = playbooks, often agentless over SSH/API.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "BPDU Filter on an access port — typical effect?",
+        "options": [
+          "Stops sending/receiving BPDUs on that port (behavior distinct from BPDU Guard)",
+          "Forces the port to always become root bridge",
+          "Automatically enables PortFast on every trunk",
+          "Permanently converts the native VLAN to VLAN 1"
+        ],
+        "correct": 0,
+        "explanation": "BPDU Filter suppresses BPDUs on the interface. BPDU Guard err-disables on received BPDUs. Different features — a classic exam trap.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "Northbound API of an SDN controller: which authentication approach is common for modern REST (CCNA concept)?",
+        "options": [
+          "Static ARP only on the client",
+          "Tokens (e.g. Bearer/OAuth2) or API keys over HTTPS — not cleartext credentials over HTTP",
+          "Public SNMP community only",
+          "Shared WEP between controller and switch"
+        ],
+        "correct": 1,
+        "explanation": "Controller REST APIs use HTTPS plus tokens/OAuth/API keys. SNMP communities and WEP are not the modern northbound auth model.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Containers and VRFs on CCNA: which statement is most accurate?",
+        "options": [
+          "A container is the same thing as a VRF in IOS",
+          "VRFs exist only on L2 switches with no IP",
+          "Containers isolate processes/apps on a host; VRFs isolate forwarding tables on a device — virtualization at different layers",
+          "Containers necessarily replace the BGP protocol"
+        ],
+        "correct": 2,
+        "explanation": "Blueprint virtualization covers hosts (VMs/containers) and network (VRF). Different technologies; BGP remains independent.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Cloud device management on CCNA typically means what for an admin?",
+        "options": [
+          "Spanning tree is no longer needed on campus",
+          "Every switch becomes a Layer 1 hub",
+          "IPv6 is forbidden on the LAN",
+          "Centralized management/monitoring off-site (needing connectivity and access control to the cloud console), without removing the need for correct local L2/L3"
+        ],
+        "correct": 3,
+        "explanation": "Cloud management centralizes inventory/config/telemetry, but local VLANs, routing, STP and security still must work.",
+        "difficulty": "Easy"
       }
     ]
   },
@@ -9938,6 +10130,54 @@
         "correct": 1,
         "explanation": "Policing mede a taxa e dropa/remarca excesso; shaping atrasa (bufferiza) para suavizar. Burst grande com police ⇒ drops/remark, não fila infinita.",
         "difficulty": "Difícil"
+      },
+      {
+        "question": "Em arquitetura Zero Trust aplicada a acesso à rede enterprise, qual ideia central é a mais correta?",
+        "options": [
+          "Nunca confiar por localização: autenticar/autorizar continuamente e segmentar (least privilege), em vez de ‘intranet = confiável’",
+          "Confiar automaticamente em qualquer host dentro do perímetro do firewall",
+          "Desativar 802.1X e usar só hubs",
+          "Substituir BGP por rotas estáticas em todo o core"
+        ],
+        "correct": 0,
+        "explanation": "Zero Trust remove a confiança implícita pela localização de rede. Exige identidade, política e segmentação contínuas — não ‘tudo atrás do firewall é seguro’.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "SASE (Secure Access Service Edge) combina tipicamente o quê?",
+        "options": [
+          "Só switching L2 no acesso do campus",
+          "Funções de rede WAN (ex.: SD-WAN) com serviços de segurança entregues preferencialmente na cloud (SSE)",
+          "Apenas cabos de fibra monomodo",
+          "Somente Spanning Tree MST"
+        ],
+        "correct": 1,
+        "explanation": "SASE une conectividade (muitas vezes SD-WAN) e segurança cloud (SSE: SWG, CASB, ZTNA, etc.). Não é um protocolo STP.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "RRM num WLC Cisco — qual objetivo principal?",
+        "options": [
+          "Calcular o melhor caminho BGP com AS-path",
+          "Substituir OSPF no core do campus",
+          "Ajustar dinamicamente canais/potência (e relacionados) dos APs para reduzir interferência e melhorar RF",
+          "Cifrar o plano de controlo com MACsec entre routers WAN"
+        ],
+        "correct": 2,
+        "explanation": "Radio Resource Management otimiza RF (canal, TX power, etc.). Não encaminha IP no core nem substitui OSPF/BGP.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Network assurance no ENCOR: Flexible NetFlow + IP SLA juntos ajudam sobretudo a quê?",
+        "options": [
+          "Só a configurar EtherChannel LACP",
+          "Eliminar a necessidade de syslog",
+          "Desativar CoPP no control plane",
+          "Visibilidade de fluxos (NetFlow) e testes ativos de desempenho/disponibilidade (IP SLA) para diagnóstico e baseline"
+        ],
+        "correct": 3,
+        "explanation": "NetFlow/FNF = telemetria de fluxos; IP SLA = probes ativos (latência/jitter/reachability). Complementares em assurance; não substituem logging nem CoPP.",
+        "difficulty": "Difícil"
       }
     ],
     "en": [
@@ -11891,6 +12131,54 @@
         ],
         "correct": 1,
         "explanation": "Policing meters rate and drops/remarks excess; shaping delays (buffers) to smooth. A large burst under a policer means drops/remarks, not an infinite queue.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "In a Zero Trust architecture for enterprise network access, which statement is most accurate?",
+        "options": [
+          "Never trust by location: continuously authenticate/authorize and segment (least privilege), instead of ‘intranet = trusted’",
+          "Automatically trust any host inside the firewall perimeter",
+          "Disable 802.1X and use hubs only",
+          "Replace BGP with static routes across the entire core"
+        ],
+        "correct": 0,
+        "explanation": "Zero Trust removes implicit trust based on network location. It needs continuous identity, policy and segmentation — not ‘everything behind the firewall is safe’.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "SASE (Secure Access Service Edge) typically combines what?",
+        "options": [
+          "Only L2 switching at campus access",
+          "WAN networking functions (e.g. SD-WAN) with security services preferably delivered from the cloud (SSE)",
+          "Only single-mode fiber cables",
+          "Only MST Spanning Tree"
+        ],
+        "correct": 1,
+        "explanation": "SASE joins connectivity (often SD-WAN) and cloud security (SSE: SWG, CASB, ZTNA, etc.). It is not an STP protocol.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "RRM on a Cisco WLC — main goal?",
+        "options": [
+          "Compute the best BGP path using AS-path",
+          "Replace OSPF in the campus core",
+          "Dynamically tune AP channels/power (and related RF) to cut interference and improve RF",
+          "Encrypt the control plane with MACsec between WAN routers"
+        ],
+        "correct": 2,
+        "explanation": "Radio Resource Management optimizes RF (channel, TX power, etc.). It does not forward IP in the core or replace OSPF/BGP.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Network assurance on ENCOR: Flexible NetFlow + IP SLA together mainly help with what?",
+        "options": [
+          "Only configuring LACP EtherChannel",
+          "Removing any need for syslog",
+          "Disabling CoPP on the control plane",
+          "Flow visibility (NetFlow) plus active performance/availability tests (IP SLA) for diagnostics and baselines"
+        ],
+        "correct": 3,
+        "explanation": "NetFlow/FNF = flow telemetry; IP SLA = active probes. Complementary for assurance; they do not replace logging or CoPP.",
         "difficulty": "Hard"
       }
     ]
