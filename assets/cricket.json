@@ -6143,6 +6143,114 @@
         "correct": 3,
         "explanation": "Gestão cloud centraliza inventário/config/telemetria, mas a rede local (VLANs, routing, STP, segurança) continua a ter de funcionar. Não desliga fundamentos.",
         "difficulty": "Fácil"
+      },
+      {
+        "question": "Em STP, o root bridge e eleito por:",
+        "options": [
+          "Maior prioridade numerica",
+          "Menor Bridge ID (prioridade + MAC)",
+          "Maior numero de VLANs",
+          "Maior uptime"
+        ],
+        "correct": 1,
+        "explanation": "Ganha o menor Bridge ID: prioridade (default 32768) depois MAC.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "PortFast numa porta de acesso serve para:",
+        "options": [
+          "Desligar STP",
+          "Passar ja para forwarding, evitando atraso em PCs",
+          "Eleger o root",
+          "Negociar trunk"
+        ],
+        "correct": 1,
+        "explanation": "PortFast salta listening/learning em portas de extremo.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Uma rota estatica default em Cisco e:",
+        "options": [
+          "ip route 0.0.0.0 0.0.0.0 <next-hop ou exit>",
+          "ip default-network 0.0.0.0",
+          "ip route 255.255.255.255",
+          "router default"
+        ],
+        "correct": 0,
+        "explanation": "A default route e 0.0.0.0/0 para next-hop ou interface.",
+        "difficulty": "Fácil"
+      },
+      {
+        "question": "NAT overload (PAT) faz o que?",
+        "options": [
+          "Um IP publico por cada privado, 1:1",
+          "Muitos privados partilham um ou poucos IPs publicos via portas",
+          "Traduz so IPv6",
+          "Desliga o firewall"
+        ],
+        "correct": 1,
+        "explanation": "PAT usa portas L4 para multiplexar muitos internos num IP publico.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Uma ACL estendida filtra com base em:",
+        "options": [
+          "So IP de origem",
+          "Origem, destino, protocolo e portas",
+          "So MAC",
+          "So VLAN"
+        ],
+        "correct": 1,
+        "explanation": "ACLs extended permitem criterios L3/L4 finos.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "HSRP oferece o que aos hosts?",
+        "options": [
+          "Um MAC/IP virtual de gateway redundante",
+          "Balanceamento por fluxo OSPF",
+          "Traducao NAT",
+          "Um servidor DHCP"
+        ],
+        "correct": 0,
+        "explanation": "HSRP partilha um VIP; um router e active, outro standby.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Dynamic ARP Inspection usa que base de dados?",
+        "options": [
+          "A tabela OSPF",
+          "A binding table do DHCP snooping",
+          "O arquivo VTP",
+          "O CAM aging"
+        ],
+        "correct": 1,
+        "explanation": "DAI valida ARP contra as bindings DHCP snooping.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "BPDU Guard numa porta PortFast:",
+        "options": [
+          "Ignora BPDUs",
+          "Errdisable a porta se receber uma BPDU",
+          "Elege o root",
+          "Ativa LACP"
+        ],
+        "correct": 1,
+        "explanation": "Um switch ligado por engano desliga a porta de extremo.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "OSPF cost de FastEthernet 100 Mb/s com referencia 100000 e:",
+        "options": [
+          "1",
+          "10",
+          "100",
+          "1000"
+        ],
+        "correct": 0,
+        "explanation": "Custo = ref/bw = 100000/100000 = 1.",
+        "difficulty": "Médio"
       }
     ],
     "en": [
@@ -8174,6 +8282,114 @@
         "correct": 3,
         "explanation": "Cloud management centralizes inventory/config/telemetry, but local VLANs, routing, STP and security still must work.",
         "difficulty": "Easy"
+      },
+      {
+        "question": "In STP, the root bridge is elected by:",
+        "options": [
+          "Highest numeric priority",
+          "Lowest Bridge ID (priority + MAC)",
+          "Most VLANs",
+          "Highest uptime"
+        ],
+        "correct": 1,
+        "explanation": "Lowest Bridge ID wins: priority then MAC.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "PortFast on an access port is used to:",
+        "options": [
+          "Disable STP",
+          "Move immediately to forwarding, avoiding PC delay",
+          "Elect the root",
+          "Negotiate a trunk"
+        ],
+        "correct": 1,
+        "explanation": "PortFast skips listening/learning on edge ports.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "A Cisco IPv4 default static route is:",
+        "options": [
+          "ip route 0.0.0.0 0.0.0.0 <next-hop or exit>",
+          "ip default-network 0.0.0.0",
+          "ip route 255.255.255.255",
+          "router default"
+        ],
+        "correct": 0,
+        "explanation": "The default route is 0.0.0.0/0 to a next-hop or exit interface.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "What does NAT overload (PAT) do?",
+        "options": [
+          "One public IP per private host, 1:1",
+          "Many privates share one or few public IPs via ports",
+          "Translates IPv6 only",
+          "Disables the firewall"
+        ],
+        "correct": 1,
+        "explanation": "PAT multiplexes many internals onto a public IP using L4 ports.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "An extended ACL filters based on:",
+        "options": [
+          "Source IP only",
+          "Source, destination, protocol, and ports",
+          "MAC only",
+          "VLAN only"
+        ],
+        "correct": 1,
+        "explanation": "Extended ACLs allow fine L3/L4 matching.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What does HSRP give hosts?",
+        "options": [
+          "A virtual MAC/IP for a redundant gateway",
+          "Per-flow OSPF balancing",
+          "NAT translation",
+          "A DHCP server"
+        ],
+        "correct": 0,
+        "explanation": "HSRP shares a VIP; one router is active, another standby.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Dynamic ARP Inspection uses which database?",
+        "options": [
+          "The OSPF table",
+          "The DHCP snooping binding table",
+          "The VTP file",
+          "CAM aging"
+        ],
+        "correct": 1,
+        "explanation": "DAI checks ARP against DHCP snooping bindings.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "BPDU Guard on a PortFast port:",
+        "options": [
+          "Ignores BPDUs",
+          "Err-disables the port if a BPDU is received",
+          "Elects the root",
+          "Enables LACP"
+        ],
+        "correct": 1,
+        "explanation": "A rogue switch shuts the edge port.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "OSPF cost of 100 Mb/s FastEthernet with reference 100000 is:",
+        "options": [
+          "1",
+          "10",
+          "100",
+          "1000"
+        ],
+        "correct": 0,
+        "explanation": "Cost = ref/bw = 100000/100000 = 1.",
+        "difficulty": "Medium"
       }
     ]
   },
@@ -10178,6 +10394,78 @@
         "correct": 3,
         "explanation": "NetFlow/FNF = telemetria de fluxos; IP SLA = probes ativos (latência/jitter/reachability). Complementares em assurance; não substituem logging nem CoPP.",
         "difficulty": "Difícil"
+      },
+      {
+        "question": "Em OSPF, o LSA tipo 1 descreve:",
+        "options": [
+          "Rotas externas",
+          "O router e os seus links intra-area",
+          "A summary de area",
+          "O ASBR noutro AS"
+        ],
+        "correct": 1,
+        "explanation": "Type 1 Router LSA descreve links do router na area.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Feasible successor EIGRP exige:",
+        "options": [
+          "AD > FD do successor",
+          "Advertised Distance < FD do successor (condicao de viabilidade)",
+          "Mesmo AS BGP",
+          "LSA tipo 5"
+        ],
+        "correct": 1,
+        "explanation": "AD do candidato tem de ser menor que a FD da rota em uso.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "VXLAN VNI identifica:",
+        "options": [
+          "Uma VLAN local so",
+          "O segmento overlay (L2/L3) no fabric",
+          "O ASN BGP",
+          "O DSCP"
+        ],
+        "correct": 1,
+        "explanation": "VNI e o identificador do overlay VXLAN.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "GETVPN (GDOI) e pensado para:",
+        "options": [
+          "Internet publica com NAT",
+          "WAN privada (MPLS) com grupo IPsec e headers originais preservados",
+          "So Wi-Fi",
+          "IPv6 link-local"
+        ],
+        "correct": 1,
+        "explanation": "GETVPN usa key server; nao muda IPs, bom em MPLS.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "QoS LLQ (Low Latency Queue) e tipicamente para:",
+        "options": [
+          "Bulk backup",
+          "Voz/video em tempo real (priority queue)",
+          "Best-effort HTTP",
+          "Routing updates so"
+        ],
+        "correct": 1,
+        "explanation": "priority command = LLQ, com policer para nao esgotar o link.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "WRED evita:",
+        "options": [
+          "Blackholing BGP",
+          "Tail drop global, descendo probabilistico segundo DSCP antes da fila cheia",
+          "Loops RIP",
+          "Falha de NTP"
+        ],
+        "correct": 1,
+        "explanation": "WRED faz early drop ponderado; protege fluxos TCP.",
+        "difficulty": "Difícil"
       }
     ],
     "en": [
@@ -12179,6 +12467,78 @@
         ],
         "correct": 3,
         "explanation": "NetFlow/FNF = flow telemetry; IP SLA = active probes. Complementary for assurance; they do not replace logging or CoPP.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "In OSPF, LSA type 1 describes:",
+        "options": [
+          "External routes",
+          "The router and its intra-area links",
+          "The area summary",
+          "An ASBR in another AS"
+        ],
+        "correct": 1,
+        "explanation": "Type 1 Router LSA describes the router's links in the area.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "An EIGRP feasible successor requires:",
+        "options": [
+          "AD > successor FD",
+          "Advertised Distance < successor FD (feasibility condition)",
+          "The same BGP AS",
+          "LSA type 5"
+        ],
+        "correct": 1,
+        "explanation": "The candidate's AD must be less than the current route's FD.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "A VXLAN VNI identifies:",
+        "options": [
+          "A local VLAN only",
+          "The overlay (L2/L3) segment in the fabric",
+          "The BGP ASN",
+          "DSCP"
+        ],
+        "correct": 1,
+        "explanation": "VNI is the VXLAN overlay identifier.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "GETVPN (GDOI) is designed for:",
+        "options": [
+          "The public Internet with NAT",
+          "Private WAN (MPLS) with group IPsec while preserving original headers",
+          "Wi-Fi only",
+          "IPv6 link-local"
+        ],
+        "correct": 1,
+        "explanation": "GETVPN uses a key server; IPs stay the same, good on MPLS.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "QoS LLQ (Low Latency Queue) is typically for:",
+        "options": [
+          "Bulk backup",
+          "Real-time voice/video (priority queue)",
+          "Best-effort HTTP",
+          "Routing updates only"
+        ],
+        "correct": 1,
+        "explanation": "The priority command is LLQ, with a policer so it cannot starve the link.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "WRED avoids:",
+        "options": [
+          "BGP blackholing",
+          "Global tail drop by dropping probabilistically by DSCP before the queue is full",
+          "RIP loops",
+          "NTP failure"
+        ],
+        "correct": 1,
+        "explanation": "WRED is weighted early drop; it protects TCP flows.",
         "difficulty": "Hard"
       }
     ]
