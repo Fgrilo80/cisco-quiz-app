@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
+import 'local_store.dart';
 
 import '../models/question.dart';
 import 'bank_parser.dart';
@@ -117,7 +117,8 @@ class BankService extends ChangeNotifier {
 
   Future<File?> _cacheFile() async {
     try {
-      final dir = await getApplicationSupportDirectory();
+      final dir = await LocalStore.dataDirectory();
+      await dir.create(recursive: true);
       return File('${dir.path}/cricket.json');
     } catch (_) {
       return null;

@@ -2,14 +2,15 @@ import 'package:cisco_quiz/models/question.dart';
 import 'package:cisco_quiz/models/quiz_session.dart';
 import 'package:cisco_quiz/services/progress_store.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   test('seen set is per certification and language', () async {
-    SharedPreferences.setMockInitialValues({});
-    final store = await ProgressStore.create();
+    final dir = Directory.systemTemp.createTempSync('cisco_quiz_test_');
+    addTearDown(() { try { dir.deleteSync(recursive: true); } catch (_) {} });
+    final store = await ProgressStore.create(dataDir: dir);
     await store.addSeen('ccna', 'pt', ['id-a', 'id-b']);
     expect(store.loadSeen('ccna', 'pt'), {'id-a', 'id-b'});
     expect(store.loadSeen('ccna', 'en'), isEmpty);
@@ -17,8 +18,9 @@ void main() {
   });
 
   test('paused session restores pending selection', () async {
-    SharedPreferences.setMockInitialValues({});
-    final store = await ProgressStore.create();
+    final dir = Directory.systemTemp.createTempSync('cisco_quiz_test_');
+    addTearDown(() { try { dir.deleteSync(recursive: true); } catch (_) {} });
+    final store = await ProgressStore.create(dataDir: dir);
     const question = Question(
       question: 'OSPF area?',
       options: ['0', '1', '2', '3'],
@@ -47,8 +49,9 @@ void main() {
   });
 
   test('persists difficulty and topic filters', () async {
-    SharedPreferences.setMockInitialValues({});
-    final store = await ProgressStore.create();
+    final dir = Directory.systemTemp.createTempSync('cisco_quiz_test_');
+    addTearDown(() { try { dir.deleteSync(recursive: true); } catch (_) {} });
+    final store = await ProgressStore.create(dataDir: dir);
     expect(store.filterDifficulty, '');
     expect(store.filterTopic, '');
     await store.setFilters(difficulty: 'easy', topic: 'ospf');
@@ -57,8 +60,9 @@ void main() {
   });
 
   test('unanswered items are not written to SRS', () async {
-    SharedPreferences.setMockInitialValues({});
-    final store = await ProgressStore.create();
+    final dir = Directory.systemTemp.createTempSync('cisco_quiz_test_');
+    addTearDown(() { try { dir.deleteSync(recursive: true); } catch (_) {} });
+    final store = await ProgressStore.create(dataDir: dir);
     const question = Question(
       question: 'OSPF area?',
       options: ['0', '1', '2', '3'],

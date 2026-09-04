@@ -6,7 +6,7 @@ import 'package:cisco_quiz/services/quiz_filters.dart';
 import 'package:cisco_quiz/services/quiz_picker.dart';
 import 'package:cisco_quiz/services/srs.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 Question q(String text) => Question(
   question: text,
@@ -77,8 +77,9 @@ void main() {
   test(
     'store records miss timestamps and due ids prefer recent misses',
     () async {
-      SharedPreferences.setMockInitialValues({});
-      final store = await ProgressStore.create();
+      final dir = Directory.systemTemp.createTempSync('cisco_quiz_test_');
+      addTearDown(() { try { dir.deleteSync(recursive: true); } catch (_) {} });
+      final store = await ProgressStore.create(dataDir: dir);
       final qs = [q('Alpha VLAN'), q('Beta OSPF'), q('Gamma OK')];
       final session = sessionWith(questions: qs, answers: [0, 0, 1]);
       await store.recordSessionResults(session, nowMs: 2000);
@@ -101,8 +102,9 @@ void main() {
   );
 
   test('exams taken, last score per cert, last-5 average stay local', () async {
-    SharedPreferences.setMockInitialValues({});
-    final store = await ProgressStore.create();
+    final dir = Directory.systemTemp.createTempSync('cisco_quiz_test_');
+    addTearDown(() { try { dir.deleteSync(recursive: true); } catch (_) {} });
+    final store = await ProgressStore.create(dataDir: dir);
     Future<void> exam(String cert, int hits) {
       final qs = [for (var i = 0; i < 10; i++) q('$cert-$i')];
       final answers = <int?>[for (var i = 0; i < 10; i++) i < hits ? 1 : 0];

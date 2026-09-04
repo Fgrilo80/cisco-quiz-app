@@ -1,6 +1,7 @@
+import 'dart:io';
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'local_store.dart';
 
 import '../models/quiz_session.dart';
 import '../models/quiz_stats.dart';
@@ -12,7 +13,7 @@ const bankRemoteUrl =
 class ProgressStore {
   ProgressStore(this._prefs);
 
-  final SharedPreferences _prefs;
+  final LocalStore _prefs;
 
   static const _uiLangKey = 'ui_lang';
   static const _pausedKey = 'paused_session';
@@ -24,8 +25,8 @@ class ProgressStore {
 
   static String _seenKey(String cert, String lang) => 'seen_${cert}_$lang';
 
-  static Future<ProgressStore> create() async {
-    final prefs = await SharedPreferences.getInstance();
+  static Future<ProgressStore> create({Directory? dataDir}) async {
+    final prefs = await LocalStore.open(directory: dataDir);
     return ProgressStore(prefs);
   }
 

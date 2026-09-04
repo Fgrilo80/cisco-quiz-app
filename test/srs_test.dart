@@ -4,7 +4,7 @@ import 'package:cisco_quiz/models/quiz_stats.dart';
 import 'package:cisco_quiz/services/progress_store.dart';
 import 'package:cisco_quiz/services/srs.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 Question q(String text) => Question(
   question: text,
@@ -39,8 +39,9 @@ void main() {
   });
 
   test('progress store records missed ids and local stats', () async {
-    SharedPreferences.setMockInitialValues({});
-    final store = await ProgressStore.create();
+    final dir = Directory.systemTemp.createTempSync('cisco_quiz_test_');
+    addTearDown(() { try { dir.deleteSync(recursive: true); } catch (_) {} });
+    final store = await ProgressStore.create(dataDir: dir);
     final session = QuizSession(
       cert: 'ccna',
       examLang: 'pt',
