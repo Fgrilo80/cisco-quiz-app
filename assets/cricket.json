@@ -94,7 +94,7 @@
           "10 Gbps"
         ],
         "correct": 2,
-        "explanation": "Ethernet Gigabit (1000Base-T) opera a 1000 Mbps (1 Gbps).",
+        "explanation": "Ethernet Gigabit em cobre (1000BASE-T) opera a 1000 Mbps (1 Gbps) em Cat5e/Cat6. Não é Fast Ethernet (100 Mbps) nem 10 Gbps.",
         "difficulty": "Fácil"
       },
       {
@@ -118,7 +118,7 @@
           "255.255.255.255"
         ],
         "correct": 2,
-        "explanation": "Redes Classe C usam máscara padrão 255.255.255.0 (/24).",
+        "explanation": "Redes IPv4 Classe C usam máscara padrão 255.255.255.0 (/24): 24 bits de rede e 8 de host. Classe A é /8 e Classe B é /16.",
         "difficulty": "Fácil"
       },
       {
@@ -238,7 +238,7 @@
           "443"
         ],
         "correct": 2,
-        "explanation": "HTTP usa a porta 80 por padrão. HTTPS usa a porta 443.",
+        "explanation": "HTTP usa a porta TCP 80 por padrão; HTTPS (HTTP sobre TLS) usa a 443. Não confundir com DNS (53), SSH (22) ou Telnet (23).",
         "difficulty": "Fácil"
       },
       {
@@ -358,7 +358,7 @@
           "80"
         ],
         "correct": 1,
-        "explanation": "SSH usa a porta 22 por padrão.",
+        "explanation": "O SSH usa a porta TCP 22 por padrão e cifra a sessão de gestão. Telnet usa 23 em claro; HTTPS é 443.",
         "difficulty": "Fácil"
       },
       {
@@ -526,7 +526,7 @@
           "Mostrar logs"
         ],
         "correct": 1,
-        "explanation": "O comando 'reload' reinicia o dispositivo Cisco.",
+        "explanation": "O comando reload reinicia o dispositivo Cisco (IOS). Não é write memory, não apaga a startup-config e não é só um reset de interface.",
         "difficulty": "Fácil"
       },
       {
@@ -598,7 +598,7 @@
           "Serial V.35"
         ],
         "correct": 1,
-        "explanation": "Ethernet em cobre usa par trançado terminado em RJ-45.",
+        "explanation": "Ethernet em cobre usa tipicamente par trançado terminado em RJ-45. Fibra usa conectores óticos (ex.: LC/SC), não RJ-45 no caminho ótico.",
         "difficulty": "Fácil"
       },
       {
@@ -610,7 +610,7 @@
           "Repetidor"
         ],
         "correct": 2,
-        "explanation": "Routers ligam redes diferentes usando o endereço IP de destino.",
+        "explanation": "Os routers encaminham entre redes IP diferentes com base no IP de destino na tabela de rotas. Switches encaminham na LAN com base no MAC.",
         "difficulty": "Fácil"
       },
       {
@@ -622,7 +622,7 @@
           "NAT"
         ],
         "correct": 1,
-        "explanation": "DNS traduz nomes em endereços IP.",
+        "explanation": "O DNS traduz nomes legíveis em endereços IP (e o inverso). Não é DHCP (atribuição de endereços) nem NAT (tradução de endereços).",
         "difficulty": "Fácil"
       },
       {
@@ -634,7 +634,7 @@
           "Só com PoE"
         ],
         "correct": 1,
-        "explanation": "Switches unmanaged não tem configuração nem VLANs.",
+        "explanation": "Switches unmanaged são plug-and-play: sem CLI/GUI, sem VLANs nem afinação de STP. Switches managed suportam VLANs, segurança e monitorização.",
         "difficulty": "Fácil"
       },
       {
@@ -646,7 +646,7 @@
           "Espelhamento de portas"
         ],
         "correct": 1,
-        "explanation": "Phishing usa engenharia social para roubar dados.",
+        "explanation": "Phishing usa engenharia social para induzir a revelar credenciais ou abrir links maliciosos. Por si só não é um exploit de buffer overflow.",
         "difficulty": "Fácil"
       },
       {
@@ -658,7 +658,7 @@
           "USB"
         ],
         "correct": 1,
-        "explanation": "Fibra ótica usa pulsos de luz, imune a EMI.",
+        "explanation": "A fibra ótica transporta dados em pulsos de luz e é imune a interferência eletromagnética (EMI). Cobre pode sofrer EMI; wireless sofre ruído RF.",
         "difficulty": "Fácil"
       },
       {
@@ -670,7 +670,7 @@
           "Não precisa de IP"
         ],
         "correct": 1,
-        "explanation": "SSH (porta 22) cifra; Telnet envia texto em claro.",
+        "explanation": "SSH (TCP 22) cifra sessões CLI remotas; Telnet (TCP 23) envia credenciais e tráfego em claro e deve evitar-se em produção.",
         "difficulty": "Fácil"
       },
       {
@@ -682,7 +682,7 @@
           "Enlace"
         ],
         "correct": 1,
-        "explanation": "A camada 4 Transporte usa TCP e UDP.",
+        "explanation": "A camada OSI 4 (Transporte) trata segmentos extremo-a-extremo com TCP (fiável) e UDP (sem conexão). A 3 é encaminhamento IP; a 2 são tramas/MAC.",
         "difficulty": "Médio"
       },
       {
@@ -694,7 +694,7 @@
           "Usar só 4 digitos"
         ],
         "correct": 1,
-        "explanation": "Palavras-passe únicas e MFA reduzem o impacto de fugas.",
+        "explanation": "Passwords únicas e fortes mais MFA reduzem o impacto de roubo de credenciais. Partilhar uma password ou desativar atualizações aumenta o risco.",
         "difficulty": "Fácil"
       },
       {
@@ -706,7 +706,7 @@
           "show ip"
         ],
         "correct": 1,
-        "explanation": "ipconfig ou ipconfig /all mostra endereços no Windows.",
+        "explanation": "No Windows, ipconfig (ou ipconfig /all) mostra IP, máscara, gateway e DNS. Em Linux/macOS usa-se tipicamente ip addr ou ifconfig.",
         "difficulty": "Fácil"
       },
       {
@@ -718,7 +718,7 @@
           "Abrir o browser"
         ],
         "correct": 1,
-        "explanation": "Pedidos de credenciais são phishing e devem ser reportados.",
+        "explanation": "Pedidos inesperados de credenciais por email/chat são phishing clássico: verificar por outro canal e reportar ao IT/SOC. Não enviar passwords.",
         "difficulty": "Fácil"
       },
       {
@@ -730,7 +730,7 @@
           "Canais Wi-Fi"
         ],
         "correct": 1,
-        "explanation": "Categorias UTP definem desempenho.",
+        "explanation": "A categoria UTP (Cat5e, Cat6, etc.) define os limites de desempenho do cabo (velocidade/frequência). O conector sozinho não define a categoria.",
         "difficulty": "Médio"
       },
       {
@@ -2174,7 +2174,7 @@
           "10 Gbps"
         ],
         "correct": 2,
-        "explanation": "Gigabit Ethernet (1000BASE-T) operates at 1000 Mbps (1 Gbps).",
+        "explanation": "Gigabit Ethernet over copper (1000BASE-T) runs at 1000 Mbps (1 Gbps) on Cat5e/Cat6. It is not Fast Ethernet (100 Mbps) and not 10 Gbps.",
         "difficulty": "Easy"
       },
       {
@@ -2198,7 +2198,7 @@
           "255.255.255.255"
         ],
         "correct": 2,
-        "explanation": "Class C networks use the default mask 255.255.255.0 (/24).",
+        "explanation": "IPv4 Class C defaults to mask 255.255.255.0 (/24): 24 network bits and 8 host bits. Class A is /8 and Class B is /16.",
         "difficulty": "Easy"
       },
       {
@@ -2318,7 +2318,7 @@
           "443"
         ],
         "correct": 2,
-        "explanation": "HTTP uses port 80 by default. HTTPS uses port 443.",
+        "explanation": "HTTP uses TCP port 80 by default; HTTPS (HTTP over TLS) uses TCP 443. Do not confuse with DNS (53), SSH (22), or Telnet (23).",
         "difficulty": "Easy"
       },
       {
@@ -2390,7 +2390,7 @@
           "show clock"
         ],
         "correct": 0,
-        "explanation": "The 'show ip route' command displays the routing table with all known routes.",
+        "explanation": "show ip route lists the IP routing table: connected, static, and dynamic routes with codes, next hops, and metrics. It is not the ARP or MAC table.",
         "difficulty": "Easy"
       },
       {
@@ -2438,7 +2438,7 @@
           "80"
         ],
         "correct": 1,
-        "explanation": "SSH uses port 22 by default.",
+        "explanation": "SSH listens on TCP port 22 by default and encrypts management sessions. Telnet uses 23 in cleartext; HTTPS is 443.",
         "difficulty": "Easy"
       },
       {
@@ -2594,7 +2594,7 @@
           "Erases the configuration"
         ],
         "correct": 1,
-        "explanation": "The 'no shutdown' command enables an interface that was administratively down.",
+        "explanation": "no shutdown administratively enables an interface that was shut down (status administratively down). It does not configure IP or speed by itself.",
         "difficulty": "Easy"
       },
       {
@@ -2606,7 +2606,7 @@
           "Show logs"
         ],
         "correct": 1,
-        "explanation": "The 'reload' command restarts the Cisco device.",
+        "explanation": "reload reboots the Cisco device (IOS). It is not write memory, not erase startup-config, and not a soft interface reset.",
         "difficulty": "Easy"
       },
       {
@@ -2678,7 +2678,7 @@
           "V.35 serial"
         ],
         "correct": 1,
-        "explanation": "Copper Ethernet uses twisted pair with RJ-45.",
+        "explanation": "Copper Ethernet typically uses twisted-pair cabling terminated on RJ-45. Fiber uses optical connectors (e.g. LC/SC), not RJ-45 for the optical path.",
         "difficulty": "Easy"
       },
       {
@@ -2690,7 +2690,7 @@
           "Repeater"
         ],
         "correct": 2,
-        "explanation": "Routers connect different networks using destination IP.",
+        "explanation": "Routers forward between different IP networks using the destination IP in the routing table. Switches forward within a LAN using MAC addresses.",
         "difficulty": "Easy"
       },
       {
@@ -2702,7 +2702,7 @@
           "NAT"
         ],
         "correct": 1,
-        "explanation": "DNS translates names to IP addresses.",
+        "explanation": "DNS resolves human-readable names to IP addresses (and reverse lookups). It is not DHCP (address assignment) and not NAT (address translation).",
         "difficulty": "Easy"
       },
       {
@@ -2714,7 +2714,7 @@
           "Only with PoE"
         ],
         "correct": 1,
-        "explanation": "Unmanaged switches have no config and no VLANs.",
+        "explanation": "Unmanaged switches are plug-and-play: no CLI/GUI config, no VLANs or STP tuning. Managed switches support VLANs, security, and monitoring.",
         "difficulty": "Easy"
       },
       {
@@ -2726,7 +2726,7 @@
           "Port mirroring"
         ],
         "correct": 1,
-        "explanation": "Phishing uses social engineering to steal data.",
+        "explanation": "Phishing tricks users (social engineering) into revealing credentials or clicking malicious links. It is not a buffer overflow exploit by itself.",
         "difficulty": "Easy"
       },
       {
@@ -2738,7 +2738,7 @@
           "USB"
         ],
         "correct": 1,
-        "explanation": "Fiber uses light pulses and is immune to EMI.",
+        "explanation": "Optical fiber carries data as light pulses and is immune to electromagnetic interference (EMI). Copper can pick up EMI; wireless can suffer RF noise.",
         "difficulty": "Easy"
       },
       {
@@ -2750,7 +2750,7 @@
           "It needs no IP"
         ],
         "correct": 1,
-        "explanation": "SSH (port 22) is encrypted; Telnet is cleartext.",
+        "explanation": "SSH (TCP 22) encrypts remote CLI sessions; Telnet (TCP 23) sends credentials and traffic in cleartext and should be avoided on production gear.",
         "difficulty": "Easy"
       },
       {
@@ -2762,7 +2762,7 @@
           "Data link"
         ],
         "correct": 1,
-        "explanation": "Layer 4 Transport is TCP and UDP.",
+        "explanation": "OSI Layer 4 (Transport) provides end-to-end segments via TCP (reliable) and UDP (connectionless). Layer 3 is IP routing; Layer 2 is frames/MAC.",
         "difficulty": "Medium"
       },
       {
@@ -2774,7 +2774,7 @@
           "Use only 4 digits"
         ],
         "correct": 1,
-        "explanation": "Unique passwords plus MFA limit breach impact.",
+        "explanation": "Unique strong passwords plus MFA reduce the blast radius of credential theft. Sharing one password or disabling updates increases risk.",
         "difficulty": "Easy"
       },
       {
@@ -2786,7 +2786,7 @@
           "show ip"
         ],
         "correct": 1,
-        "explanation": "ipconfig or ipconfig /all shows Windows addresses.",
+        "explanation": "On Windows, ipconfig (or ipconfig /all) shows IP, mask, gateway, and DNS. On Linux/macOS you typically use ip addr or ifconfig.",
         "difficulty": "Easy"
       },
       {
@@ -2798,7 +2798,7 @@
           "Opening a browser"
         ],
         "correct": 1,
-        "explanation": "Credential requests are phishing and must be reported.",
+        "explanation": "Unexpected credential requests in email/chat are classic phishing: verify independently and report to IT/SOC. Do not reply with passwords.",
         "difficulty": "Easy"
       },
       {
@@ -2810,7 +2810,7 @@
           "Wi-Fi channels"
         ],
         "correct": 1,
-        "explanation": "UTP categories define performance.",
+        "explanation": "UTP category (Cat5e, Cat6, etc.) defines cable performance limits (speed/frequency). Connector type alone does not set the category rating.",
         "difficulty": "Medium"
       },
       {
@@ -4184,7 +4184,7 @@
           "ICMP"
         ],
         "correct": 1,
-        "explanation": "DNS (Domain Name System) traduz nomes de domínio legíveis para endereços IP.",
+        "explanation": "Uma rota por omissão (0.0.0.0/0) é usada quando nenhuma rota mais específica corresponde; costuma ser estática ou aprendida como gateway of last resort.",
         "difficulty": "Fácil"
       },
       {
@@ -4196,7 +4196,7 @@
           "Rota de backup"
         ],
         "correct": 1,
-        "explanation": "Rotas estáticas são configuradas manualmente e não mudam automaticamente.",
+        "explanation": "Rotas estáticas são configuradas manualmente e mantêm-se até serem alteradas ou removidas; não recalculam sozinhas como OSPF/EIGRP quando a topologia muda.",
         "difficulty": "Médio"
       },
       {
@@ -4256,7 +4256,7 @@
           "21"
         ],
         "correct": 1,
-        "explanation": "HTTPS (HTTP Secure) usa a porta 443 por padrão.",
+        "explanation": "HTTPS usa TCP 443 com TLS para cifrar HTTP. HTTP simples é 80; não confundir com SSH (22) nem com portas DNS/SMTP comuns.",
         "difficulty": "Fácil"
       },
       {
@@ -4388,7 +4388,7 @@
           "80"
         ],
         "correct": 2,
-        "explanation": "Telnet usa a porta 23 (inseguro, use SSH na 22).",
+        "explanation": "Telnet usa TCP 23 e é texto claro; prefira SSH na TCP 22 para gestão. A porta 23 não é HTTP nem HTTPS.",
         "difficulty": "Fácil"
       },
       {
@@ -4460,7 +4460,7 @@
           "Mostrar ACLs"
         ],
         "correct": 1,
-        "explanation": "Este comando exibe as traduções NAT/PAT atualmente ativas no router.",
+        "explanation": "show ip nat translations mostra a tabela ativa de traduções NAT/PAT (bindings inside↔outside). Não é a tabela de encaminhamento.",
         "difficulty": "Fácil"
       },
       {
@@ -4556,7 +4556,7 @@
           "80"
         ],
         "correct": 0,
-        "explanation": "FTP usa porta 21 para controle e 20 para dados (modo ativo).",
+        "explanation": "O controlo FTP é TCP 21; em modo ativo os dados usam frequentemente TCP 20. Em ambientes atuais é comum modo passivo com portas de dados dinâmicas.",
         "difficulty": "Fácil"
       },
       {
@@ -4580,7 +4580,7 @@
           "Mostrar cache DNS"
         ],
         "correct": 0,
-        "explanation": "ip domain-lookup habilita o router a resolver nomes de host via DNS.",
+        "explanation": "ip domain-lookup permite ao router resolver nomes via DNS (servidor configurado). no ip domain-lookup desativa esse comportamento.",
         "difficulty": "Fácil"
       },
       {
@@ -4592,7 +4592,7 @@
           "Protocolo de segurança"
         ],
         "correct": 1,
-        "explanation": "LACP é o protocolo padrão IEEE 802.3ad para formar EtherChannels dinamicamente.",
+        "explanation": "Uma ACL standard corresponde só ao IP de origem; coloca-se perto do destino quando possível. ACLs extended fazem match L3/L4 e costumam ir perto da origem.",
         "difficulty": "Médio"
       },
       {
@@ -4628,7 +4628,7 @@
           "Mostrar NAT da VLAN 10"
         ],
         "correct": 1,
-        "explanation": "Este comando exibe informações detalhadas do STP para a VLAN especificada.",
+        "explanation": "show spanning-tree vlan <id> mostra papel/estado STP, root bridge e custos dessa VLAN. Não é a tabela de endereços MAC.",
         "difficulty": "Médio"
       },
       {
@@ -4748,7 +4748,7 @@
           "encapsulation dot1q 20"
         ],
         "correct": 0,
-        "explanation": "No modo VLAN, 'vlan 20' cria a VLAN.",
+        "explanation": "Em configuração global, vlan 20 cria (ou entra) a VLAN 20 na base de VLANs. A atribuição à porta access é um comando switchport separado.",
         "difficulty": "Fácil"
       },
       {
@@ -4760,7 +4760,7 @@
           "ip routing"
         ],
         "correct": 1,
-        "explanation": "switchport access vlan 20 (com mode access) PoE a porta na VLAN 20.",
+        "explanation": "switchport mode access e switchport access vlan 20 colocam a porta na VLAN 20 sem tag. O modo trunk transporta várias VLANs com tags.",
         "difficulty": "Fácil"
       },
       {
@@ -4772,7 +4772,7 @@
           "VTP"
         ],
         "correct": 1,
-        "explanation": "PAgP é Cisco; LACP é o padrão IEEE 802.3ad.",
+        "explanation": "PAgP é proprietário Cisco para negociar EtherChannel; LACP (IEEE 802.3ad/802.1AX) é a alternativa standard. on força o bundle sem negociação.",
         "difficulty": "Médio"
       },
       {
@@ -4784,7 +4784,7 @@
           "FF02::5 apenas"
         ],
         "correct": 1,
-        "explanation": "Hellos AllSPFRouters 224.0.0.5; DR/BDR também 224.0.0.6.",
+        "explanation": "Hellos OSPF vão para AllSPFRouters 224.0.0.5; DR/BDR também escutam AllDRouters 224.0.0.6. Não é o mesmo que 224.0.0.10 do EIGRP.",
         "difficulty": "Médio"
       },
       {
@@ -4796,7 +4796,7 @@
           "Rotas OSPF falsas"
         ],
         "correct": 1,
-        "explanation": "Marca portas trusted/untrusted e bloqueia ofertas DHCP falsas.",
+        "explanation": "DHCP Snooping constrói uma tabela de bindings e marca portas trusted/untrusted para descartar ofertas DHCP falsas vindas de clientes.",
         "difficulty": "Médio"
       },
       {
@@ -4808,7 +4808,7 @@
           "Em todos os PCs"
         ],
         "correct": 1,
-        "explanation": "Perto da origem evita tráfego indesejado a atravessar a rede.",
+        "explanation": "Coloque ACLs extended perto da origem para descartar tráfego indesejado cedo e poupar largura de banda; ACLs standard costumam ir perto do destino.",
         "difficulty": "Médio"
       },
       {
@@ -4832,7 +4832,7 @@
           "Reinicia a interface"
         ],
         "correct": 1,
-        "explanation": "GET consulta o agente; SET altera; traps são notificações.",
+        "explanation": "SNMP GET lê objetos MIB no agente; SET altera-os; traps/informs notificam o NMS. Não é exportação NetFlow.",
         "difficulty": "Médio"
       },
       {
@@ -4844,7 +4844,7 @@
           "No DNS"
         ],
         "correct": 1,
-        "explanation": "Classificar no edge permite marcar DSCP cedo.",
+        "explanation": "Classifique/marque o tráfego o mais perto possível da borda (acesso) para o DSCP/CoS ser definido cedo e respeitado no caminho.",
         "difficulty": "Médio"
       },
       {
@@ -4856,7 +4856,7 @@
           "Traduzir NAT"
         ],
         "correct": 1,
-        "explanation": "Protocolos de descoberta L2: CDP Cisco, LLDP padrão.",
+        "explanation": "CDP é descoberta de vizinhos proprietária Cisco; LLDP é o standard IEEE 802.1AB. Ambos anunciam identidade de dispositivo/porta em L2.",
         "difficulty": "Fácil"
       },
       {
@@ -4868,7 +4868,7 @@
           "::1"
         ],
         "correct": 1,
-        "explanation": "Link-local FE80::/10 e obrigatório em cada interface IPv6.",
+        "explanation": "Endereços IPv6 link-local em FE80::/10 são obrigatórios em cada interface IPv6 para neighbor discovery e vários protocolos de controlo.",
         "difficulty": "Médio"
       },
       {
@@ -4880,7 +4880,7 @@
           "Protobuf obrigatório"
         ],
         "correct": 1,
-        "explanation": "RESTCONF expoe YANG via HTTP, geralmente JSON ou XML.",
+        "explanation": "RESTCONF expõe dados modelados em YANG sobre HTTP(S), tipicamente em JSON ou XML—alternativa amigável a HTTP face a NETCONF/SSH.",
         "difficulty": "Médio"
       },
       {
@@ -4892,7 +4892,7 @@
           "Exigir DTD"
         ],
         "correct": 1,
-        "explanation": "JSON e texto simples com objetos e arrays, comum em APIs.",
+        "explanation": "JSON é um formato de texto leve com objetos e arrays, muito usado em APIs REST. Não é um protocolo de encaminhamento nem o próprio YANG.",
         "difficulty": "Fácil"
       },
       {
@@ -4904,7 +4904,7 @@
           "Telnet obrigatório"
         ],
         "correct": 1,
-        "explanation": "Ansible e agentless: SSH/NETCONF, playbooks YAML.",
+        "explanation": "Ansible é tipicamente agentless: o nó de controlo envia playbooks YAML via SSH/WinRM/NETCONF. Não é sobretudo um poller SNMP.",
         "difficulty": "Médio"
       },
       {
@@ -4916,7 +4916,7 @@
           "/32"
         ],
         "correct": 1,
-        "explanation": "0.0.0.255 casa os últimos 8 bits: prefixo /24.",
+        "explanation": "O wildcard 0.0.0.255 significa ‘corresponder o último octeto’—equivalente a um prefixo /24 em match OSPF/ACL.",
         "difficulty": "Médio"
       },
       {
@@ -4940,7 +4940,7 @@
           "Só tráfego de gestão"
         ],
         "correct": 1,
-        "explanation": "dot1q etiqueta VLANs; a native vai untagged.",
+        "explanation": "802.1Q etiqueta tramas com VLAN ID nos trunks; a VLAN nativa vai/recebe sem tag. ISL é uma alternativa Cisco antiga.",
         "difficulty": "Médio"
       },
       {
@@ -4952,7 +4952,7 @@
           "O BSSID só"
         ],
         "correct": 1,
-        "explanation": "SSID identifica a rede; BSSID e o MAC do AP.",
+        "explanation": "O SSID é o nome legível da WLAN; o BSSID é o MAC da rádio do AP que identifica aquele BSS.",
         "difficulty": "Fácil"
       },
       {
@@ -4964,7 +4964,7 @@
           "Telnet"
         ],
         "correct": 1,
-        "explanation": "Enterprise usa 802.1X com RADIUS, não um PSK partilhado.",
+        "explanation": "WPA2/WPA3-Enterprise usa 802.1X com servidor RADIUS por utilizador; PSK (personal) partilha uma passphrase para todos os clientes.",
         "difficulty": "Médio"
       },
       {
@@ -4976,7 +4976,7 @@
           "Reset de fábrica ao ISP"
         ],
         "correct": 1,
-        "explanation": "Config IP do host elimina a maioria dos casos.",
+        "explanation": "Quando um host não alcança nada, verifique primeiro IP, máscara, gateway e DNS locais—a maioria das falhas é má configuração no host.",
         "difficulty": "Fácil"
       },
       {
@@ -4988,7 +4988,7 @@
           "Notice"
         ],
         "correct": 1,
-        "explanation": "0 emergency a 7 debug; quanto menor, mais grave.",
+        "explanation": "A severidade syslog vai de 0 (emergencies) a 7 (debugging); números mais baixos são mais graves. O filtro usa muitas vezes um limiar de severidade.",
         "difficulty": "Médio"
       },
       {
@@ -5000,7 +5000,7 @@
           "Fazer NAT"
         ],
         "correct": 1,
-        "explanation": "CAPWAP é o túnel de controlo/dados entre WLC e APs.",
+        "explanation": "CAPWAP cria o túnel de controlo (e muitas vezes de dados) entre AP lightweight e WLC. Substituiu o LWAPP antigo nas arquiteturas Cisco.",
         "difficulty": "Médio"
       },
       {
@@ -5012,7 +5012,7 @@
           "::1"
         ],
         "correct": 1,
-        "explanation": "Globais atuais estão em 2000::/3, p.ex. 2001:db8::/32.",
+        "explanation": "Unicast global IPv6 atual está em 2000::/3 (ex.: prefixo de documentação 2001:db8::/32). FE80::/10 é link-local, não global.",
         "difficulty": "Médio"
       },
       {
@@ -5024,7 +5024,7 @@
           "BGP"
         ],
         "correct": 1,
-        "explanation": "Código O = OSPF na tabela de encaminhamento.",
+        "explanation": "Em show ip route, o código O marca rotas aprendidas por OSPF. S é estática, C ligada, B BGP, D EIGRP—não confundir as letras.",
         "difficulty": "Fácil"
       },
       {
@@ -5036,7 +5036,7 @@
           "Só se PortFast estiver on"
         ],
         "correct": 1,
-        "explanation": "Access ports esperam frames untagged da VLAN atribuída.",
+        "explanation": "Portas access pertencem a uma VLAN e esperam tramas sem tag. Tramas etiquetadas costumam pertencer a trunks.",
         "difficulty": "Médio"
       },
       {
@@ -6201,7 +6201,7 @@
           "Maior uptime"
         ],
         "correct": 1,
-        "explanation": "Ganha o menor Bridge ID: prioridade (default 32768) depois MAC.",
+        "explanation": "O STP elege o root pelo Bridge ID mais baixo: prioridade (omissão 32768) e depois MAC. Prioridade mais baixa ganha face a só um MAC menor.",
         "difficulty": "Médio"
       },
       {
@@ -6213,7 +6213,7 @@
           "Negociar trunk"
         ],
         "correct": 1,
-        "explanation": "PortFast salta listening/learning em portas de extremo.",
+        "explanation": "PortFast faz a porta de extremo (access) ir para forwarding sem esperar os timers completos de listening/learning—use com BPDU Guard.",
         "difficulty": "Médio"
       },
       {
@@ -6225,7 +6225,7 @@
           "router default"
         ],
         "correct": 0,
-        "explanation": "A default route e 0.0.0.0/0 para next-hop ou interface.",
+        "explanation": "A rota por omissão 0.0.0.0/0 corresponde a qualquer destino sem prefixo melhor; o next-hop ou interface de saída aponta para o gateway of last resort.",
         "difficulty": "Fácil"
       },
       {
@@ -6237,7 +6237,7 @@
           "Desliga o firewall"
         ],
         "correct": 1,
-        "explanation": "PAT usa portas L4 para multiplexar muitos internos num IP publico.",
+        "explanation": "PAT (NAT overload) mapeia muitos hosts internos para um (ou poucos) IP(s) público(s) traduzindo portas L4. Não é só NAT estático 1:1.",
         "difficulty": "Médio"
       },
       {
@@ -6249,7 +6249,7 @@
           "So VLAN"
         ],
         "correct": 1,
-        "explanation": "ACLs extended permitem criterios L3/L4 finos.",
+        "explanation": "ACLs extended podem corresponder a protocolo, IP origem/destino e portas L4—mais granulares que ACLs standard (só IP de origem).",
         "difficulty": "Médio"
       },
       {
@@ -6261,7 +6261,7 @@
           "Um servidor DHCP"
         ],
         "correct": 0,
-        "explanation": "HSRP partilha um VIP; um router e active, outro standby.",
+        "explanation": "HSRP fornece um IP/MAC virtual; um router é Active a encaminhar e outro Standby pronto a assumir em falha.",
         "difficulty": "Médio"
       },
       {
@@ -6273,7 +6273,7 @@
           "O CAM aging"
         ],
         "correct": 1,
-        "explanation": "DAI valida ARP contra as bindings DHCP snooping.",
+        "explanation": "Dynamic ARP Inspection valida ARP contra a tabela de bindings do DHCP Snooping para impedir spoofing ARP em portas untrusted.",
         "difficulty": "Difícil"
       },
       {
@@ -6285,7 +6285,7 @@
           "Ativa LACP"
         ],
         "correct": 1,
-        "explanation": "Um switch ligado por engano desliga a porta de extremo.",
+        "explanation": "BPDU Guard põe a porta PortFast em err-disable se receber uma BPDU—protege contra um switch indevido. Não elege o root STP.",
         "difficulty": "Médio"
       },
       {
@@ -6297,7 +6297,7 @@
           "1000"
         ],
         "correct": 0,
-        "explanation": "Custo = ref/bw = 100000/100000 = 1.",
+        "explanation": "Com bandwidth de referência OSPF 100 Mbps (histórico), um link a 100 Mbps tem custo 1 (ref/bw). Velocidades maiores exigem subir a referência.",
         "difficulty": "Médio"
       },
       {
@@ -6359,7 +6359,7 @@
           "Backup route"
         ],
         "correct": 1,
-        "explanation": "Static routes are manually configured and do not change automatically.",
+        "explanation": "Static routes are entered manually and stay until changed or withdrawn; they do not recalculate like OSPF/EIGRP when topology changes.",
         "difficulty": "Medium"
       },
       {
@@ -6419,7 +6419,7 @@
           "21"
         ],
         "correct": 1,
-        "explanation": "HTTPS (HTTP Secure) uses port 443 by default.",
+        "explanation": "HTTPS uses TCP 443 with TLS to encrypt HTTP. Plain HTTP is 80; do not confuse with SSH (22) or well-known DNS/SMTP ports.",
         "difficulty": "Easy"
       },
       {
@@ -6479,7 +6479,7 @@
           "Show logs"
         ],
         "correct": 1,
-        "explanation": "This command displays OSPF neighbors, adjacency state, and DR/BDR information.",
+        "explanation": "show ip ospf neighbor lists OSPF neighbors, adjacency state (FULL, etc.), and DR/BDR roles on multi-access segments—not the full LSDB.",
         "difficulty": "Medium"
       },
       {
@@ -6551,7 +6551,7 @@
           "80"
         ],
         "correct": 2,
-        "explanation": "Telnet uses port 23 (insecure, use SSH on port 22 instead).",
+        "explanation": "Telnet uses TCP 23 and is cleartext; prefer SSH on TCP 22 for device management. Port 23 is not HTTP or HTTPS.",
         "difficulty": "Easy"
       },
       {
@@ -6623,7 +6623,7 @@
           "Show ACLs"
         ],
         "correct": 1,
-        "explanation": "This command displays the currently active NAT/PAT translations on the router.",
+        "explanation": "show ip nat translations displays the active NAT/PAT translation table (inside↔outside bindings). It is not the routing table.",
         "difficulty": "Easy"
       },
       {
@@ -6719,7 +6719,7 @@
           "80"
         ],
         "correct": 0,
-        "explanation": "FTP uses port 21 for control and 20 for data (active mode).",
+        "explanation": "FTP control is TCP 21; in active mode data often uses TCP 20. Modern deployments frequently use passive mode with dynamic data ports.",
         "difficulty": "Easy"
       },
       {
@@ -6743,7 +6743,7 @@
           "Show DNS cache"
         ],
         "correct": 0,
-        "explanation": "ip domain-lookup enables the router to resolve hostnames via DNS.",
+        "explanation": "ip domain-lookup lets the router resolve hostnames via DNS (or the configured name server). no ip domain-lookup disables that behavior.",
         "difficulty": "Easy"
       },
       {
@@ -6791,7 +6791,7 @@
           "Show NAT for VLAN 10"
         ],
         "correct": 1,
-        "explanation": "This command displays detailed STP information for the specified VLAN.",
+        "explanation": "show spanning-tree vlan <id> shows STP role/state, root bridge, and costs for that VLAN. It is not the MAC address table.",
         "difficulty": "Medium"
       },
       {
@@ -6803,7 +6803,7 @@
           "VPN protocol"
         ],
         "correct": 1,
-        "explanation": "Route-maps are used for advanced route redistribution control, PBR, and NAT.",
+        "explanation": "Route-maps provide match/set logic for redistribution, PBR, and NAT control—more flexible than a simple distribute-list alone.",
         "difficulty": "Hard"
       },
       {
@@ -6911,7 +6911,7 @@
           "encapsulation dot1q 20"
         ],
         "correct": 0,
-        "explanation": "In VLAN config mode, 'vlan 20' creates the VLAN.",
+        "explanation": "In global config, vlan 20 creates (or enters) VLAN 20 in the VLAN database. Access-port assignment is a separate switchport command.",
         "difficulty": "Easy"
       },
       {
@@ -6923,7 +6923,7 @@
           "ip routing"
         ],
         "correct": 1,
-        "explanation": "switchport access vlan 20 with mode access assigns VLAN 20.",
+        "explanation": "switchport mode access plus switchport access vlan 20 puts the port in VLAN 20 untagged. Trunk mode carries multiple tagged VLANs.",
         "difficulty": "Easy"
       },
       {
@@ -6935,7 +6935,7 @@
           "VTP"
         ],
         "correct": 1,
-        "explanation": "PAgP is Cisco-proprietary; LACP is IEEE 802.3ad.",
+        "explanation": "PAgP is Cisco proprietary for EtherChannel negotiation; LACP (IEEE 802.3ad/802.1AX) is the standards-based alternative. On means force without negotiation.",
         "difficulty": "Medium"
       },
       {
@@ -6947,7 +6947,7 @@
           "FF02::5 only"
         ],
         "correct": 1,
-        "explanation": "Hellos go to 224.0.0.5; DR/BDR also 224.0.0.6.",
+        "explanation": "OSPF Hellos go to AllSPFRouters 224.0.0.5; DR/BDR also listen on AllDRouters 224.0.0.6. These are not the same as EIGRP’s 224.0.0.10.",
         "difficulty": "Medium"
       },
       {
@@ -6959,7 +6959,7 @@
           "Fake OSPF routes"
         ],
         "correct": 1,
-        "explanation": "It marks trusted/untrusted ports and drops bogus DHCP offers.",
+        "explanation": "DHCP Snooping builds a binding table and marks ports trusted/untrusted so rogue DHCP offers from clients are dropped.",
         "difficulty": "Medium"
       },
       {
@@ -6971,7 +6971,7 @@
           "On every PC"
         ],
         "correct": 1,
-        "explanation": "Near the source stops unwanted traffic from crossing the network.",
+        "explanation": "Place extended ACLs near the source to drop unwanted traffic early and save bandwidth; standard ACLs often go near the destination.",
         "difficulty": "Medium"
       },
       {
@@ -6995,7 +6995,7 @@
           "Resets an interface"
         ],
         "correct": 1,
-        "explanation": "GET queries the agent; SET changes; traps notify.",
+        "explanation": "SNMP GET reads MIB objects from the agent; SET writes them; traps/informs notify the NMS of events. It is not NetFlow export.",
         "difficulty": "Medium"
       },
       {
@@ -7007,7 +7007,7 @@
           "On DNS"
         ],
         "correct": 1,
-        "explanation": "Classify at the edge so DSCP can be set early.",
+        "explanation": "Mark/classify traffic as close to the edge (access) as practical so DSCP/CoS is set early and honored through the path.",
         "difficulty": "Medium"
       },
       {
@@ -7019,7 +7019,7 @@
           "Translate NAT"
         ],
         "correct": 1,
-        "explanation": "L2 discovery protocols: CDP Cisco, LLDP standard.",
+        "explanation": "CDP is Cisco proprietary neighbor discovery; LLDP is the IEEE 802.1AB standard. Both advertise device/port identity at L2.",
         "difficulty": "Easy"
       },
       {
@@ -7031,7 +7031,7 @@
           "::1"
         ],
         "correct": 1,
-        "explanation": "Link-local FE80::/10 is required on every IPv6 interface.",
+        "explanation": "IPv6 link-local addresses in FE80::/10 are required on every IPv6-enabled interface for neighbor discovery and many control protocols.",
         "difficulty": "Medium"
       },
       {
@@ -7043,7 +7043,7 @@
           "Protobuf only"
         ],
         "correct": 1,
-        "explanation": "RESTCONF exposes YANG over HTTP, usually JSON or XML.",
+        "explanation": "RESTCONF exposes YANG-modeled data over HTTP(S), typically with JSON or XML payloads—an HTTP-friendly alternative to NETCONF/SSH.",
         "difficulty": "Medium"
       },
       {
@@ -7055,7 +7055,7 @@
           "Requiring a DTD"
         ],
         "correct": 1,
-        "explanation": "JSON is simple text with objects and arrays, common in APIs.",
+        "explanation": "JSON is a lightweight text format of objects and arrays widely used in REST APIs. It is not a routing protocol and not YANG itself.",
         "difficulty": "Easy"
       },
       {
@@ -7067,7 +7067,7 @@
           "Required Telnet"
         ],
         "correct": 1,
-        "explanation": "Ansible is agentless: SSH/NETCONF with YAML playbooks.",
+        "explanation": "Ansible is typically agentless: the control node pushes YAML playbooks over SSH/WinRM/NETCONF. It is not primarily an SNMP poller.",
         "difficulty": "Medium"
       },
       {
@@ -7079,7 +7079,7 @@
           "/32"
         ],
         "correct": 1,
-        "explanation": "0.0.0.255 matches the last 8 bits: a /24 prefix.",
+        "explanation": "Wildcard 0.0.0.255 means ‘match the last octet’—equivalent to a /24 prefix mask when used in OSPF/ACL matching.",
         "difficulty": "Medium"
       },
       {
@@ -7103,7 +7103,7 @@
           "Management traffic only"
         ],
         "correct": 1,
-        "explanation": "dot1q tags VLANs; the native VLAN is untagged.",
+        "explanation": "802.1Q tags frames with a VLAN ID on trunks; the native VLAN is sent/received untagged. ISL is an older Cisco alternative.",
         "difficulty": "Medium"
       },
       {
@@ -7115,7 +7115,7 @@
           "The BSSID only"
         ],
         "correct": 1,
-        "explanation": "SSID names the network; BSSID is the AP radio MAC.",
+        "explanation": "The SSID is the human-readable WLAN name; the BSSID is the AP radio’s MAC that uniquely identifies that BSS.",
         "difficulty": "Easy"
       },
       {
@@ -7127,7 +7127,7 @@
           "Telnet"
         ],
         "correct": 1,
-        "explanation": "Enterprise uses 802.1X with RADIUS, not a shared PSK.",
+        "explanation": "WPA2/WPA3-Enterprise uses 802.1X with a RADIUS server per user; PSK (personal) shares one passphrase for all clients.",
         "difficulty": "Medium"
       },
       {
@@ -7139,7 +7139,7 @@
           "Factory-reset the ISP"
         ],
         "correct": 1,
-        "explanation": "Host IP config catches most cases.",
+        "explanation": "When a host cannot reach anything, first verify its own IP, mask, gateway, and DNS—most failures are local misconfiguration.",
         "difficulty": "Easy"
       },
       {
@@ -7151,7 +7151,7 @@
           "Notice"
         ],
         "correct": 1,
-        "explanation": "0 emergency to 7 debug; lower is more severe.",
+        "explanation": "Syslog severity runs from 0 (emergencies) to 7 (debugging); lower numbers are more severe. Filtering often uses a severity threshold.",
         "difficulty": "Medium"
       },
       {
@@ -7163,7 +7163,7 @@
           "Perform NAT"
         ],
         "correct": 1,
-        "explanation": "CAPWAP is the control/data tunnel between WLC and APs.",
+        "explanation": "CAPWAP tunnels control (and often data) between a lightweight AP and the WLC. It replaced older LWAPP in Cisco architectures.",
         "difficulty": "Medium"
       },
       {
@@ -7175,7 +7175,7 @@
           "::1"
         ],
         "correct": 1,
-        "explanation": "Current globals sit in 2000::/3, e.g. 2001:db8::/32.",
+        "explanation": "Global unicast IPv6 currently sits in 2000::/3 (e.g. documentation prefix 2001:db8::/32). FE80::/10 is link-local, not global.",
         "difficulty": "Medium"
       },
       {
@@ -7187,7 +7187,7 @@
           "BGP"
         ],
         "correct": 1,
-        "explanation": "Code O = OSPF in the routing table.",
+        "explanation": "In show ip route, code O marks OSPF-learned routes. S is static, C connected, B BGP, D EIGRP—do not confuse the letter codes.",
         "difficulty": "Easy"
       },
       {
@@ -7199,7 +7199,7 @@
           "Only if PortFast is on"
         ],
         "correct": 1,
-        "explanation": "Access ports expect untagged frames of the assigned VLAN.",
+        "explanation": "Access ports belong to one VLAN and expect untagged frames (native for that VLAN). Tagged frames usually belong on trunks.",
         "difficulty": "Medium"
       },
       {
@@ -8364,7 +8364,7 @@
           "Highest uptime"
         ],
         "correct": 1,
-        "explanation": "Lowest Bridge ID wins: priority then MAC.",
+        "explanation": "STP elects the root by lowest Bridge ID: priority (default 32768) then MAC address. Lower priority wins over a higher MAC alone.",
         "difficulty": "Medium"
       },
       {
@@ -8376,7 +8376,7 @@
           "Negotiate a trunk"
         ],
         "correct": 1,
-        "explanation": "PortFast skips listening/learning on edge ports.",
+        "explanation": "PortFast moves an edge (access) port toward forwarding without waiting the full listening/learning timers—use with BPDU Guard.",
         "difficulty": "Medium"
       },
       {
@@ -8388,7 +8388,7 @@
           "router default"
         ],
         "correct": 0,
-        "explanation": "The default route is 0.0.0.0/0 to a next-hop or exit interface.",
+        "explanation": "The default route 0.0.0.0/0 matches any destination with no better prefix; next-hop or exit-interface points to the gateway of last resort.",
         "difficulty": "Easy"
       },
       {
@@ -8400,7 +8400,7 @@
           "Disables the firewall"
         ],
         "correct": 1,
-        "explanation": "PAT multiplexes many internals onto a public IP using L4 ports.",
+        "explanation": "PAT (NAT overload) maps many inside hosts to one (or few) public IP(s) by translating L4 ports. It is not 1:1 static NAT alone.",
         "difficulty": "Medium"
       },
       {
@@ -8412,7 +8412,7 @@
           "VLAN only"
         ],
         "correct": 1,
-        "explanation": "Extended ACLs allow fine L3/L4 matching.",
+        "explanation": "Extended ACLs can match protocol, source/destination IP, and L4 ports—finer control than standard ACLs (source IP only).",
         "difficulty": "Medium"
       },
       {
@@ -8424,7 +8424,7 @@
           "A DHCP server"
         ],
         "correct": 0,
-        "explanation": "HSRP shares a VIP; one router is active, another standby.",
+        "explanation": "HSRP provides a virtual IP/MAC; one router is Active forwarding, another Standby ready to take over on failure.",
         "difficulty": "Medium"
       },
       {
@@ -8436,7 +8436,7 @@
           "CAM aging"
         ],
         "correct": 1,
-        "explanation": "DAI checks ARP against DHCP snooping bindings.",
+        "explanation": "Dynamic ARP Inspection validates ARP against the DHCP Snooping binding table to stop ARP spoofing on untrusted ports.",
         "difficulty": "Hard"
       },
       {
@@ -8448,7 +8448,7 @@
           "Enables LACP"
         ],
         "correct": 1,
-        "explanation": "A rogue switch shuts the edge port.",
+        "explanation": "BPDU Guard err-disables a PortFast edge port if a BPDU appears—protecting against a rogue switch. It does not elect the STP root.",
         "difficulty": "Medium"
       },
       {
@@ -8460,7 +8460,7 @@
           "1000"
         ],
         "correct": 0,
-        "explanation": "Cost = ref/bw = 100000/100000 = 1.",
+        "explanation": "With OSPF reference bandwidth 100 Mbps (default historical), a 100 Mbps link has cost 1 (ref/bw). Higher speed needs auto-cost reference bump.",
         "difficulty": "Medium"
       },
       {
@@ -9028,7 +9028,7 @@
           "O DR Ethernet"
         ],
         "correct": 1,
-        "explanation": "Type 3 Network Summary é criado pelo ABR.",
+        "explanation": "LSAs OSPFv2 Type 3 (Network Summary) são gerados pelos ABR para anunciar prefixos inter-área. Não são LSA Type 1 de router.",
         "difficulty": "Médio"
       },
       {
@@ -9040,7 +9040,7 @@
           "Apenas IPv6"
         ],
         "correct": 1,
-        "explanation": "Type 5 AS-External vem do ASBR (exceto NSSA que usa tipo 7).",
+        "explanation": "LSAs Type 5 AS-External são originados por ASBRs para rotas redistribuídas no OSPF; NSSA usa Type 7 traduzido para Type 5 pelo ABR.",
         "difficulty": "Médio"
       },
       {
@@ -9052,7 +9052,7 @@
           "Hello packets"
         ],
         "correct": 1,
-        "explanation": "Stub não recebe LSA 5; o ABR anuncia 0.0.0.0.",
+        "explanation": "Uma área stub bloqueia externas Type 5; o ABR injeta uma default (0.0.0.0) para os routers stub alcançarem o exterior.",
         "difficulty": "Difícil"
       },
       {
@@ -9064,7 +9064,7 @@
           "Um LSA tipo 1"
         ],
         "correct": 1,
-        "explanation": "Successor é a melhor rota (feasible distance).",
+        "explanation": "No EIGRP, o successor é o melhor caminho (menor feasible distance) instalado na RIB; feasible successors são backups sem loop.",
         "difficulty": "Médio"
       },
       {
@@ -9076,7 +9076,7 @@
           "Router-ID"
         ],
         "correct": 1,
-        "explanation": "Ordem típica: Weight, Local Pref, locally originated, shortest AS-Path...",
+        "explanation": "A ordem clássica BGP best-path começa pelo Weight mais alto, depois Local Preference, originadas localmente, AS_PATH mais curto, etc.",
         "difficulty": "Difícil"
       },
       {
@@ -9088,7 +9088,7 @@
           "Enviado aos eBGP peers"
         ],
         "correct": 1,
-        "explanation": "Weight não sai do router; maior vence.",
+        "explanation": "O Weight BGP é específico Cisco, local ao router e nunca anunciado; um Weight mais alto ganha primeiro na seleção de caminho.",
         "difficulty": "Difícil"
       },
       {
@@ -9100,7 +9100,7 @@
           "Substitui o AS-Path"
         ],
         "correct": 1,
-        "explanation": "Local Pref alto escolhe o exit point do AS.",
+        "explanation": "Local Preference mais alta influencia o caminho preferido para sair do AS local; é anunciada no iBGP, ao contrário do Weight.",
         "difficulty": "Médio"
       },
       {
@@ -9112,7 +9112,7 @@
           "15"
         ],
         "correct": 1,
-        "explanation": "eBGP assume peers diretamente ligados (TTL 1) salvo ebgp-multihop.",
+        "explanation": "Peers eBGP assumem TTL 1 (diretamente ligados). ebgp-multihop (ou TTL Security) é necessário para sessões eBGP multihop.",
         "difficulty": "Médio"
       },
       {
@@ -9124,7 +9124,7 @@
           "LSA tipo 5"
         ],
         "correct": 1,
-        "explanation": "Split horizon iBGP exige malha completa ou RR.",
+        "explanation": "iBGP não reanuncia a outros peers iBGP rotas aprendidas via iBGP (split horizon); por isso precisa de full mesh ou route reflectors/confederações.",
         "difficulty": "Difícil"
       },
       {
@@ -9136,7 +9136,7 @@
           "MED invertido"
         ],
         "correct": 1,
-        "explanation": "O RR relaxa a malha iBGP entre clientes.",
+        "explanation": "Um route reflector reflete rotas iBGP entre clientes para o AS evitar full mesh iBGP, mantendo atributos de prevenção de loops.",
         "difficulty": "Difícil"
       },
       {
@@ -9148,7 +9148,7 @@
           "Só IPv6"
         ],
         "correct": 1,
-        "explanation": "VRFs isolam routing/forwarding; Lite = sem MP-BGP/MPLS.",
+        "explanation": "VRFs separam tabelas de encaminhamento por tenant; VRF-Lite faz isso sem exigir MP-BGP/MPLS no núcleo.",
         "difficulty": "Difícil"
       },
       {
@@ -9160,7 +9160,7 @@
           "O DSCP"
         ],
         "correct": 1,
-        "explanation": "Top label = transporte; bottom (S=1) = serviço VPN.",
+        "explanation": "Em MPLS VPN, o rótulo de cima é tipicamente de transporte (IGP/LDP/SR) e o de baixo (S=1) é o rótulo de serviço VPN.",
         "difficulty": "Difícil"
       },
       {
@@ -9172,7 +9172,7 @@
           "Certificados PKI"
         ],
         "correct": 1,
-        "explanation": "LDP mapeia FEC (prefixos) a labels.",
+        "explanation": "O LDP distribui rótulos ligados a FECs (normalmente prefixos IPv4) para os LSR construírem LSPs.",
         "difficulty": "Médio"
       },
       {
@@ -9184,7 +9184,7 @@
           "Cifrar GRE"
         ],
         "correct": 1,
-        "explanation": "BFD da failure detection rápida a OSPF/EIGRP/BGP.",
+        "explanation": "O BFD deteta falhas no plano de encaminhamento em subsegundo; OSPF, EIGRP ou BGP usam-no para derrubar vizinhos depressa.",
         "difficulty": "Médio"
       },
       {
@@ -9196,7 +9196,7 @@
           "Criar VLANs"
         ],
         "correct": 1,
-        "explanation": "SLA probes + object tracking para PBR/HSRP/static.",
+        "explanation": "Probes IP SLA medem alcançabilidade/latência; object tracking pode conduzir PBR, prioridade HSRP/VRRP ou resiliência de rotas estáticas.",
         "difficulty": "Médio"
       },
       {
@@ -9208,7 +9208,7 @@
           "LLDP"
         ],
         "correct": 1,
-        "explanation": "PBR usa set ip next-hop segundo match de políticas.",
+        "explanation": "Policy-Based Routing (PBR) pode definir ip next-hop (ou interface) com base em matches de route-map em vez de só o lookup da RIB.",
         "difficulty": "Médio"
       },
       {
@@ -9220,7 +9220,7 @@
           "VRFs MPLS"
         ],
         "correct": 1,
-        "explanation": "Stack cria um switch lógico com SSO/NSF.",
+        "explanation": "Um stack de switches opera como um switch lógico com plano de controlo sincronizado (muitas vezes SSO/NSF) e IP de gestão partilhado.",
         "difficulty": "Médio"
       },
       {
@@ -9232,7 +9232,7 @@
           "Desligar BPDU Guard"
         ],
         "correct": 0,
-        "explanation": "vPC = port-channel multi-chassis sem stack completo.",
+        "explanation": "vPC (Nexus) apresenta um EtherChannel multi-chassis aos dispositivos a jusante sem exigir um domínio clássico de stack.",
         "difficulty": "Difícil"
       },
       {
@@ -9244,7 +9244,7 @@
           "VTP v3 só"
         ],
         "correct": 1,
-        "explanation": "LISP + VXLAN + ISE no fabric SDA.",
+        "explanation": "A fabric Cisco SD-Access combina tipicamente LISP no controlo, VXLAN no overlay de dados e ISE para política/identidade.",
         "difficulty": "Difícil"
       },
       {
@@ -9256,7 +9256,7 @@
           "Traduzir NAT64"
         ],
         "correct": 1,
-        "explanation": "ISE é o policy engine RADIUS do TrustSec/SDA.",
+        "explanation": "O Cisco ISE é o motor RADIUS/política para 802.1X, TrustSec e SDA—autoriza utilizadores/dispositivos e entrega política.",
         "difficulty": "Médio"
       },
       {
@@ -9268,7 +9268,7 @@
           "Um community BGP"
         ],
         "correct": 1,
-        "explanation": "SGTs classificam utilizadores; SGACL filtra entre grupos.",
+        "explanation": "Security Group Tags (SGTs) classificam utilizadores/dispositivos; SGACLs aplicam regras entre grupos independentemente só do IP.",
         "difficulty": "Difícil"
       },
       {
@@ -9280,7 +9280,7 @@
           "SNMP v2"
         ],
         "correct": 1,
-        "explanation": "NETCONF/SSH na 830; RESTCONF usa HTTPS.",
+        "explanation": "NETCONF corre tipicamente sobre SSH na TCP 830; RESTCONF usa HTTPS. Ambos gerem configuração/estado modelado em YANG.",
         "difficulty": "Médio"
       },
       {
@@ -9292,7 +9292,7 @@
           "O spanning-tree"
         ],
         "correct": 1,
-        "explanation": "YANG é a linguagem de modelação para NETCONF/RESTCONF.",
+        "explanation": "YANG é a linguagem de modelação de dados usada por NETCONF/RESTCONF para descrever configuração e estado—não é um transporte.",
         "difficulty": "Médio"
       },
       {
@@ -9304,7 +9304,7 @@
           "OSPFv2 obrigatório"
         ],
         "correct": 1,
-        "explanation": "Phase 3: NHRP redirect cria túnel direto entre spokes.",
+        "explanation": "No DMVPN Phase 3, NHRP redirect/shortcut permite aos spokes criar túneis diretos spoke-to-spoke em vez de passar pelo hub.",
         "difficulty": "Difícil"
       },
       {
@@ -9316,7 +9316,7 @@
           "PPTP"
         ],
         "correct": 1,
-        "explanation": "FlexVPN unifica DMVPN/EasyVPN/RA em IKEv2.",
+        "explanation": "FlexVPN é a framework Cisco baseada em IKEv2 que unifica VPN site-to-site, estilos tipo DMVPN e remote-access.",
         "difficulty": "Difícil"
       },
       {
@@ -9328,7 +9328,7 @@
           "O PoE"
         ],
         "correct": 1,
-        "explanation": "CoPP aplica QoS/ACL ao tráfego destined-to-box.",
+        "explanation": "Control Plane Policing (CoPP) aplica políticas QoS/ACL ao tráfego destinado ao route processor, protegendo protocolos que consomem CPU.",
         "difficulty": "Difícil"
       },
       {
@@ -9340,7 +9340,7 @@
           "Drops de BFD"
         ],
         "correct": 1,
-        "explanation": "Strict/loose uRPF descarta origens inconsistentes com a RIB.",
+        "explanation": "uRPF (strict ou loose) descarta pacotes cuja origem é inconsistente com a RIB/FIB—mitiga origens falsificadas.",
         "difficulty": "Difícil"
       },
       {
@@ -9352,7 +9352,7 @@
           "Marcar DSCP"
         ],
         "correct": 1,
-        "explanation": "PIM-SM: join ao RP; depois pode mudar para shortest-path tree.",
+        "explanation": "Em PIM-SM os recetores fazem join via Rendezvous Point primeiro; o tráfego pode depois mudar para a shortest-path tree (SPT) até à fonte.",
         "difficulty": "Difícil"
       },
       {
@@ -9364,7 +9364,7 @@
           "VTP pruning"
         ],
         "correct": 1,
-        "explanation": "Vários RPs com o mesmo IP; MSDP sincroniza source-active.",
+        "explanation": "Anycast RP permite a vários RPs partilharem um endereço para redundância; o MSDP troca frequentemente estado source-active entre RPs.",
         "difficulty": "Difícil"
       },
       {
@@ -9568,7 +9568,7 @@
           "IKEv1 suporta EAP e o IKEv2 não"
         ],
         "correct": 1,
-        "explanation": "IKEv2 usa 4 mensagens contra 9 do main mode. FlexVPN da Cisco assenta em IKEv2.",
+        "explanation": "IKEv2 usa menos mensagens que o main mode IKEv1 (comummente 4 vs 9) e é a base do FlexVPN Cisco. Por si só não é L2TP.",
         "difficulty": "Médio"
       },
       {
@@ -10500,7 +10500,7 @@
           "O ASBR noutro AS"
         ],
         "correct": 1,
-        "explanation": "Type 1 Router LSA descreve links do router na area.",
+        "explanation": "LSAs OSPFv2 Type 1 (Router) descrevem os links do router dentro da área e são inundados só nessa área.",
         "difficulty": "Médio"
       },
       {
@@ -10512,7 +10512,7 @@
           "LSA tipo 5"
         ],
         "correct": 1,
-        "explanation": "AD do candidato tem de ser menor que a FD da rota em uso.",
+        "explanation": "Feasible successor EIGRP: a advertised distance do vizinho tem de ser menor que a feasible distance do successor (condição de feasibility).",
         "difficulty": "Difícil"
       },
       {
@@ -10524,7 +10524,7 @@
           "O DSCP"
         ],
         "correct": 1,
-        "explanation": "VNI e o identificador do overlay VXLAN.",
+        "explanation": "O VXLAN Network Identifier (VNI) identifica o segmento overlay L2/L3 no fabric—não é só o ID de VLAN local nem um ASN BGP.",
         "difficulty": "Médio"
       },
       {
@@ -10536,7 +10536,7 @@
           "IPv6 link-local"
         ],
         "correct": 1,
-        "explanation": "GETVPN usa key server; nao muda IPs, bom em MPLS.",
+        "explanation": "GETVPN usa um key server para distribuir chaves; os cabeçalhos IP originais mantêm-se visíveis, o que serve núcleos MPLS que encaminham pelo IP real.",
         "difficulty": "Difícil"
       },
       {
@@ -10548,7 +10548,7 @@
           "Routing updates so"
         ],
         "correct": 1,
-        "explanation": "priority command = LLQ, com policer para nao esgotar o link.",
+        "explanation": "Numa policy-map, priority ativa LLQ (prioridade estrita) para uma classe e costuma ter policer para a voz não esgotar as outras filas.",
         "difficulty": "Médio"
       },
       {
@@ -10560,7 +10560,7 @@
           "Falha de NTP"
         ],
         "correct": 1,
-        "explanation": "WRED faz early drop ponderado; protege fluxos TCP.",
+        "explanation": "WRED descarta pacotes cedo com limiares por classe/peso para sinalizar congestão TCP antes de a fila fazer tail-drop total.",
         "difficulty": "Difícil"
       },
       {
@@ -11126,7 +11126,7 @@
           "The Ethernet DR"
         ],
         "correct": 1,
-        "explanation": "Type 3 Network Summary is created by the ABR.",
+        "explanation": "OSPFv2 Type 3 Network Summary LSAs are generated by ABRs to advertise inter-area prefixes. They are not Type 1 router LSAs.",
         "difficulty": "Medium"
       },
       {
@@ -11138,7 +11138,7 @@
           "IPv6 only"
         ],
         "correct": 1,
-        "explanation": "Type 5 AS-External comes from the ASBR (NSSA uses type 7).",
+        "explanation": "Type 5 AS-External LSAs are originated by ASBRs for routes redistributed into OSPF; NSSA uses Type 7 translated to Type 5 by the ABR.",
         "difficulty": "Medium"
       },
       {
@@ -11150,7 +11150,7 @@
           "Hello packets"
         ],
         "correct": 1,
-        "explanation": "Stub does not receive type 5; the ABR advertises 0.0.0.0.",
+        "explanation": "A stub area blocks Type 5 externals; the ABR injects a default (0.0.0.0) so stub routers reach outside destinations.",
         "difficulty": "Hard"
       },
       {
@@ -11162,7 +11162,7 @@
           "An LSA type 1"
         ],
         "correct": 1,
-        "explanation": "Successor is the best route (feasible distance).",
+        "explanation": "In EIGRP, the successor is the best path (lowest feasible distance) installed in the RIB; feasible successors are loop-free backups.",
         "difficulty": "Medium"
       },
       {
@@ -11174,7 +11174,7 @@
           "Router-ID"
         ],
         "correct": 1,
-        "explanation": "Typical order: Weight, Local Pref, locally originated, shortest AS-Path...",
+        "explanation": "Classic BGP best-path order starts with highest Weight, then Local Preference, locally originated, shortest AS_PATH, and so on.",
         "difficulty": "Hard"
       },
       {
@@ -11186,7 +11186,7 @@
           "Sent to eBGP peers"
         ],
         "correct": 1,
-        "explanation": "Weight never leaves the router; higher wins.",
+        "explanation": "BGP Weight is Cisco-specific, local to the router, and never advertised; higher Weight wins first in path selection.",
         "difficulty": "Hard"
       },
       {
@@ -11198,7 +11198,7 @@
           "It replaces AS-Path"
         ],
         "correct": 1,
-        "explanation": "High Local Pref chooses the AS exit point.",
+        "explanation": "Higher Local Preference influences which path is preferred to exit the local AS; it is advertised within iBGP, unlike Weight.",
         "difficulty": "Medium"
       },
       {
@@ -11210,7 +11210,7 @@
           "15"
         ],
         "correct": 1,
-        "explanation": "eBGP assumes directly connected peers (TTL 1) unless ebgp-multihop.",
+        "explanation": "eBGP peers default to TTL 1 (directly connected). ebgp-multihop (or TTL Security) is required for multihop eBGP sessions.",
         "difficulty": "Medium"
       },
       {
@@ -11222,7 +11222,7 @@
           "LSA type 5"
         ],
         "correct": 1,
-        "explanation": "iBGP split horizon needs a full mesh or RRs.",
+        "explanation": "iBGP does not re-advertise iBGP-learned routes to other iBGP peers (split horizon), so you need a full mesh or route reflectors/confederations.",
         "difficulty": "Hard"
       },
       {
@@ -11234,7 +11234,7 @@
           "Inverted MED"
         ],
         "correct": 1,
-        "explanation": "The RR relaxes the iBGP mesh among clients.",
+        "explanation": "A route reflector reflects iBGP routes among clients so the AS can avoid a full iBGP mesh while keeping loop-prevention attributes.",
         "difficulty": "Hard"
       },
       {
@@ -11246,7 +11246,7 @@
           "IPv6 only"
         ],
         "correct": 1,
-        "explanation": "VRFs isolate routing/forwarding; Lite means no MP-BGP/MPLS.",
+        "explanation": "VRFs separate routing and forwarding tables per tenant; VRF-Lite does that without requiring MP-BGP/MPLS in the core.",
         "difficulty": "Hard"
       },
       {
@@ -11258,7 +11258,7 @@
           "DSCP"
         ],
         "correct": 1,
-        "explanation": "Top label = transport; bottom (S=1) = VPN service.",
+        "explanation": "In MPLS VPN, the top label is typically transport (IGP/LDP/SR) and the bottom label (S=1) is the VPN service label.",
         "difficulty": "Hard"
       },
       {
@@ -11270,7 +11270,7 @@
           "PKI certificates"
         ],
         "correct": 1,
-        "explanation": "LDP maps FECs (prefixes) to labels.",
+        "explanation": "LDP distributes labels bound to Forwarding Equivalence Classes (usually IPv4 prefixes) so LSRs can build LSPs.",
         "difficulty": "Medium"
       },
       {
@@ -11282,7 +11282,7 @@
           "Encrypt GRE"
         ],
         "correct": 1,
-        "explanation": "BFD gives OSPF/EIGRP/BGP fast failure detection.",
+        "explanation": "BFD provides sub-second forwarding-plane failure detection that OSPF, EIGRP, or BGP can use to tear down neighbors quickly.",
         "difficulty": "Medium"
       },
       {
@@ -11294,7 +11294,7 @@
           "Create VLANs"
         ],
         "correct": 1,
-        "explanation": "SLA probes plus object tracking for PBR/HSRP/static routes.",
+        "explanation": "IP SLA probes measure reachability/latency; object tracking can drive PBR, HSRP/VRRP priority, or static route resilience.",
         "difficulty": "Medium"
       },
       {
@@ -11306,7 +11306,7 @@
           "LLDP"
         ],
         "correct": 1,
-        "explanation": "PBR sets ip next-hop from policy matches.",
+        "explanation": "Policy-Based Routing (PBR) can set ip next-hop (or interface) based on route-map matches instead of pure destination RIB lookup.",
         "difficulty": "Medium"
       },
       {
@@ -11318,7 +11318,7 @@
           "MPLS VRFs"
         ],
         "correct": 1,
-        "explanation": "The stack is one logical switch with SSO/NSF.",
+        "explanation": "A switch stack operates as one logical switch with synchronized control plane (often SSO/NSF) and shared management IP.",
         "difficulty": "Medium"
       },
       {
@@ -11330,7 +11330,7 @@
           "Disabling BPDU Guard"
         ],
         "correct": 0,
-        "explanation": "vPC is a multi-chassis port-channel without a full stack.",
+        "explanation": "vPC (Nexus) presents a multi-chassis EtherChannel to downstream devices without requiring a classic stack cable domain.",
         "difficulty": "Hard"
       },
       {
@@ -11342,7 +11342,7 @@
           "VTP v3 only"
         ],
         "correct": 1,
-        "explanation": "LISP + VXLAN + ISE in the SDA fabric.",
+        "explanation": "Cisco SD-Access fabric commonly combines LISP for control, VXLAN for data overlay, and ISE for policy/identity.",
         "difficulty": "Hard"
       },
       {
@@ -11354,7 +11354,7 @@
           "Translate NAT64"
         ],
         "correct": 1,
-        "explanation": "ISE is the RADIUS policy engine for TrustSec/SDA.",
+        "explanation": "Cisco ISE acts as the RADIUS/policy engine for 802.1X, TrustSec, and SDA—authorizing users/devices and delivering policy.",
         "difficulty": "Medium"
       },
       {
@@ -11366,7 +11366,7 @@
           "A BGP community"
         ],
         "correct": 1,
-        "explanation": "SGTs classify users; SGACLs filter between groups.",
+        "explanation": "Security Group Tags (SGTs) classify users/devices; SGACLs enforce traffic rules between groups independent of IP alone.",
         "difficulty": "Hard"
       },
       {
@@ -11378,7 +11378,7 @@
           "SNMP v2"
         ],
         "correct": 1,
-        "explanation": "NETCONF/SSH on 830; RESTCONF uses HTTPS.",
+        "explanation": "NETCONF commonly runs over SSH on TCP 830; RESTCONF uses HTTPS. Both manage YANG-modeled configuration/state.",
         "difficulty": "Medium"
       },
       {
@@ -11390,7 +11390,7 @@
           "Spanning tree"
         ],
         "correct": 1,
-        "explanation": "YANG is the modeling language for NETCONF/RESTCONF.",
+        "explanation": "YANG is the data modeling language used by NETCONF/RESTCONF to describe configuration and operational state—not a transport.",
         "difficulty": "Medium"
       },
       {
@@ -11402,7 +11402,7 @@
           "Required OSPFv2"
         ],
         "correct": 1,
-        "explanation": "Phase 3: NHRP redirect builds a direct spoke-to-spoke tunnel.",
+        "explanation": "In DMVPN Phase 3, NHRP redirect/shortcut lets spokes build direct spoke-to-spoke tunnels instead of hairpinning via the hub.",
         "difficulty": "Hard"
       },
       {
@@ -11414,7 +11414,7 @@
           "PPTP"
         ],
         "correct": 1,
-        "explanation": "FlexVPN unifies DMVPN/EasyVPN/RA on IKEv2.",
+        "explanation": "FlexVPN is Cisco’s IKEv2-based framework that unifies site-to-site, DMVPN-like, and remote-access VPN styles.",
         "difficulty": "Hard"
       },
       {
@@ -11426,7 +11426,7 @@
           "PoE"
         ],
         "correct": 1,
-        "explanation": "CoPP applies QoS/ACL to destined-to-box traffic.",
+        "explanation": "Control Plane Policing (CoPP) applies QoS/ACL policies to traffic destined to the route processor, protecting CPU-bound protocols.",
         "difficulty": "Hard"
       },
       {
@@ -11438,7 +11438,7 @@
           "BFD drops"
         ],
         "correct": 1,
-        "explanation": "Strict/loose uRPF drops sources inconsistent with the RIB.",
+        "explanation": "uRPF (strict or loose) drops packets whose source is inconsistent with the RIB/FIB—mitigating spoofed sources.",
         "difficulty": "Hard"
       },
       {
@@ -11450,7 +11450,7 @@
           "DSCP marking"
         ],
         "correct": 1,
-        "explanation": "PIM-SM: join the RP, then it may switch to the shortest-path tree.",
+        "explanation": "PIM-SM receivers join via the Rendezvous Point first; traffic may later switch to the shortest-path tree (SPT) toward the source.",
         "difficulty": "Hard"
       },
       {
@@ -11462,7 +11462,7 @@
           "VTP pruning"
         ],
         "correct": 1,
-        "explanation": "Several RPs share an IP; MSDP syncs source-active state.",
+        "explanation": "Anycast RP lets several RPs share one address for redundancy; MSDP often exchanges source-active state between RPs.",
         "difficulty": "Hard"
       },
       {
@@ -11666,7 +11666,7 @@
           "IKEv1 supports EAP and IKEv2 does not"
         ],
         "correct": 1,
-        "explanation": "IKEv2 uses 4 messages versus 9 in main mode. Cisco FlexVPN is built on IKEv2.",
+        "explanation": "IKEv2 uses fewer messages than IKEv1 main mode (commonly described as 4 vs 9) and underpins Cisco FlexVPN. It is not L2TP by itself.",
         "difficulty": "Medium"
       },
       {
@@ -12598,7 +12598,7 @@
           "An ASBR in another AS"
         ],
         "correct": 1,
-        "explanation": "Type 1 Router LSA describes the router's links in the area.",
+        "explanation": "OSPFv2 Type 1 Router LSAs describe a router’s links within an area and are flooded inside that area only.",
         "difficulty": "Medium"
       },
       {
@@ -12610,7 +12610,7 @@
           "LSA type 5"
         ],
         "correct": 1,
-        "explanation": "The candidate's AD must be less than the current route's FD.",
+        "explanation": "EIGRP feasible successor: the neighbor’s advertised distance must be less than the successor’s feasible distance (feasibility condition).",
         "difficulty": "Hard"
       },
       {
@@ -12622,7 +12622,7 @@
           "DSCP"
         ],
         "correct": 1,
-        "explanation": "VNI is the VXLAN overlay identifier.",
+        "explanation": "A VXLAN Network Identifier (VNI) identifies the overlay L2/L3 segment in the fabric—not a local VLAN ID alone or a BGP ASN.",
         "difficulty": "Medium"
       },
       {
@@ -12634,7 +12634,7 @@
           "IPv6 link-local"
         ],
         "correct": 1,
-        "explanation": "GETVPN uses a key server; IPs stay the same, good on MPLS.",
+        "explanation": "GETVPN uses a key server to distribute keys; original IP headers stay visible, which suits MPLS cores needing to route on real IPs.",
         "difficulty": "Hard"
       },
       {
@@ -12646,7 +12646,7 @@
           "Routing updates only"
         ],
         "correct": 1,
-        "explanation": "The priority command is LLQ, with a policer so it cannot starve the link.",
+        "explanation": "In a policy-map, priority enables LLQ (strict priority) for a class and is usually policed so voice cannot starve other queues.",
         "difficulty": "Medium"
       },
       {
@@ -12658,7 +12658,7 @@
           "NTP failure"
         ],
         "correct": 1,
-        "explanation": "WRED is weighted early drop; it protects TCP flows.",
+        "explanation": "WRED drops packets early with per-class/weight thresholds to signal TCP congestion before the queue tail-drops everything.",
         "difficulty": "Hard"
       },
       {
