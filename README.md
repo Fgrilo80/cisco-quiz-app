@@ -29,7 +29,7 @@ A app **não inventa perguntas**. A base vem do JSON público:
 
 https://raw.githubusercontent.com/Fgrilo80/cricket/main/cricket.json
 
-A cópia incluída tem **986 perguntas**.
+A cópia incluída tem **1052 perguntas**.
 
 ## Como correr
 
@@ -61,7 +61,7 @@ flutter build apk --split-per-abi --release
 # saída arm64: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
 ```
 
-Neste Linux o APK arm64 de release fica em `/workspace/Cisco-Quiz.apk` (gerado a partir do split-per-abi).
+APKs de release (split-per-abi) ficam em `/workspace/cisco-quiz-apk/` (ex.: `CiscoQuiz-1.2.2-arm64.apk`). Ver também [docs/ios-build.md](docs/ios-build.md) para iOS.
 
 A pasta `build/` não vai para o Git. Para voltar a gerar: Android SDK 36 + JDK 21 e o comando acima.
 

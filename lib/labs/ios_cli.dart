@@ -10,9 +10,6 @@ class IosCli {
   /// Interface currently being configured (e.g. GigabitEthernet0/2).
   String? _configIf;
 
-  /// OSPF process in router submode.
-  int? _ospfProcess;
-
   /// Runtime overrides applied by config mode (merged into show run).
   final Map<String, _IfState> _ifOverrides = {};
   final List<String> _extraOspfNetworks = [];
@@ -451,7 +448,6 @@ Router configuration commands:
     if (_isCmd(tokens, 'end')) {
       privilege = IosPrivilege.privileged;
       _configIf = null;
-      _ospfProcess = null;
       return '';
     }
 
@@ -460,8 +456,7 @@ Router configuration commands:
           privilege == IosPrivilege.configRouter) {
         privilege = IosPrivilege.config;
         _configIf = null;
-        _ospfProcess = null;
-      } else {
+        } else {
         privilege = IosPrivilege.privileged;
       }
       return '';
@@ -496,9 +491,7 @@ Router configuration commands:
       if (tokens.length < 2) return incomplete;
       if (!tokens[1].toLowerCase().startsWith('ospf')) return invalid;
       if (tokens.length < 3) return incomplete;
-      final pid = int.tryParse(tokens[2]);
-      if (pid == null) return invalid;
-      _ospfProcess = pid;
+      if (int.tryParse(tokens[2]) == null) return invalid;
       privilege = IosPrivilege.configRouter;
       return '';
     }
@@ -627,8 +620,7 @@ Router configuration commands:
           privilege == IosPrivilege.configRouter) {
         privilege = IosPrivilege.privileged;
         _configIf = null;
-        _ospfProcess = null;
-      }
+        }
       return '';
     }
 

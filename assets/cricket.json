@@ -2054,6 +2054,30 @@
         "correct": 1,
         "explanation": "Telefone+PC no mesmo cabo usa voice VLAN + data VLAN (ou multi-VLAN no telefone). Voz OK com dados mortos aponta para VLAN de dados/cabo PC ou config do telefone — não para Wi-Fi.",
         "difficulty": "Difícil"
+      },
+      {
+        "question": "Como um host IPv6 tipicamente obtém o prefixo de rede com SLAAC?",
+        "options": [
+          "Apenas via DHCPv4 relaying",
+          "A partir do Router Advertisement (RA) enviado pelo router",
+          "Só com consulta DNS inversa",
+          "Através de ARP requests em broadcast"
+        ],
+        "correct": 1,
+        "explanation": "Com SLAAC, o host usa informações do Router Advertisement (ICMPv6) do router local para saber o prefixo e parâmetros; pode combinar com EUI-64/privacy.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Qual prática reduz melhor o risco de phishing no email corporativo?",
+        "options": [
+          "Desativar todas as atualizações do SO",
+          "Verificar remetente/URL e usar MFA; reportar mensagens suspeitas",
+          "Partilhar passwords só por chat interno",
+          "Abrir todos os anexos .exe em sandbox do utilizador"
+        ],
+        "correct": 1,
+        "explanation": "Phishing explora confiança humana: validar remetente e links, MFA e reportar ao SOC/IT são controlos práticos de primeira linha.",
+        "difficulty": "Fácil"
       }
     ],
     "en": [
@@ -4110,6 +4134,30 @@
         "correct": 1,
         "explanation": "Phone+PC on one cable uses voice VLAN + data VLAN (or phone multi-VLAN). Voice OK / data dead points to data VLAN, PC cable, or phone config — not Wi-Fi.",
         "difficulty": "Hard"
+      },
+      {
+        "question": "How does an IPv6 host typically learn its network prefix with SLAAC?",
+        "options": [
+          "Only via DHCPv4 relaying",
+          "From Router Advertisement (RA) messages sent by the router",
+          "Only via reverse DNS lookups",
+          "Through broadcast ARP requests"
+        ],
+        "correct": 1,
+        "explanation": "With SLAAC, the host learns the prefix and parameters from the local router's Router Advertisement (ICMPv6); it may combine that with EUI-64/privacy addressing.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Which practice best reduces phishing risk on corporate email?",
+        "options": [
+          "Disable all OS updates",
+          "Verify sender/URL and use MFA; report suspicious messages",
+          "Share passwords only on internal chat",
+          "Open every .exe attachment in a user sandbox"
+        ],
+        "correct": 1,
+        "explanation": "Phishing targets human trust: verify sender and links, use MFA, and report to IT/SOC are practical first-line controls.",
+        "difficulty": "Easy"
       }
     ]
   },
@@ -4772,7 +4820,7 @@
           "Cifrar syslog"
         ],
         "correct": 1,
-        "explanation": "NTP alinha o tempo dos dispositivos.",
+        "explanation": "O NTP (Network Time Protocol) sincroniza os relógios entre dispositivos para que logs, certificados e autenticação (ex.: Kerberos) partilhem uma base temporal comum. Não é DNS, não é sonda de jitter, nem encriptação para syslog.",
         "difficulty": "Fácil"
       },
       {
@@ -6251,6 +6299,30 @@
         "correct": 0,
         "explanation": "Custo = ref/bw = 100000/100000 = 1.",
         "difficulty": "Médio"
+      },
+      {
+        "question": "Numa política de QoS numa interface de saída, o que faz o comando `priority` numa class-map de voz?",
+        "options": [
+          "Garante largura de banda proporcional a todas as classes",
+          "Cria uma fila de prioridade estrita (LLQ) para essa classe, com limite policed",
+          "Desativa o WRED nessa interface",
+          "Marca todos os pacotes como DSCP EF independentemente da classe"
+        ],
+        "correct": 1,
+        "explanation": "O `priority` ativa Low Latency Queuing (LLQ): fila prioritária para a classe (tipicamente voz), normalmente com um policer para não esgotar a interface.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Entre um AP lightweight e um WLC, qual afirmação sobre CAPWAP está correta?",
+        "options": [
+          "O tráfego de dados do cliente nunca passa pelo WLC em modo local",
+          "CAPWAP usa DTLS para o túnel de controlo entre AP e WLC",
+          "CAPWAP só funciona em Layer 2 e não atravessa routers",
+          "O AP guarda localmente todas as políticas WLAN sem contacto com o WLC"
+        ],
+        "correct": 1,
+        "explanation": "CAPWAP estabelece um túnel de controlo protegido com DTLS entre o AP lightweight e o WLC; o túnel de dados pode ser encapsulado à parte conforme o modo.",
+        "difficulty": "Médio"
       }
     ],
     "en": [
@@ -6911,7 +6983,7 @@
           "Encrypt syslog"
         ],
         "correct": 1,
-        "explanation": "NTP aligns device time.",
+        "explanation": "NTP (Network Time Protocol) synchronizes clocks across devices so logs, certificates, and auth (e.g. Kerberos) share a common timebase. It is not DNS, not a jitter probe, and not encryption for syslog.",
         "difficulty": "Easy"
       },
       {
@@ -8389,6 +8461,30 @@
         ],
         "correct": 0,
         "explanation": "Cost = ref/bw = 100000/100000 = 1.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In an outbound QoS policy, what does the `priority` command do for a voice class-map?",
+        "options": [
+          "Guarantees proportional bandwidth to every class",
+          "Creates a strict-priority (LLQ) queue for that class, usually policed",
+          "Disables WRED on the interface",
+          "Marks all packets DSCP EF regardless of class"
+        ],
+        "correct": 1,
+        "explanation": "`priority` enables Low Latency Queuing (LLQ): a strict-priority queue for the class (typically voice), usually with a policer so it cannot starve the link.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Between a lightweight AP and a WLC, which statement about CAPWAP is correct?",
+        "options": [
+          "Client data traffic never goes through the WLC in local mode",
+          "CAPWAP uses DTLS for the control tunnel between AP and WLC",
+          "CAPWAP works only at Layer 2 and cannot cross routers",
+          "The AP stores all WLAN policies locally with no WLC contact"
+        ],
+        "correct": 1,
+        "explanation": "CAPWAP builds a DTLS-protected control tunnel between the lightweight AP and the WLC; a separate data tunnel may carry client traffic depending on mode.",
         "difficulty": "Medium"
       }
     ]
@@ -10466,6 +10562,30 @@
         "correct": 1,
         "explanation": "WRED faz early drop ponderado; protege fluxos TCP.",
         "difficulty": "Difícil"
+      },
+      {
+        "question": "Numa fabric Cisco SD-WAN, o que identifica um TLOC?",
+        "options": [
+          "Apenas o system-IP do vEdge",
+          "A combinação de system-IP, cor (color) e encapsulamento (ex.: ipsec/gre)",
+          "Só o site-ID configurado no vManage",
+          "O endereço MAC da interface de transport"
+        ],
+        "correct": 1,
+        "explanation": "Um TLOC (Transport Locator) é identificado por system-IP + color + encapsulation; é assim que o controlo/ overlay referencia um transport.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "Numa rede iBGP com route reflectors, qual é o efeito principal de configurar um cliente sob um RR?",
+        "options": [
+          "O cliente deixa de precisar de sessiones eBGP",
+          "O RR pode refletir rotas iBGP entre clientes sem full-mesh iBGP",
+          "O RR desativa automaticamente route aggregation",
+          "Os clientes passam a preferir sempre rotas eBGP do RR"
+        ],
+        "correct": 1,
+        "explanation": "Route reflectors permitem escalar iBGP: o RR reflete rotas aprendidas de clientes para outros clientes/não-clientes, evitando o full-mesh.",
+        "difficulty": "Médio"
       }
     ],
     "en": [
@@ -12540,6 +12660,30 @@
         "correct": 1,
         "explanation": "WRED is weighted early drop; it protects TCP flows.",
         "difficulty": "Hard"
+      },
+      {
+        "question": "In a Cisco SD-WAN fabric, what identifies a TLOC?",
+        "options": [
+          "Only the vEdge system-IP",
+          "The combination of system-IP, color, and encapsulation (e.g. ipsec/gre)",
+          "Only the site-ID configured in vManage",
+          "The MAC address of the transport interface"
+        ],
+        "correct": 1,
+        "explanation": "A TLOC (Transport Locator) is identified by system-IP + color + encapsulation; that tuple is how the control/overlay refers to a transport.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "In an iBGP network with route reflectors, what is the main effect of configuring a client under an RR?",
+        "options": [
+          "The client no longer needs any eBGP sessions",
+          "The RR can reflect iBGP routes among clients without an iBGP full mesh",
+          "The RR automatically disables route aggregation",
+          "Clients always prefer eBGP routes from the RR"
+        ],
+        "correct": 1,
+        "explanation": "Route reflectors scale iBGP: the RR reflects routes learned from clients to other clients/nonclients, avoiding a full mesh.",
+        "difficulty": "Medium"
       }
     ]
   }
