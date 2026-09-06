@@ -2078,6 +2078,30 @@
         "correct": 1,
         "explanation": "Phishing explora confiança humana: validar remetente e links, MFA e reportar ao SOC/IT são controlos práticos de primeira linha.",
         "difficulty": "Fácil"
+      },
+      {
+        "question": "Porque ativar STP PortFast numa porta de acesso para um PC ou impressora?",
+        "options": [
+          "Para eleger essa porta como root bridge STP",
+          "Para saltar listening/learning, passar a forwarding mais depressa e evitar atrasos de DHCP/arranque",
+          "Para desativar BPDU filtering em todo o campus",
+          "Para forçar o link a half duplex"
+        ],
+        "correct": 1,
+        "explanation": "PortFast (edge) salta listening/learning em portas de host para forwarding imediato. Combina com BPDU Guard; nunca uses PortFast em links para switches.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Um link de cobre mostra erros CRC/input e late collisions depois de um lado ficar em 100/full manual. Qual é a causa mais provável?",
+        "options": [
+          "Mismatch de área OSPF",
+          "TTL de DNS demasiado baixo",
+          "Mismatch de duplex (o outro lado ainda em auto/half)",
+          "Community SNMP errada"
+        ],
+        "correct": 2,
+        "explanation": "Fixar speed/duplex num extremo enquanto o outro faz auto-negociação costuma criar mismatch de duplex: CRC, runts e late collisions sob carga.",
+        "difficulty": "Médio"
       }
     ],
     "en": [
@@ -4158,6 +4182,30 @@
         "correct": 1,
         "explanation": "Phishing targets human trust: verify sender and links, use MFA, and report to IT/SOC are practical first-line controls.",
         "difficulty": "Easy"
+      },
+      {
+        "question": "Why enable STP PortFast on an access port facing a PC or printer?",
+        "options": [
+          "To elect that port as the STP root bridge",
+          "To skip listening/learning so the port goes forwarding faster and avoid DHCP/boot delays",
+          "To disable all BPDU filtering campus-wide",
+          "To force the link to half duplex"
+        ],
+        "correct": 1,
+        "explanation": "PortFast (edge) skips listening/learning on end-host ports so they forward immediately. Pair with BPDU Guard; never use PortFast on links to switches.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "A copper link shows CRC/input errors and late collisions after one side was set to 100/full manually. What is the most likely cause?",
+        "options": [
+          "OSPF area mismatch",
+          "DNS TTL too low",
+          "Duplex mismatch (other side still auto/half)",
+          "Wrong SNMP community"
+        ],
+        "correct": 2,
+        "explanation": "Hard-setting speed/duplex on one end while the other auto-negotiates often yields duplex mismatch: CRCs, runts, and late collisions under load.",
+        "difficulty": "Medium"
       }
     ]
   },
@@ -6323,6 +6371,30 @@
         "correct": 1,
         "explanation": "CAPWAP estabelece um túnel de controlo protegido com DTLS entre o AP lightweight e o WLC; o túnel de dados pode ser encapsulado à parte conforme o modo.",
         "difficulty": "Médio"
+      },
+      {
+        "question": "No EIGRP, um feasible successor é uma rota de backup que:",
+        "options": [
+          "Tem o AD mais alto na tabela de topologia",
+          "Cumpre a condição de viabilidade (reported distance < feasible distance do successor) e pode substituir o successor sem query",
+          "Tem de ser aprendida sempre via OSPF",
+          "Só é usada depois da convergência BGP"
+        ],
+        "correct": 1,
+        "explanation": "Feasible successors cumprem RD < FD do successor atual, por isso são backups free-loop e assumem de imediato sem queries DUAL.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "O estado de interface `Administratively down / down` significa na maioria das vezes:",
+        "options": [
+          "Só o cabo desligado",
+          "A interface foi desligada com o comando `shutdown`",
+          "O STP bloqueou a porta como alternate",
+          "Uma ACL negou todo o tráfego"
+        ],
+        "correct": 1,
+        "explanation": "Administratively down significa shutdown na interface. Protocolo down com falha up/up é cabo, speed ou problemas L1/L2 — não é o mesmo que admin down.",
+        "difficulty": "Fácil"
       }
     ],
     "en": [
@@ -8486,6 +8558,30 @@
         "correct": 1,
         "explanation": "CAPWAP builds a DTLS-protected control tunnel between the lightweight AP and the WLC; a separate data tunnel may carry client traffic depending on mode.",
         "difficulty": "Medium"
+      },
+      {
+        "question": "In EIGRP, a feasible successor is a backup route that:",
+        "options": [
+          "Has the highest AD in the topology table",
+          "Meets the feasibility condition (reported distance < feasible distance of the successor) and can replace the successor without a query",
+          "Must always be learned via OSPF",
+          "Is only used after BGP convergence"
+        ],
+        "correct": 1,
+        "explanation": "Feasible successors satisfy RD < FD of the current successor, so they are loop-free backups and can take over immediately without DUAL queries.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "Interface status `Administratively down / down` most often means:",
+        "options": [
+          "Cable unplugged only",
+          "The interface was shut down with the `shutdown` command",
+          "STP blocked the port as alternate",
+          "ACL denied all traffic"
+        ],
+        "correct": 1,
+        "explanation": "Administratively down means the interface is in shutdown. Line protocol down with up/up failure is cabling, speed, or Layer-1/2 issues — not the same as admin down.",
+        "difficulty": "Easy"
       }
     ]
   },
@@ -10586,6 +10682,30 @@
         "correct": 1,
         "explanation": "Route reflectors permitem escalar iBGP: o RR reflete rotas aprendidas de clientes para outros clientes/não-clientes, evitando o full-mesh.",
         "difficulty": "Médio"
+      },
+      {
+        "question": "Como é que LLQ difere de CBWFQ simples para voz em tempo real?",
+        "options": [
+          "LLQ remove todo o policing da rede",
+          "LLQ acrescenta uma fila strict-priority para a voz sair à frente das classes CBWFQ (muitas vezes com policer a limitar a banda priority)",
+          "CBWFQ prefere sempre a voz em relação a LLQ",
+          "LLQ só funciona em Frame Relay"
+        ],
+        "correct": 1,
+        "explanation": "LLQ = CBWFQ mais uma fila priority. Voz/vídeo ficam com baixa latência; um policer na priority evita que a classe priority esgote as outras filas.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "No Cisco Catalyst Center (DNA Center) Assurance, os client health scores servem sobretudo para:",
+        "options": [
+          "Substituir OSPF por rotas estáticas automaticamente",
+          "Ver problemas de onboarding, conectividade e experiência de aplicações de clientes wired/wireless ao longo do tempo",
+          "Desativar coletores NetFlow",
+          "Forçar todos os APs para Monitor Mode"
+        ],
+        "correct": 1,
+        "explanation": "Assurance agrega telemetria (onboarding, RSSI, DHCP/AAA, app experience) em health de cliente/dispositivo para troubleshooting de tendências e falhas — não para reescrever routing.",
+        "difficulty": "Médio"
       }
     ],
     "en": [
@@ -12683,6 +12803,30 @@
         ],
         "correct": 1,
         "explanation": "Route reflectors scale iBGP: the RR reflects routes learned from clients to other clients/nonclients, avoiding a full mesh.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "How does LLQ differ from plain CBWFQ for real-time voice?",
+        "options": [
+          "LLQ removes all policing from the network",
+          "LLQ adds a strict-priority queue so voice can dequeue ahead of CBWFQ classes (often with a policer to limit priority bandwidth)",
+          "CBWFQ always prefers voice over LLQ",
+          "LLQ only works on Frame Relay"
+        ],
+        "correct": 1,
+        "explanation": "LLQ = CBWFQ plus a priority queue. Voice/video get low latency; a priority policer prevents the priority class from starving other queues.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "In Cisco Catalyst Center (DNA Center) Assurance, client health scores primarily help you:",
+        "options": [
+          "Replace OSPF with static routes automatically",
+          "See onboarding, connectivity, and application experience issues for wired/wireless clients over time",
+          "Disable NetFlow collectors",
+          "Force all APs into Monitor Mode"
+        ],
+        "correct": 1,
+        "explanation": "Assurance aggregates telemetry (onboarding, RSSI, DHCP/AAA, app experience) into client/device health so you can troubleshoot trends and failures, not rewrite routing.",
         "difficulty": "Medium"
       }
     ]
