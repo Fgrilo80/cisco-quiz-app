@@ -2102,6 +2102,30 @@
         "correct": 2,
         "explanation": "Fixar speed/duplex num extremo enquanto o outro faz auto-negociação costuma criar mismatch de duplex: CRC, runts e late collisions sob carga.",
         "difficulty": "Médio"
+      },
+      {
+        "question": "O que é que o `switchport port-security` protege principalmente numa porta de acesso?",
+        "options": [
+          "AS-path prepending BGP por peers upstream",
+          "Flaps de vizinhos OSPF por mismatch de MTU",
+          "Endereços MAC não autorizados nessa porta (limite/learn sticky e ação de violação)",
+          "Envenenamento de cache DNS no resolver"
+        ],
+        "correct": 2,
+        "explanation": "Port security limita quais MACs podem usar uma porta de acesso (estático, dinâmico ou sticky). Em violação pode protect, restrict ou shutdown — controlo L2 básico para hosts finais.",
+        "difficulty": "Fácil"
+      },
+      {
+        "question": "O DHCP snooping num switch de acesso serve principalmente para:",
+        "options": [
+          "Aceitar ofertas DHCP só de portas trusted (normalmente uplinks para o servidor real) e descartar respostas DHCP rogue",
+          "Substituir DHCP por endereçamento estático em todo o campus",
+          "Forçar automaticamente todos os clientes para private VLAN",
+          "Encriptar todos os pacotes DHCP com IPsec"
+        ],
+        "correct": 0,
+        "explanation": "DHCP snooping cria uma binding table e só trata portas trusted configuradas como servidores DHCP válidos. Ofertas rogue em portas untrusted são descartadas, reduzindo MITM e gateway errado.",
+        "difficulty": "Médio"
       }
     ],
     "en": [
@@ -4205,6 +4229,30 @@
         ],
         "correct": 2,
         "explanation": "Hard-setting speed/duplex on one end while the other auto-negotiates often yields duplex mismatch: CRCs, runts, and late collisions under load.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What does switchport port-security primarily protect against on an access port?",
+        "options": [
+          "BGP AS-path prepending by upstream peers",
+          "OSPF neighbor flaps caused by MTU mismatch",
+          "Unauthorized MAC addresses connecting to that port (limit/learn sticky MACs and violate action)",
+          "DNS cache poisoning on the resolver"
+        ],
+        "correct": 2,
+        "explanation": "Port security limits which MAC addresses may use an access port (static, dynamic, or sticky). On violation it can protect, restrict, or shut down the port — a basic Layer-2 access control for end hosts.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "DHCP snooping on an access switch is mainly used to:",
+        "options": [
+          "Accept DHCP offers only from trusted ports (usually uplinks to the real server) and drop rogue DHCP replies",
+          "Replace DHCP with static addressing campus-wide",
+          "Force every client into a private VLAN automatically",
+          "Encrypt all DHCP packets with IPsec"
+        ],
+        "correct": 0,
+        "explanation": "DHCP snooping builds a binding table and treats only configured trusted ports as valid DHCP servers. Rogue offers from untrusted access ports are dropped, reducing MITM and wrong-gateway attacks.",
         "difficulty": "Medium"
       }
     ]
@@ -6395,6 +6443,30 @@
         "correct": 1,
         "explanation": "Administratively down significa shutdown na interface. Protocolo down com falha up/up é cabo, speed ou problemas L1/L2 — não é o mesmo que admin down.",
         "difficulty": "Fácil"
+      },
+      {
+        "question": "Em comparação com HSRP, qual é uma característica definidora do VRRP em routers Cisco?",
+        "options": [
+          "O VRRP exige sempre weighting GLBP em cada grupo",
+          "O VRRP substitui por completo o OSPF na LAN",
+          "O VRRP só corre em switches L2, nunca em routers",
+          "O VRRP é um protocolo FHRP open standard (RFC); o IP virtual pode ser um IP real da interface do master"
+        ],
+        "correct": 3,
+        "explanation": "VRRP (RFC) é FHRP baseado em standard. Ao contrário do HSRP clássico, o IP virtual VRRP pode ser um IP do router master. HSRP é proprietário Cisco; GLBP acrescenta balanceamento ativo-ativo.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Uma área OSPF stub é configurada para que:",
+        "options": [
+          "Communities BGP substituam todos os LSAs OSPF dentro da área",
+          "LSAs externas Type 5 sejam bloqueadas e o ABR injete tipicamente uma rota default em alternativa",
+          "Só sejam inundadas externas Type 5 e todos os LSA Type 1/2 sejam descartados",
+          "A área tenha de conter o ASBR que origina todas as rotas externas"
+        ],
+        "correct": 1,
+        "explanation": "Áreas stub mantêm a LSDB mais pequena: sem LSA Type 5 (externas). O ABR costuma injetar default para os routers internos chegarem ao exterior. Totally stubby também bloqueia Type 3 inter-área (Cisco).",
+        "difficulty": "Difícil"
       }
     ],
     "en": [
@@ -8582,6 +8654,30 @@
         "correct": 1,
         "explanation": "Administratively down means the interface is in shutdown. Line protocol down with up/up failure is cabling, speed, or Layer-1/2 issues — not the same as admin down.",
         "difficulty": "Easy"
+      },
+      {
+        "question": "Compared with HSRP, what is a defining trait of VRRP on Cisco routers?",
+        "options": [
+          "VRRP always requires GLBP weighting for every group",
+          "VRRP replaces OSPF entirely inside the LAN",
+          "VRRP can only run on Layer-2 switches, never routers",
+          "VRRP is an open standard (RFC) first-hop redundancy protocol; the virtual IP can be a real interface IP of the master"
+        ],
+        "correct": 3,
+        "explanation": "VRRP (RFC) is standards-based FHRP. Unlike classic HSRP, the VRRP virtual IP may be an IP owned by the master router. HSRP is Cisco-proprietary (versions differ); GLBP adds active-active load balancing.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "An OSPF stub area is configured so that:",
+        "options": [
+          "BGP communities replace all OSPF LSAs inside the area",
+          "Type 5 external LSAs are blocked and a default route is typically injected by the ABR instead",
+          "Only Type 5 externals are flooded and all Type 1/2 LSAs are dropped",
+          "The area must contain the ASBR that originates every external route"
+        ],
+        "correct": 1,
+        "explanation": "Stub areas keep the LSDB smaller: no Type 5 (external) LSAs. The ABR usually injects a default route so internal routers still reach external destinations. Totally stubby also blocks inter-area Type 3 summaries (Cisco).",
+        "difficulty": "Hard"
       }
     ]
   },
@@ -10706,6 +10802,30 @@
         "correct": 1,
         "explanation": "Assurance agrega telemetria (onboarding, RSSI, DHCP/AAA, app experience) em health de cliente/dispositivo para troubleshooting de tendências e falhas — não para reescrever routing.",
         "difficulty": "Médio"
+      },
+      {
+        "question": "A Model-Driven Telemetry (MDT) com gRPC/dial-out é preferida ao polling SNMP clássico principalmente porque:",
+        "options": [
+          "Faz stream contínuo (push) de dados modelados em YANG subscritos, com menos overhead e updates estruturados mais ricos do que SNMP GETs repetidos",
+          "Só funciona em interfaces Frame Relay",
+          "Substitui BGP por notificações YANG no control plane",
+          "Elimina a necessidade de qualquer collector ou subscription"
+        ],
+        "correct": 0,
+        "explanation": "MDT usa modelos YANG e subscriptions (muitas vezes gRPC dial-out ou dial-in) para enviar telemetria aos collectors. Face ao polling SNMP, há updates contínuos e estruturados, com menos chatter e melhor escala para assurance moderna.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "O IEEE 802.11ax (Wi-Fi 6) melhora a eficiência WLAN em alta densidade principalmente com:",
+        "options": [
+          "Desativar canais DFS em todos os domínios regulatórios",
+          "Substituir CAPWAP só por bridging Layer-2 simples",
+          "OFDMA, melhorias MU-MIMO, BSS coloring e Target Wake Time para servir mais clientes com menos contenção de airtime",
+          "Encriptação WEP obrigatória em todos os SSIDs"
+        ],
+        "correct": 2,
+        "explanation": "802.11ax foca eficiência em ambientes densos: OFDMA agenda resource units multi-utilizador, MU-MIMO melhorado, BSS coloring reduz impacto de interferência co-canal e TWT poupa energia nos clientes. Não é abandonar CAPWAP nem usar WEP.",
+        "difficulty": "Médio"
       }
     ],
     "en": [
@@ -12827,6 +12947,30 @@
         ],
         "correct": 1,
         "explanation": "Assurance aggregates telemetry (onboarding, RSSI, DHCP/AAA, app experience) into client/device health so you can troubleshoot trends and failures, not rewrite routing.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Model-Driven Telemetry (MDT) with gRPC/dial-out is preferred over classic SNMP polling mainly because it:",
+        "options": [
+          "Streams subscribed YANG-modeled data continuously (push) with lower overhead and richer structured updates than repeated SNMP GETs",
+          "Works only on Frame Relay interfaces",
+          "Replaces BGP with YANG notifications on the control plane",
+          "Removes the need for any collector or subscription"
+        ],
+        "correct": 0,
+        "explanation": "MDT uses YANG models and subscriptions (often gRPC dial-out or dial-in) to push telemetry to collectors. Compared with SNMP polling, you get continuous, structured updates with less chatter and better scale for modern assurance.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "IEEE 802.11ax (Wi-Fi 6) improves high-density WLAN efficiency primarily with:",
+        "options": [
+          "Disabling DFS channels in all regulatory domains",
+          "Replacing CAPWAP with plain Layer-2 bridging only",
+          "OFDMA, MU-MIMO enhancements, BSS coloring, and Target Wake Time to serve more clients with less airtime contention",
+          "Mandatory WEP encryption on every SSID"
+        ],
+        "correct": 2,
+        "explanation": "802.11ax focuses on efficiency in dense environments: OFDMA schedules multi-user resource units, improved MU-MIMO, BSS coloring reduces co-channel interference impact, and TWT saves client power. It is not about dropping CAPWAP or using WEP.",
         "difficulty": "Medium"
       }
     ]
