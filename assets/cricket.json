@@ -2126,6 +2126,30 @@
         "correct": 0,
         "explanation": "DHCP snooping cria uma binding table e só trata portas trusted configuradas como servidores DHCP válidos. Ofertas rogue em portas untrusted são descartadas, reduzindo MITM e gateway errado.",
         "difficulty": "Médio"
+      },
+      {
+        "question": "No VTP clássico da Cisco, o que faz o modo Transparent?",
+        "options": [
+          "Apaga todas as VLANs e força todos os switches para Client",
+          "Só anuncia VLANs aprendidas via RADIUS",
+          "Reencaminha anúncios VTP mas não atualiza a sua própria base de VLANs com eles",
+          "Encripta automaticamente todos os trunks VLAN com MACsec"
+        ],
+        "correct": 2,
+        "explanation": "Um switch VTP Transparent retransmite mensagens VTP nos trunks, mas mantém a base de VLANs local e não aprende nem propaga alterações no domínio VTP. Server cria/altera; Client sincroniza a partir do Server.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "No STP, que bridge se torna a root bridge da spanning tree?",
+        "options": [
+          "O switch com o Bridge ID mais baixo (prioridade + MAC), após comparar Bridge IDs",
+          "Sempre o switch com mais portas",
+          "O primeiro switch a arrancar na VLAN",
+          "Só um router multilayer pode ser root"
+        ],
+        "correct": 0,
+        "explanation": "O STP elege a root pelo Bridge ID mais baixo: prioridade configurada (default 32768) mais o MAC do switch. Prioridade mais baixa ganha; em empate, o MAC mais baixo. As root ports apontam para essa root.",
+        "difficulty": "Fácil"
       }
     ],
     "en": [
@@ -4254,6 +4278,30 @@
         "correct": 0,
         "explanation": "DHCP snooping builds a binding table and treats only configured trusted ports as valid DHCP servers. Rogue offers from untrusted access ports are dropped, reducing MITM and wrong-gateway attacks.",
         "difficulty": "Medium"
+      },
+      {
+        "question": "In classic Cisco VTP, what does Transparent mode do?",
+        "options": [
+          "Deletes all VLANs and forces every switch into Client mode",
+          "Only advertises VLANs learned from RADIUS",
+          "Forwards VTP advertisements but does not update its own VLAN database from them",
+          "Encrypts all VLAN trunks with MACsec automatically"
+        ],
+        "correct": 2,
+        "explanation": "A VTP Transparent switch relays VTP messages on trunks but keeps its own VLAN database local and does not learn or advertise VLAN changes into the VTP domain. Server creates/modifies; Client syncs from Server.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In STP, which bridge becomes the root bridge of the spanning tree?",
+        "options": [
+          "The switch with the lowest Bridge ID (priority + MAC), after comparing Bridge IDs",
+          "Always the switch with the highest port count",
+          "The first switch that boots in the VLAN",
+          "Only a multilayer router can be root"
+        ],
+        "correct": 0,
+        "explanation": "STP elects the root by lowest Bridge ID: configured priority (default 32768) plus the switch MAC. Lower priority wins; if tied, the lower MAC wins. Root ports then point toward that root.",
+        "difficulty": "Easy"
       }
     ]
   },
@@ -6467,6 +6515,30 @@
         "correct": 1,
         "explanation": "Áreas stub mantêm a LSDB mais pequena: sem LSA Type 5 (externas). O ABR costuma injetar default para os routers internos chegarem ao exterior. Totally stubby também bloqueia Type 3 inter-área (Cisco).",
         "difficulty": "Difícil"
+      },
+      {
+        "question": "Na Camada 3, que campo se usa habitualmente para marcar pacotes para classificação QoS ponta a ponta?",
+        "options": [
+          "Apenas os bits CoS 802.1Q (sobrevivem inalterados em cada hop routed)",
+          "O tamanho da janela TCP",
+          "O opcode ARP",
+          "DSCP no cabeçalho IP (ToS/Traffic Class); CoS é Camada 2 em trunks 802.1Q"
+        ],
+        "correct": 3,
+        "explanation": "O DSCP (Differentiated Services Code Point) no cabeçalho IP marca pacotes para QoS em redes routed. O CoS 802.1Q (PCP) é marcação L2 no trunk e não se preserva depois do frame ser routed.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Como se relaciona o IPFIX com o NetFlow clássico nas plataformas Cisco?",
+        "options": [
+          "IPFIX é só uma extensão CDP de Camada 2 e não exporta flows",
+          "IPFIX (RFC 7011) é a evolução padronizada IETF da exportação de flows; o NetFlow v9 inspirou-o e muitos exporters falam ambos",
+          "IPFIX substitui LSAs OSPF por registos de flow",
+          "IPFIX desativa o CEF para process-switching de todos os pacotes"
+        ],
+        "correct": 1,
+        "explanation": "IPFIX é o standard IETF para exportar informação de flows, muito baseado nos templates do NetFlow v9. Os vendors costumam suportar coletores NetFlow e IPFIX; ambos exportam metadados das conversas, não o payload completo.",
+        "difficulty": "Médio"
       }
     ],
     "en": [
@@ -8678,6 +8750,30 @@
         "correct": 1,
         "explanation": "Stub areas keep the LSDB smaller: no Type 5 (external) LSAs. The ABR usually injects a default route so internal routers still reach external destinations. Totally stubby also blocks inter-area Type 3 summaries (Cisco).",
         "difficulty": "Hard"
+      },
+      {
+        "question": "At Layer 3, which field is commonly used to mark packets for QoS classification end-to-end?",
+        "options": [
+          "The 802.1Q CoS bits only (they survive every routed hop unchanged)",
+          "The TCP window size",
+          "The ARP opcode",
+          "DSCP in the IP header (ToS/Traffic Class); CoS is Layer-2 on 802.1Q trunks"
+        ],
+        "correct": 3,
+        "explanation": "DSCP (Differentiated Services Code Point) in the IP header marks packets for QoS across routed networks. 802.1Q CoS (PCP) is a Layer-2 trunk marking and is not preserved once the frame is routed.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "How does IPFIX relate to classic NetFlow on Cisco platforms?",
+        "options": [
+          "IPFIX is only a Layer-2 CDP extension and cannot export flows",
+          "IPFIX (RFC 7011) is the IETF standardized evolution of flow export; NetFlow v9 inspired it and many exporters speak both",
+          "IPFIX replaces OSPF LSAs with flow records",
+          "IPFIX disables CEF so every packet is process-switched"
+        ],
+        "correct": 1,
+        "explanation": "IPFIX is the IETF standard for flow information export, heavily based on NetFlow v9 templates. Vendors often support NetFlow and IPFIX collectors; both export metadata about conversations, not full payloads.",
+        "difficulty": "Medium"
       }
     ]
   },
@@ -10826,6 +10922,30 @@
         "correct": 2,
         "explanation": "802.11ax foca eficiência em ambientes densos: OFDMA agenda resource units multi-utilizador, MU-MIMO melhorado, BSS coloring reduz impacto de interferência co-canal e TWT poupa energia nos clientes. Não é abandonar CAPWAP nem usar WEP.",
         "difficulty": "Médio"
+      },
+      {
+        "question": "Qual é a principal razão operacional para usar ERSPAN em vez de SPAN local?",
+        "options": [
+          "Encapsular o tráfego espelhado em GRE e enviá-lo pela rede IP até um analisador remoto",
+          "Encriptar o plano de controlo com IPsec por omissão",
+          "Substituir completamente a amostragem NetFlow",
+          "Desativar o STP na VLAN monitorizada"
+        ],
+        "correct": 0,
+        "explanation": "ERSPAN (Encapsulated Remote SPAN) encapsula frames espelhados em GRE para um analisador central receber cópias de switches noutros pontos do fabric IP. SPAN local fica no mesmo switch; RSPAN usa uma VLAN.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "No FlexConnect wireless Cisco, o que consegue o local switching num AP de branch remoto?",
+        "options": [
+          "Obriga todos os frames do utilizador a voltar ao WLC antes de chegar à LAN local",
+          "Desativa todos os SSIDs quando o túnel CAPWAP cai",
+          "Faz bridge do tráfego de cliente para a VLAN wired local no AP (quando configurado), mesmo com caminho ao WLC limitado",
+          "Converte o AP num route reflector BGP completo"
+        ],
+        "correct": 2,
+        "explanation": "FlexConnect (H-REAP) com local switching deixa o AP fazer bridge do tráfego de cliente para uma VLAN local do branch, evitando hairpin no WAN até ao controller. Central switching envia os dados ao WLC; há opções locais para falha de WAN.",
+        "difficulty": "Difícil"
       }
     ],
     "en": [
@@ -12972,6 +13092,30 @@
         "correct": 2,
         "explanation": "802.11ax focuses on efficiency in dense environments: OFDMA schedules multi-user resource units, improved MU-MIMO, BSS coloring reduces co-channel interference impact, and TWT saves client power. It is not about dropping CAPWAP or using WEP.",
         "difficulty": "Medium"
+      },
+      {
+        "question": "What is the main operational reason to use ERSPAN instead of local SPAN?",
+        "options": [
+          "To encapsulate mirrored traffic in GRE and send it across an IP network to a remote analyzer",
+          "To encrypt the control plane with IPsec by default",
+          "To replace NetFlow sampling entirely",
+          "To disable STP on the monitored VLAN"
+        ],
+        "correct": 0,
+        "explanation": "ERSPAN (Encapsulated Remote SPAN) GRE-encapsulates mirrored frames so a central packet analyzer can receive copies from switches elsewhere in the IP fabric. Local SPAN stays on the same switch; RSPAN uses a VLAN.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "In Cisco wireless FlexConnect, what does local switching achieve at a remote branch AP?",
+        "options": [
+          "Forces every user frame back to the WLC before it can reach the local LAN",
+          "Disables all SSIDs when the CAPWAP tunnel drops",
+          "Bridges client data to the local wired VLAN at the AP when configured, even if the WLC path is constrained",
+          "Converts the AP into a full BGP route reflector"
+        ],
+        "correct": 2,
+        "explanation": "FlexConnect (H-REAP) local switching lets the AP bridge client traffic onto a local branch VLAN, reducing WAN hairpinning to the controller. Central switching tunnels user data to the WLC; local auth/switching options cover WAN failure modes.",
+        "difficulty": "Hard"
       }
     ]
   }
