@@ -22,14 +22,27 @@ Site de referência: https://fgrilo80.github.io/cricket/
 - Resultado com pontuação e **explicações** por pergunta.
 - Bloco **monoespaçado** quando a pergunta traz output de CLI/`show`.
 - Cor Cisco **#0a66c2**, opções grandes e fáceis de tocar no telemóvel. Labs usáveis no Windows (teclado) e no telemóvel (scroll + input grande).
-- Cópia offline da base incluída; atualização opcional a partir do GitHub.
+- Cópia offline da base incluída; **atualização automática de perguntas** a partir do GitHub Pages (sem reinstalar APK/zip). Botão «Atualizar perguntas» + verificação de versão da app.
 - Sem contas, anúncios, analítica ou telemetria.
 
-A app **não inventa perguntas**. A base vem do JSON público:
+A app **não inventa perguntas**. A base vem do JSON público (Pages, com fallback raw):
 
-https://raw.githubusercontent.com/Fgrilo80/cricket/main/cricket.json
+- https://fgrilo80.github.io/cricket/cricket.json
+- https://raw.githubusercontent.com/Fgrilo80/cricket/main/cricket.json
 
-A cópia incluída tem **1052 perguntas**.
+A cópia incluída tem **1100 perguntas** (CCST 181, CCNA 187, CCNP 182 × PT/EN).
+
+### Atualizar perguntas (sem reinstalar)
+
+Ao abrir a app, é feita uma verificação silenciosa da base remota. Se o remoto tiver **mais perguntas**, a app aplica-as automaticamente e mostra um SnackBar. Também podes tocar em **Atualizar perguntas**. A cópia offline / cache local permanece como fallback.
+
+### Atualizar o código da app (APK raro)
+
+«Verificar atualização da app» lê o manifesto:
+
+https://fgrilo80.github.io/cricket/app-version.json
+
+Se a versão remota for maior que a instalada (`package_info_plus`), abre o link de download (APK / releases). Em Android sideload, o sistema pede «Instalar» **só** para mudanças de código — as perguntas não exigem isso.
 
 ## Como correr
 
@@ -61,7 +74,7 @@ flutter build apk --split-per-abi --release
 # saída arm64: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
 ```
 
-APKs de release (split-per-abi) ficam em `/workspace/cisco-quiz-apk/` (ex.: `CiscoQuiz-1.2.2-arm64.apk`). Ver também [docs/ios-build.md](docs/ios-build.md) para iOS.
+APKs de release (split-per-abi) ficam em `/workspace/cisco-quiz-apk/` (ex.: `CiscoQuiz-1.2.6-arm64.apk`). Ver também [docs/ios-build.md](docs/ios-build.md) para iOS.
 
 A pasta `build/` não vai para o Git. Para voltar a gerar: Android SDK 36 + JDK 21 e o comando acima.
 

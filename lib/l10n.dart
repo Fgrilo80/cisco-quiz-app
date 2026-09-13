@@ -21,7 +21,7 @@ class S {
       ? 'Prática com feedback imediato, ou exame de 50 perguntas. Filtros, revisão de erros e labs CLI. Sem contas, sem anúncios.'
       : 'Practice with instant feedback, or a 50-question exam. Filters, missed-question review and CLI labs. No accounts, no ads.';
 
-  String get versionBadge => isPt ? 'VERSÃO 1.2 • 2026' : 'VERSION 1.2 • 2026';
+  String get versionBadge => isPt ? 'VERSÃO 1.2.6 • 2026' : 'VERSION 1.2.6 • 2026';
 
   String get portuguese => 'Português';
   String get english => 'English';
@@ -75,13 +75,13 @@ class S {
       isPt ? '$n por ver neste ciclo' : '$n unseen in this cycle';
 
   String get refreshTitle =>
-      isPt ? 'Atualizar base (opcional)' : 'Refresh bank (optional)';
+      isPt ? 'Atualizar perguntas' : 'Update questions';
 
   String get refreshHint => isPt
-      ? 'A app já inclui uma cópia offline. Podes ir buscar a versão mais recente no GitHub.'
-      : 'The app already includes an offline copy. You can fetch the latest version from GitHub.';
+      ? 'Novas perguntas chegam da base online — não precisas de reinstalar a app. A cópia offline serve sem internet.'
+      : 'New questions come from the online bank — no reinstall needed. The offline copy works without internet.';
 
-  String get refreshNow => isPt ? 'Atualizar agora' : 'Refresh now';
+  String get refreshNow => isPt ? 'Atualizar perguntas' : 'Update questions';
 
   String get refreshing => isPt ? 'A atualizar…' : 'Refreshing…';
 
@@ -94,6 +94,57 @@ class S {
       : 'Could not refresh. Using the local copy.';
 
   String get bankUrlLabel => isPt ? 'URL da base' : 'Bank URL';
+
+  String get bankSourceBundle => isPt ? 'cópia offline' : 'offline bundle';
+  String get bankSourceCache => isPt ? 'cache local' : 'local cache';
+  String get bankSourceRemote => isPt ? 'online' : 'online';
+
+  String bankSyncLine({required String sourceLabel, int? total, DateTime? when}) {
+    final parts = <String>[];
+    if (total != null) {
+      parts.add(isPt ? '$total perguntas' : '$total questions');
+    }
+    parts.add(sourceLabel);
+    if (when != null) {
+      final local = when.toLocal();
+      final hh = local.hour.toString().padLeft(2, '0');
+      final mm = local.minute.toString().padLeft(2, '0');
+      final dd = local.day.toString().padLeft(2, '0');
+      final mo = local.month.toString().padLeft(2, '0');
+      parts.add(isPt ? 'sync $dd/$mo $hh:$mm' : 'synced $dd/$mo $hh:$mm');
+    }
+    return parts.join(' · ');
+  }
+
+  String newBankBanner(int n) => isPt
+      ? 'Nova base disponível ($n perguntas) — Atualizar'
+      : 'New bank available ($n questions) — Update';
+
+  String get checkAppUpdate =>
+      isPt ? 'Verificar atualização da app' : 'Check for app update';
+
+  String get checkingAppUpdate =>
+      isPt ? 'A verificar versão…' : 'Checking version…';
+
+  String get appUpToDate => isPt
+      ? 'Já tens a versão mais recente da app.'
+      : 'You already have the latest app version.';
+
+  String get appUpdateFail => isPt
+      ? 'Não foi possível verificar atualizações da app.'
+      : 'Could not check for app updates.';
+
+  String appUpdateAvailable(String version) => isPt
+      ? 'Nova versão da app: $version'
+      : 'New app version: $version';
+
+  String get appUpdateDownload => isPt ? 'Descarregar' : 'Download';
+
+  String get appUpdateLater => isPt ? 'Mais tarde' : 'Later';
+
+  String get appUpdateBody => isPt
+      ? 'Atualizações de perguntas são automáticas. Só precisas de um APK novo quando há mudanças de código.'
+      : 'Question updates are automatic. You only need a new APK for code changes.';
 
   String get footer => isPt
       ? 'Prática: feedback imediato • Exame: até 50 perguntas, 45 min • Filtros • Rever fracas • Labs CLI • Pausa guarda o progresso'

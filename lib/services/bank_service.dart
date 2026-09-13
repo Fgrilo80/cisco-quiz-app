@@ -12,15 +12,38 @@ import 'progress_store.dart';
 
 const bundledAsset = 'assets/cricket.json';
 
+class RemoteBankProbe {
+  const RemoteBankProbe({
+    required this.total,
+    required this.bodyBytes,
+    required this.url,
+  });
+
+  final int total;
+  final List<int> bodyBytes;
+  final String url;
+}
+
 class BankService extends ChangeNotifier {
-  BankService();
+  BankService({this._store});
+
+  ProgressStore? _store;
+
+  void attachStore(ProgressStore store) {
+    _store = store;
+  }
 
   Map<String, Map<String, List<Question>>> _data = emptyBank();
 
   bool loading = true;
   bool refreshing = false;
+  bool checkingRemote = false;
   String? loadError;
   String source = 'bundle';
+  int? remoteAvailableTotal;
+  bool updateAvailable = false;
+  DateTime? lastSyncedAt;
+  String? lastRemoteUrl;
 
   List<Question> questions(String cert, String lang) =>
       _data[cert]?[lang] ?? const [];
@@ -80,6 +103,7 @@ class BankService extends ChangeNotifier {
       if (total == 0) {
         loadError = 'empty';
       }
+      lastSyncedAt = _store?.lastBankSyncAt;
     } catch (e) {
       loadError = '$e';
     } finally {
@@ -88,24 +112,61 @@ class BankService extends ChangeNotifier {
     }
   }
 
-  Future<bool> refreshFromGithub() async {
+  /// Probe remote bank without applying. Tries Pages then raw GitHub.
+  Future<RemoteBankProbe?> probeRemote() async {
+    checkingRemote = true;
+    notifyListeners();
+    try {
+      for (final url in bankRemoteUrls) {
+        try {
+          final response = await http
+              .get(Uri.parse(url))
+              .timeout(const Duration(seconds: 25));
+          if (response.statusCode != 200) continue;
+          final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+          if (!bankHasExpectedShape(decoded)) continue;
+          final parsed = parseQuestionBank(decoded);
+          final n = bankQuestionCount(parsed);
+          if (n == 0) continue;
+          remoteAvailableTotal = n;
+          lastRemoteUrl = url;
+          updateAvailable = n > total;
+          return RemoteBankProbe(
+            total: n,
+            bodyBytes: response.bodyBytes,
+            url: url,
+          );
+        } catch (_) {
+          continue;
+        }
+      }
+      return null;
+    } finally {
+      checkingRemote = false;
+      notifyListeners();
+    }
+  }
+
+  /// Apply a previously probed payload (or re-download).
+  Future<bool> applyRemote(RemoteBankProbe probe) async {
     refreshing = true;
     notifyListeners();
     try {
-      final response = await http
-          .get(Uri.parse(bankRemoteUrl))
-          .timeout(const Duration(seconds: 25));
-      if (response.statusCode != 200) {
-        return false;
-      }
-      final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+      final decoded = jsonDecode(utf8.decode(probe.bodyBytes));
       if (!bankHasExpectedShape(decoded)) return false;
       final parsed = parseQuestionBank(decoded);
-      if (bankQuestionCount(parsed) == 0) return false;
+      final n = bankQuestionCount(parsed);
+      if (n == 0) return false;
       _data = parsed;
       source = 'remote';
       loadError = null;
-      await _writeCached(response.bodyBytes);
+      remoteAvailableTotal = n;
+      updateAvailable = false;
+      lastRemoteUrl = probe.url;
+      lastSyncedAt = DateTime.now();
+      await _writeCached(probe.bodyBytes);
+      await _store?.setLastBankSyncAt(lastSyncedAt!);
+      await _store?.setLastBankTotal(n);
       return true;
     } catch (_) {
       return false;
@@ -113,6 +174,26 @@ class BankService extends ChangeNotifier {
       refreshing = false;
       notifyListeners();
     }
+  }
+
+  Future<bool> refreshFromGithub() async {
+    final probe = await probeRemote();
+    if (probe == null) return false;
+    return applyRemote(probe);
+  }
+
+  /// After local load: if remote has more questions, auto-apply.
+  /// Returns applied total, or null if nothing applied.
+  Future<int?> checkAndAutoRefresh() async {
+    final probe = await probeRemote();
+    if (probe == null) return null;
+    if (probe.total <= total) {
+      updateAvailable = false;
+      notifyListeners();
+      return null;
+    }
+    final ok = await applyRemote(probe);
+    return ok ? total : null;
   }
 
   Future<File?> _cacheFile() async {

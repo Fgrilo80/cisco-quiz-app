@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../l10n.dart';
 import '../models/question.dart';
 import '../models/quiz_session.dart';
 import '../models/quiz_stats.dart';
+import '../services/app_update_service.dart';
 import '../services/bank_service.dart';
 import '../services/progress_store.dart';
 import '../services/quiz_filters.dart';
@@ -29,6 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
   QuizMode _mode = QuizMode.practice;
   String _difficulty = '';
   String _topic = '';
+  bool _checkingApp = false;
+  String? _localAppVersion;
+  final _appUpdates = AppUpdateService();
 
   @override
   void initState() {
@@ -38,6 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _difficulty = widget.store.filterDifficulty;
     _topic = widget.store.filterTopic;
     widget.bank.addListener(_onBank);
+    widget.bank.attachStore(widget.store);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _bootstrapUpdates();
+    });
   }
 
   @override
@@ -241,6 +250,83 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> _bootstrapUpdates() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (mounted) setState(() => _localAppVersion = info.version);
+    } catch (_) {}
+    if (!mounted) return;
+    final applied = await widget.bank.checkAndAutoRefresh();
+    if (!mounted) return;
+    if (applied != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(s.refreshOk(applied))),
+      );
+    }
+  }
+
+  String _sourceLabel() {
+    switch (widget.bank.source) {
+      case 'remote':
+        return s.bankSourceRemote;
+      case 'cache':
+        return s.bankSourceCache;
+      default:
+        return s.bankSourceBundle;
+    }
+  }
+
+  Future<void> _checkAppUpdate() async {
+    setState(() => _checkingApp = true);
+    try {
+      final update = await _appUpdates.checkForAppUpdate();
+      if (!mounted) return;
+      if (update == null) {
+        final remote = await _appUpdates.fetchRemoteManifest();
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              remote == null ? s.appUpdateFail : s.appUpToDate,
+            ),
+          ),
+        );
+        return;
+      }
+      final go = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(s.appUpdateAvailable(update.remoteVersion)),
+          content: Text(
+            [
+              s.appUpdateBody,
+              if (update.notes != null && update.notes!.trim().isNotEmpty)
+                update.notes!,
+              if (update.windowsNote != null &&
+                  update.windowsNote!.trim().isNotEmpty)
+                update.windowsNote!,
+            ].join('\n\n'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(s.appUpdateLater),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(s.appUpdateDownload),
+            ),
+          ],
+        ),
+      );
+      if (go == true) {
+        await _appUpdates.openDownload(update);
+      }
+    } finally {
+      if (mounted) setState(() => _checkingApp = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bank = widget.bank;
@@ -352,6 +438,34 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: const TextStyle(
                       color: Color(0xFFF87171),
                       fontSize: 14,
+                    ),
+                  ),
+                ],
+                if (bank.updateAvailable &&
+                    (bank.remoteAvailableTotal ?? 0) > bank.total) ...[
+                  const SizedBox(height: 12),
+                  Card(
+                    color: const Color(0xFF052E1C),
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.system_update_alt,
+                        color: Color(0xFF34D399),
+                      ),
+                      title: Text(
+                        s.newBankBanner(bank.remoteAvailableTotal!),
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      trailing: bank.refreshing
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : IconButton(
+                              icon: const Icon(Icons.sync),
+                              onPressed: _refresh,
+                            ),
+                      onTap: bank.refreshing ? null : _refresh,
                     ),
                   ),
                 ],
@@ -490,8 +604,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Text(
                                 s.refreshTitle,
                                 style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 17,
                                 ),
                               ),
                             ),
@@ -505,22 +619,70 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontSize: 13.5,
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        FilledButton.icon(
-                          onPressed: bank.refreshing ? null : _refresh,
-                          icon: bank.refreshing
-                              ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Icon(Icons.sync),
-                          label: Text(
-                            bank.refreshing ? s.refreshing : s.refreshNow,
+                        const SizedBox(height: 10),
+                        Text(
+                          s.bankSyncLine(
+                            sourceLabel: _sourceLabel(),
+                            total: bank.total,
+                            when: bank.lastSyncedAt,
+                          ),
+                          style: const TextStyle(
+                            color: Color(0xFF64748B),
+                            fontSize: 12.5,
                           ),
                         ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton.icon(
+                            onPressed: bank.refreshing ? null : _refresh,
+                            icon: bank.refreshing
+                                ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Icon(Icons.sync),
+                            label: Text(
+                              bank.refreshing ? s.refreshing : s.refreshNow,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            onPressed: _checkingApp ? null : _checkAppUpdate,
+                            icon: _checkingApp
+                                ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Icon(Icons.system_update),
+                            label: Text(
+                              _checkingApp
+                                  ? s.checkingAppUpdate
+                                  : s.checkAppUpdate,
+                            ),
+                          ),
+                        ),
+                        if (_localAppVersion != null) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            s.isPt
+                                ? 'App instalada: $_localAppVersion'
+                                : 'Installed app: $_localAppVersion',
+                            style: const TextStyle(
+                              color: Color(0xFF64748B),
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 12),
                         Container(
                           width: double.infinity,

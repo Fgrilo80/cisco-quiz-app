@@ -9,7 +9,7 @@ import 'theme.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final store = await ProgressStore.create();
-  final bank = BankService();
+  final bank = BankService(store: store);
   await bank.load();
   runApp(CiscoQuizApp(bank: bank, store: store));
 }

@@ -2150,6 +2150,30 @@
         "correct": 0,
         "explanation": "O STP elege a root pelo Bridge ID mais baixo: prioridade configurada (default 32768) mais o MAC do switch. Prioridade mais baixa ganha; em empate, o MAC mais baixo. As root ports apontam para essa root.",
         "difficulty": "Fácil"
+      },
+      {
+        "question": "Em equipamentos Cisco, para que se usa mais habitualmente o TFTP?",
+        "options": [
+          "Encriptar sessões de gestão ponta a ponta como o SSH",
+          "Substituir o OSPF como protocolo de routing interno",
+          "Autenticar clientes wireless com certificados",
+          "Transferência simples de imagens IOS e ficheiros de configuração (UDP 69), sem autenticação nem encriptação nativas"
+        ],
+        "correct": 3,
+        "explanation": "O TFTP (Trivial File Transfer Protocol) usa UDP 69 e serve sobretudo para copiar imagens IOS e configs running/startup de/para um servidor. É leve, mas sem autenticação nem encriptação; use só em redes de gestão confiáveis. O FTP acrescenta login e TCP; SCP/SFTP são mais seguros quando disponíveis.",
+        "difficulty": "Fácil"
+      },
+      {
+        "question": "O que permite tipicamente configurar ip helper-address numa interface de router?",
+        "options": [
+          "Transforma o router num servidor DHCP que inventa leases localmente",
+          "DHCP relay: reencaminha broadcasts DHCP dos clientes como unicast para um servidor DHCP remoto",
+          "Desativa permanentemente todos os broadcasts nessa VLAN",
+          "Só traduz Neighbor Discovery IPv6 para ARP IPv4"
+        ],
+        "correct": 1,
+        "explanation": "ip helper-address ativa DHCP relay (entre outros helpers UDP): o router recebe o broadcast DHCP do cliente na LAN e reenvia-o em unicast para o IP do servidor DHCP, permitindo clientes e servidor em sub-redes diferentes. O router não inventa leases a menos que também esteja configurado como servidor DHCP.",
+        "difficulty": "Médio"
       }
     ],
     "en": [
@@ -4302,6 +4326,30 @@
         "correct": 0,
         "explanation": "STP elects the root by lowest Bridge ID: configured priority (default 32768) plus the switch MAC. Lower priority wins; if tied, the lower MAC wins. Root ports then point toward that root.",
         "difficulty": "Easy"
+      },
+      {
+        "question": "On Cisco devices, what is TFTP most commonly used for?",
+        "options": [
+          "Encrypting management sessions end-to-end like SSH",
+          "Replacing OSPF as the interior routing protocol",
+          "Authenticating wireless clients with certificates",
+          "Simple transfer of IOS images and configuration files (UDP 69), without built-in authentication or encryption"
+        ],
+        "correct": 3,
+        "explanation": "TFTP (Trivial File Transfer Protocol) uses UDP 69 and is widely used to copy IOS images and running/startup configs to or from a server. It is lightweight but has no authentication or encryption; use it only on trusted management networks. FTP adds login and TCP reliability; SCP/SFTP are safer when available.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "What does configuring ip helper-address on a router interface typically enable?",
+        "options": [
+          "It turns the router into a DHCP server that invents leases locally",
+          "DHCP relay: it forwards DHCP broadcasts from clients as unicast to a remote DHCP server",
+          "It disables all broadcasts on that VLAN permanently",
+          "It only translates IPv6 Neighbor Discovery to IPv4 ARP"
+        ],
+        "correct": 1,
+        "explanation": "ip helper-address enables DHCP relay (among other UDP helpers): the router receives a client DHCP broadcast on the LAN and forwards it as unicast to the configured DHCP server IP, so clients and the server can sit on different subnets. The router is not inventing leases unless it is also configured as a DHCP server.",
+        "difficulty": "Medium"
       }
     ]
   },
@@ -6539,6 +6587,30 @@
         "correct": 1,
         "explanation": "IPFIX é o standard IETF para exportar informação de flows, muito baseado nos templates do NetFlow v9. Os vendors costumam suportar coletores NetFlow e IPFIX; ambos exportam metadados das conversas, não o payload completo.",
         "difficulty": "Médio"
+      },
+      {
+        "question": "Para que serve uma floating static route?",
+        "options": [
+          "Rota estática de backup com administrative distance maior que o caminho principal, instalada só se a rota preferida falhar",
+          "Rota estática que ganha sempre ao OSPF porque o AD estático é infinito",
+          "Rota que faz load-balance igual com todos os protocolos dinâmicos por omissão",
+          "Host route que só pode apontar para uma interface null0"
+        ],
+        "correct": 0,
+        "explanation": "Uma floating static configura-se com administrative distance maior que a rota principal (ex.: AD estático 1 elevado para 210 para o OSPF AD 110 ganhar). Fica fora da tabela até a rota preferida desaparecer e então assume o backup. Não ganha ao OSPF se mantiveres o AD estático default de 1.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Num segmento OSPF multi-access (Ethernet), como se escolhem o Designated Router (DR) e o Backup DR (BDR)?",
+        "options": [
+          "Sempre o router com o process ID OSPF mais baixo",
+          "Só o router que tem uma default route estática",
+          "Ganha a maior prioridade de interface OSPF; em empate, o Router ID mais alto (o BDR é o seguinte)",
+          "Round-robin entre todos os vizinhos a cada intervalo Hello"
+        ],
+        "correct": 2,
+        "explanation": "Em redes broadcast multi-access o OSPF elege DR e BDR para reduzir flooding de adjacências. Ganha a maior prioridade de interface (0–255; 0 = inelegível); empates resolvem-se com o Router ID mais alto. Os outros routers formam full adjacency sobretudo com DR/BDR (DROTHER).",
+        "difficulty": "Médio"
       }
     ],
     "en": [
@@ -8774,6 +8846,30 @@
         "correct": 1,
         "explanation": "IPFIX is the IETF standard for flow information export, heavily based on NetFlow v9 templates. Vendors often support NetFlow and IPFIX collectors; both export metadata about conversations, not full payloads.",
         "difficulty": "Medium"
+      },
+      {
+        "question": "What is a floating static route used for?",
+        "options": [
+          "A backup static route with a higher administrative distance than the primary path, installed only if the preferred route fails",
+          "A static route that always beats OSPF because static AD is infinite",
+          "A route that load-balances equally with every dynamic protocol by default",
+          "A host route that can only point to a null0 interface"
+        ],
+        "correct": 0,
+        "explanation": "A floating static is configured with an administrative distance higher than the primary route (for example static AD 1 raised to 210 so OSPF AD 110 wins). It stays out of the routing table until the preferred route disappears, then becomes the backup path. It does not beat OSPF unless you keep the default static AD of 1.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "On an OSPF multi-access segment (Ethernet), how are the Designated Router (DR) and Backup DR (BDR) chosen?",
+        "options": [
+          "Always the router with the lowest OSPF process ID",
+          "Only the router that has a static default route",
+          "Highest OSPF interface priority wins; if tied, highest Router ID wins (BDR is next)",
+          "Round-robin among all neighbors every Hello interval"
+        ],
+        "correct": 2,
+        "explanation": "On broadcast multi-access networks OSPF elects a DR and BDR to reduce adjacency flooding. Highest interface priority (0–255; 0 means ineligible) wins; ties break on highest Router ID. Other routers form full adjacency mainly with DR/BDR (DROTHER).",
+        "difficulty": "Medium"
       }
     ]
   },
@@ -10946,6 +11042,30 @@
         "correct": 2,
         "explanation": "FlexConnect (H-REAP) com local switching deixa o AP fazer bridge do tráfego de cliente para uma VLAN local do branch, evitando hairpin no WAN até ao controller. Central switching envia os dados ao WLC; há opções locais para falha de WAN.",
         "difficulty": "Difícil"
+      },
+      {
+        "question": "Contra o que protege o IPv6 RA Guard num switch de acesso?",
+        "options": [
+          "Bloqueia para sempre todo o tráfego IPv6 exceto DHCPv6",
+          "Filtra Router Advertisements rogue nas portas de acesso para só portas trusted poderem anunciar prefixos/gateways",
+          "Substitui o SLAAC por endereçamento estático obrigatório em todos os hosts",
+          "Encripta automaticamente o Neighbor Discovery com IPsec"
+        ],
+        "correct": 1,
+        "explanation": "O RA Guard (IPv6 First Hop Security) descarta Router Advertisements inesperados em portas de acesso untrusted, impedindo dispositivos rogue de anunciar prefixos ou gateways falsos. Portas trusted (uplink/router) podem enviar RAs. Complementa DHCPv6 Guard e ND inspection.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "No Cisco SD-WAN, qual é o papel principal do orquestrador vBond?",
+        "options": [
+          "É o único que reencaminha todos os pacotes de dados do utilizador no underlay",
+          "Substitui todos os routers de edge WAN por bridges de Camada 2",
+          "Só guarda registos NetFlow para compliance",
+          "Autentica e apresenta os WAN Edge ao overlay (vSmart/vManage), permitindo o onboarding seguro"
+        ],
+        "correct": 3,
+        "explanation": "O vBond é o orquestrador: os WAN Edges autenticam-se primeiro nele; depois o vBond indica como chegar ao vSmart (controlo) e ao vManage (gestão). O data plane fica entre edges (muitas vezes com IPsec); o vSmart distribui política de controlo via OMP. O vBond é crítico no bring-up zero-touch e na ajuda com NAT.",
+        "difficulty": "Difícil"
       }
     ],
     "en": [
@@ -13115,6 +13235,30 @@
         ],
         "correct": 2,
         "explanation": "FlexConnect (H-REAP) local switching lets the AP bridge client traffic onto a local branch VLAN, reducing WAN hairpinning to the controller. Central switching tunnels user data to the WLC; local auth/switching options cover WAN failure modes.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "What does IPv6 RA Guard protect against on an access switch?",
+        "options": [
+          "It blocks all IPv6 traffic except DHCPv6 forever",
+          "It filters rogue Router Advertisements on access ports so only trusted ports may announce prefixes/gateways",
+          "It replaces SLAAC with mandatory static addressing on every host",
+          "It encrypts Neighbor Discovery with IPsec automatically"
+        ],
+        "correct": 1,
+        "explanation": "RA Guard (IPv6 First Hop Security) drops or blocks unexpected Router Advertisements on untrusted access ports, stopping rogue devices from advertising fake prefixes or default gateways. Trusted uplink/router ports are allowed to send RAs. It complements DHCPv6 Guard and ND inspection.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "In Cisco SD-WAN, what is the primary role of the vBond orchestrator?",
+        "options": [
+          "It alone forwards all user data packets in the underlay",
+          "It replaces every WAN edge router with a Layer-2 bridge",
+          "It only stores NetFlow records for compliance",
+          "It authenticates and introduces WAN Edge devices to the overlay (vSmart/vManage), enabling secure onboarding"
+        ],
+        "correct": 3,
+        "explanation": "vBond is the orchestrator: WAN Edges authenticate to it first; vBond then tells them how to reach vSmart (control) and vManage (management). Data plane traffic stays between edges (often with IPsec); vSmart distributes control policy via OMP. vBond is critical for zero-touch bring-up and NAT traversal assistance.",
         "difficulty": "Hard"
       }
     ]

@@ -7,8 +7,22 @@ import '../models/quiz_session.dart';
 import '../models/quiz_stats.dart';
 import 'srs.dart';
 
+/// Prefer GitHub Pages (CDN + CORS); raw GitHub as fallback.
+const bankRemoteUrls = <String>[
+  'https://fgrilo80.github.io/cricket/cricket.json',
+  'https://raw.githubusercontent.com/Fgrilo80/cricket/main/cricket.json',
+];
+
 const bankRemoteUrl =
-    'https://raw.githubusercontent.com/Fgrilo80/cricket/main/cricket.json';
+    'https://fgrilo80.github.io/cricket/cricket.json';
+
+const appVersionManifestUrls = <String>[
+  'https://fgrilo80.github.io/cricket/app-version.json',
+  'https://raw.githubusercontent.com/Fgrilo80/cricket/main/app-version.json',
+];
+
+const appVersionManifestUrl =
+    'https://fgrilo80.github.io/cricket/app-version.json';
 
 class ProgressStore {
   ProgressStore(this._prefs);
@@ -22,6 +36,8 @@ class ProgressStore {
   static const _srsKey = 'srs_items';
   static const _statsKey = 'quiz_stats';
   static const _missKey = 'miss_times';
+  static const _bankSyncKey = 'bank_last_sync_ms';
+  static const _bankTotalKey = 'bank_last_remote_total';
 
   static String _seenKey(String cert, String lang) => 'seen_${cert}_$lang';
 
@@ -33,6 +49,26 @@ class ProgressStore {
   String get uiLang => _prefs.getString(_uiLangKey) ?? 'pt';
 
   Future<void> setUiLang(String code) => _prefs.setString(_uiLangKey, code);
+
+  DateTime? get lastBankSyncAt {
+    final raw = _prefs.getString(_bankSyncKey);
+    if (raw == null || raw.isEmpty) return null;
+    final ms = int.tryParse(raw);
+    if (ms == null || ms <= 0) return null;
+    return DateTime.fromMillisecondsSinceEpoch(ms);
+  }
+
+  Future<void> setLastBankSyncAt(DateTime when) =>
+      _prefs.setString(_bankSyncKey, '${when.millisecondsSinceEpoch}');
+
+  int? get lastBankRemoteTotal {
+    final raw = _prefs.getString(_bankTotalKey);
+    if (raw == null || raw.isEmpty) return null;
+    return int.tryParse(raw);
+  }
+
+  Future<void> setLastBankTotal(int total) =>
+      _prefs.setString(_bankTotalKey, '$total');
 
   String get filterDifficulty => _prefs.getString(_diffKey) ?? '';
 
