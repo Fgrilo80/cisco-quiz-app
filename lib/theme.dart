@@ -96,12 +96,20 @@ class CertPalette {
     button: Color(0xFF7C3AED),
   );
 
+  static const cyber = CertPalette(
+    accent: Color(0xFFFB7185),
+    badgeBg: Color(0x1AFB7185),
+    button: Color(0xFFE11D48),
+  );
+
   static CertPalette of(String cert) {
     switch (cert) {
       case 'ccst':
         return ccst;
       case 'ccnp':
         return ccnp;
+      case 'cyber':
+        return cyber;
       default:
         return ccna;
     }

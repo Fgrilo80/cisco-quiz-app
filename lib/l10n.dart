@@ -53,6 +53,9 @@ class S {
   String get ccstFull => 'Cisco Certified Support Technician';
   String get ccnaFull => 'Cisco Certified Network Associate';
   String get ccnpFull => 'Cisco Certified Network Professional';
+  String get cyberFull => isPt
+      ? 'CCST Cybersecurity (em expansão)'
+      : 'CCST Cybersecurity (growing)';
 
   String get ccstFocus =>
       isPt ? 'Suporte e troubleshooting' : 'Support & troubleshooting';
@@ -61,10 +64,15 @@ class S {
   String get ccnpFocus => isPt
       ? 'Enterprise, security, automation'
       : 'Enterprise, security, automation';
+  String get cyberFocus => isPt
+      ? 'CIA, Zero Trust, AAA, VPN'
+      : 'CIA, Zero Trust, AAA, VPN';
 
   String get ccstLevel => isPt ? 'Fácil a médio' : 'Easy to medium';
   String get ccnaLevel => isPt ? 'Fácil a avançado' : 'Easy to advanced';
   String get ccnpLevel => isPt ? 'Médio a expert' : 'Medium to expert';
+  String get cyberLevel => isPt ? 'Entrada a médio' : 'Entry to medium';
+  String get cybersecurityBadge => isPt ? 'CYBERSEGURANÇA' : 'CYBERSECURITY';
 
   String questionsInBank(int n) =>
       isPt ? '$n perguntas na base' : '$n questions in the bank';
@@ -302,6 +310,8 @@ class S {
         return 'CCST';
       case 'ccnp':
         return 'CCNP';
+      case 'cyber':
+        return isPt ? 'Cybersegurança' : 'Cybersecurity';
       default:
         return 'CCNA';
     }

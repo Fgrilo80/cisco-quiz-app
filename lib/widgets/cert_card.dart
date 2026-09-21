@@ -47,6 +47,12 @@ class CertCard extends StatelessWidget {
         level = s.ccnpLevel;
         focus = s.ccnpFocus;
         icon = Icons.security_outlined;
+      case 'cyber':
+        badge = s.cybersecurityBadge;
+        full = s.cyberFull;
+        level = s.cyberLevel;
+        focus = s.cyberFocus;
+        icon = Icons.shield_outlined;
       default:
         badge = s.associate;
         full = s.ccnaFull;

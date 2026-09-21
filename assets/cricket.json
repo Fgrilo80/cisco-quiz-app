@@ -2174,6 +2174,174 @@
         "correct": 1,
         "explanation": "ip helper-address ativa DHCP relay (entre outros helpers UDP): o router recebe o broadcast DHCP do cliente na LAN e reenvia-o em unicast para o IP do servidor DHCP, permitindo clientes e servidor em sub-redes diferentes. O router não inventa leases a menos que também esteja configurado como servidor DHCP.",
         "difficulty": "Médio"
+      },
+      {
+        "question": "O que é um access point rogue (rogue AP) num ambiente wireless?",
+        "options": [
+          "Um WLC Cisco oficial que só serve SSIDs de convidados",
+          "Um AP licenciado que usa sempre WPA3-Enterprise",
+          "Um AP não autorizado ligado à rede cabeada (ou a emitir perto), que pode criar riscos de segurança e interferência",
+          "Qualquer AP que use a banda de 2,4 GHz em vez de 5 GHz"
+        ],
+        "correct": 2,
+        "explanation": "Um rogue AP é um access point wireless não autorizado—muitas vezes ligado a um switch corporativo por um utilizador, ou um evil twin de um atacante. Pode contornar NAC/802.1X, expor tráfego e interferir no plano RF. Controllers e WIDS/WIPS ajudam a detetar e conter rogues; esconder o SSID não os impede.",
+        "difficulty": "Fácil"
+      },
+      {
+        "question": "Em wireless 802.1X (WPA2/WPA3-Enterprise), como é que o EAP-TLS autentica tipicamente o cliente em comparação com o PEAP?",
+        "options": [
+          "O EAP-TLS usa certificado do cliente (e normalmente do servidor); o PEAP costuma encapsular um método interno com palavra-passe (ex. MSCHAPv2) dentro de um túnel TLS até ao RADIUS",
+          "O EAP-TLS só partilha um PSK para todo o SSID, como o WPA2-Personal clássico",
+          "O PEAP exige certificado do cliente e o EAP-TLS nunca usa certificados",
+          "Ambos desativam o RADIUS e autenticam só com a base de utilizadores local do AP"
+        ],
+        "correct": 0,
+        "explanation": "O EAP-TLS baseia-se em certificados: o cliente apresenta um certificado (e valida o servidor). O PEAP cria um túnel TLS até ao servidor de autenticação e costuma correr um método interno com palavra-passe (ex. MSCHAPv2), por isso os clientes precisam mais de credenciais do que de certificados. Ambos usam 802.1X com backend RADIUS (ex. ISE); nenhum é um PSK partilhado.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Para que serve principalmente o Cisco CleanAir numa rede wireless?",
+        "options": [
+          "Substituir o CAPWAP por mesh proprietário só em 900 MHz",
+          "Desativar permanentemente todos os clientes não-Wi-Fi sem um AP",
+          "Detetar e classificar interferentes RF não-Wi-Fi (micro-ondas, Bluetooth, jammers) para o RRM/IT os mitigar",
+          "Cifrar por omissão todos os frames de gestão com WEP"
+        ],
+        "correct": 2,
+        "explanation": "O CleanAir usa análise de espectro em APs capazes para identificar fontes de interferência não-Wi-Fi que degradam a WLAN. Controllers/Catalyst Center mostram interferentes e podem impulsionar alterações de RRM (canal/potência). Não substitui WPA3, CAPWAP nem esconder o SSID.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Qual é o objetivo principal do IEEE 802.11r (Fast Transition / Fast BSS Transition) para clientes Wi-Fi?",
+        "options": [
+          "Acelerar o roaming entre APs ao reduzir o tempo gasto a reautenticar durante uma transição de BSS",
+          "Forçar todos os SSIDs a usar só a banda de 2,4 GHz",
+          "Substituir o DHCP por endereços APIPA estáticos no roam",
+          "Desligar a encriptação sempre que o cliente muda de AP"
+        ],
+        "correct": 0,
+        "explanation": "O 802.11r (FT) permite ao cliente concluir passos de handshake de chaves de forma a encurtar o tempo de roam entre APs no mesmo domínio de mobilidade—importante para voz/vídeo. Não remove a encriptação, não altera o DHCP nem limita a banda a 2,4 GHz. O 802.11k/v costuma complementar o FT com neighbor reports e roaming assistido.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Num desenho wireless de convidados Cisco com auto-anchor (guest anchor), qual é o papel do controlador foreign face ao anchor?",
+        "options": [
+          "O foreign termina o SSID de convidados localmente e nunca faz túnel; o anchor só guarda leases DHCP offline",
+          "Ambos os controladores têm de estar no mesmo edifício e partilhar um IP de gestão, senão os convidados não associam",
+          "O foreign é onde o cliente associa; o tráfego de convidados é tunelado (tipicamente CAPWAP/EoIP) até ao anchor na DMZ, que aplica a VLAN/política de guest e muitas vezes a saída para a Internet",
+          "O anchor só trata a banda de 2,4 GHz; o foreign só trata a de 5 GHz"
+        ],
+        "correct": 2,
+        "explanation": "O auto-anchor (guest anchor) mantém os clientes de convidados associados a APs/WLCs no campus (foreign) e tunela o tráfego para um WLC anchor numa zona DMZ/firewall. O anchor coloca os convidados na VLAN de guest e tipicamente dá Internet sem acesso à LAN interna. Não é uma divisão por banda, e o foreign não termina simplesmente o tráfego de guest localmente.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "O que pretende um ataque de DHCP starvation numa LAN, e que funcionalidade no switch costuma mitigá-lo?",
+        "options": [
+          "Esgotar o pool de IPs do servidor DHCP pedindo muitos leases (muitas vezes com MACs falsificados) para os clientes legítimos não obterem endereço; mitigar com DHCP snooping (e muitas vezes port-security / limites de taxa)",
+          "Encher a tabela CAM do switch com MACs falsos até o switch se comportar como hub; mitigar só com PortFast do spanning-tree",
+          "Cifrar todas as mensagens DHCP Offer com WEP para os clientes não renovarem; mitigar desativando o DHCP relay",
+          "Forçar todos os clientes a usar APIPA 169.254.x.x permanentemente; mitigar desligando o ARP"
+        ],
+        "correct": 0,
+        "explanation": "O DHCP starvation satura Discover/Request (frequentemente com muitos MACs de cliente falsificados) para o pool do servidor acabar e utilizadores reais não obterem lease. O DHCP snooping limita portas untrusted e constrói a binding table; port-security e rate limiting de DHCP também ajudam. CAM overflow é outro ataque (MAC flooding). Desativar DHCP relay ou ARP não é a mitigação.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Qual é uma diferença prática entre CDP e LLDP ao descobrir vizinhos num switch ou router?",
+        "options": [
+          "O CDP só funciona em links de fibra; o LLDP só funciona em cobre",
+          "O CDP é proprietário Cisco e vem ativo por omissão em muitos equipamentos Cisco; o LLDP é um padrão aberto IEEE 802.1AB usado para descoberta de vizinhos multi-fornecedor",
+          "O LLDP elege o DR OSPF; o CDP elege a root do STP",
+          "Ambos os protocolos cifram toda a tabela de vizinhos com IPsec, por isso não se conseguem capturar num SPAN"
+        ],
+        "correct": 1,
+        "explanation": "O CDP (Cisco Discovery Protocol) é proprietário e costuma estar ligado por omissão em equipamento Cisco. O LLDP (IEEE 802.1AB) é neutro quanto ao fabricante e preferível em ambientes mistos. Ambos anunciam identidade e capacidades no enlace; nenhum elege papéis OSPF/STP nem cifra a base de vizinhos com IPsec por omissão.",
+        "difficulty": "Fácil"
+      },
+      {
+        "question": "Um técnico monta um cabo de rede Ethernet copper straight-through segundo as normas TIA-568. Qual afirmação está correta?",
+        "options": [
+          "Straight-through significa sempre que os pinos 1–8 num extremo mapeiam de forma aleatória para 8–1 no outro",
+          "É obrigatório usar TIA-568A num extremo e TIA-568B no outro para fazer um cabo straight-through",
+          "Os jumpers de fibra OM4 LC-LC seguem o mesmo código de cores TIA-568A/B do cobre Cat6",
+          "Os dois extremos usam a mesma norma de pinout (ambos TIA-568A ou ambos TIA-568B); misturar A num extremo e B no outro cria um crossover"
+        ],
+        "correct": 3,
+        "explanation": "Um cabo straight-through termina os dois extremos com a mesma cablagem TIA-568 (A-A ou B-B). Misturar 568A num extremo e 568B no outro produz um crossover (pares TX/RX trocados). Mapeamento aleatório invertido não define straight-through, e os jumpers de fibra não usam o esquema de cores 568A/B do cobre.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Para que se usa tipicamente o 802.1Q tunneling (Q-in-Q / double tagging)?",
+        "options": [
+          "Cifrar cada trama Ethernet com IPsec entre dois PCs de acesso",
+          "Substituir o Spanning Tree por uma única root bridge em todo o campus",
+          "Transportar o tráfego etiquetado em VLAN do cliente através da rede do fornecedor, adicionando uma etiqueta VLAN de serviço exterior, para que os IDs VLAN interiores do cliente se preservem de ponta a ponta",
+          "Forçar todas as portas de acesso para a mesma native VLAN do SVI de gestão"
+        ],
+        "correct": 2,
+        "explanation": "O Q-in-Q (estilo IEEE 802.1ad com double tagging) permite ao fornecedor de serviço embrulhar as tramas 802.1Q do cliente com uma etiqueta exterior. O fornecedor comuta com base na VLAN exterior; as etiquetas interiores do cliente mantêm-se intactas no handoff metro/WAN. Não é cifra IPsec, não substitui o STP e não força todas as portas de acesso para a VLAN de gestão.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "O que é que o IEEE 802.11w (Protected Management Frames / PMF) protege num BSS Wi-Fi?",
+        "options": [
+          "Tramas de gestão unicast selecionadas (como deauthentication e disassociation), para um atacante não as forjar facilmente e expulsar clientes",
+          "Apenas o broadcast do SSID em cada beacon, tornando a rede num SSID oculto por omissão",
+          "Todo o túnel CAPWAP entre AP e WLC com uma segunda camada IPsec",
+          "Pacotes DHCP Offer no uplink com fio do AP"
+        ],
+        "correct": 0,
+        "explanation": "O 802.11w acrescenta proteção criptográfica a certas tramas de gestão (nomeadamente deauth/disassoc), reduzindo ataques de desconexão forjada. Não esconde o SSID por si, não envolve o CAPWAP em IPsec extra e não protege o DHCP com fio no uplink do AP. O WPA3 exige PMF; o WPA2 pode ativá-lo opcionalmente.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "No Wi-Fi (802.11), para que se usa principalmente a Dynamic Frequency Selection (DFS) nos 5 GHz (e 6 GHz onde for exigido)?",
+        "options": [
+          "Forçar todos os clientes a fazer roam para 2,4 GHz sempre que o RSSI desça abaixo de −70 dBm",
+          "Detetar radar e outros ocupantes regulamentados para o AP abandonar ou evitar esses canais, o que pode implicar uma espera CAC ou uma mudança de canal",
+          "Encriptar frames de gestão com AES-CCMP para que os beacons não possam ser falsificados",
+          "Substituir CSMA/CA por um plano TDMA agendado em todos os APs"
+        ],
+        "correct": 1,
+        "explanation": "A DFS (Dynamic Frequency Selection) permite aos APs usar canais 5/6 GHz partilhados com radar meteorológico e outros serviços só se detetarem incumbentes e saírem do canal quando exigido. Isso costuma implicar um Channel Availability Check (CAC) antes de usar o canal e uma possível mudança de canal em operação. Não é band steering, não é 802.11w PMF, e não é um agendador TDMA.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Qual é a diferença prática entre os polimentos de conector de fibra UPC e APC?",
+        "options": [
+          "UPC é só para multimodo e APC só para monomodo; misturá-los funciona sempre do ponto de vista ótico",
+          "O APC acrescenta uma férula metálica que duplica a potência de lançamento face ao UPC",
+          "UPC e APC diferem apenas na cor do boot de alívio de tensão, com a mesma geometria da face",
+          "O APC tem face angular que reflete a luz para o cladding, reduzindo o return loss; o UPC é plano (ultra polish) e não deve ser acoplado a APC"
+        ],
+        "correct": 3,
+        "explanation": "UPC (Ultra Physical Contact) tem face polida plana; APC (Angled Physical Contact) tem tipicamente ~8° de ângulo para a reflexão ir para o cladding em vez de voltar para o laser — importante em ligações analógicas/PON e muitas monomodo. APC e UPC não se devem acoplar: o desalinhamento geométrico causa perda elevada e possível dano. A cor do boot costuma indicar (verde APC, azul UPC), mas a cor sozinha não define o polimento, e o estilo não é “só multimodo vs só monomodo”.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Face ao PoE mais antigo (IEEE 802.3af/at), o que é que o IEEE 802.3bt (Type 3/Type 4, muitas vezes chamado PoE++) permite principalmente numa porta de switch compatível?",
+        "options": [
+          "Alimentar dispositivos apenas em portas SFP de fibra em vez de cobre RJ-45",
+          "Substituir os pares de dados por condutores DC dedicados para que as tramas Ethernet já não partilhem o cabo",
+          "Entregar potência substancialmente maior (cerca de ~60 W Type 3 / ~90 W Type 4 no PSE) usando mais pares, para dispositivos como câmaras PTZ, access points e thin clients",
+          "Negociar adjacência de encaminhamento Layer 3 nos mesmos pares que transportam alimentação DC"
+        ],
+        "correct": 2,
+        "explanation": "O IEEE 802.3bt alarga o Power over Ethernet além do 802.3af (~15 W) e 802.3at/PoE+ (~30 W), usando mais pares e orçamentos mais altos (tipicamente ~60 W Type 3 e ~90 W Type 4 no equipamento que fornece energia). Continua em cabos Ethernet de cobre com dados e energia a partilhar pares após negociação — não é SFP de fibra, não é “só DC em vez de dados”, e não é um protocolo de routing.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "No Wi-Fi 6 (802.11ax), qual é o objetivo principal do OFDMA (Orthogonal Frequency-Division Multiple Access)?",
+        "options": [
+          "Dividir um canal em resource units para o AP servir vários clientes na mesma oportunidade de transmissão com alocações mais pequenas e agendadas, melhorando a eficiência com muitas tramas curtas",
+          "Forçar todos os clientes a um único spatial stream para o MU-MIMO nunca ser usado",
+          "Substituir o WPA3 por um conjunto de cifras antigo baseado em WEP para endpoints IoT",
+          "Estender a banda de 2,4 GHz a canais de 80 MHz idênticos ao VHT80 dos 5 GHz"
+        ],
+        "correct": 0,
+        "explanation": "O OFDMA divide um canal Wi-Fi em resource units (RUs) mais pequenas para que uma oportunidade de TX/RX do AP possa endereçar várias estações com alocações dimensionadas — útil em ambientes densos com muitas tramas curtas. Complementa (não desativa) o MU-MIMO; não tem a ver com a escolha de cifras WEP/WPA3; e não cria canais de 80 MHz em 2,4 GHz como o VHT80 nos 5 GHz.",
+        "difficulty": "Medium"
       }
     ],
     "en": [
@@ -4349,6 +4517,174 @@
         ],
         "correct": 1,
         "explanation": "ip helper-address enables DHCP relay (among other UDP helpers): the router receives a client DHCP broadcast on the LAN and forwards it as unicast to the configured DHCP server IP, so clients and the server can sit on different subnets. The router is not inventing leases unless it is also configured as a DHCP server.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is a rogue access point (rogue AP) in a wireless environment?",
+        "options": [
+          "An official Cisco WLC that only serves guest SSIDs",
+          "A licensed AP that always uses WPA3-Enterprise",
+          "An unauthorized AP connected to the wired network (or broadcasting nearby), which can create security and interference risks",
+          "Any AP that uses the 2.4 GHz band instead of 5 GHz"
+        ],
+        "correct": 2,
+        "explanation": "A rogue AP is an unauthorized wireless access point—often plugged into a corporate switch by a user, or an attacker’s evil twin. It can bypass NAC/802.1X, expose traffic, and interfere with the RF plan. Controllers and WIDS/WIPS help detect and contain rogues; hiding the SSID does not stop them.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "In 802.1X wireless (WPA2/WPA3-Enterprise), how does EAP-TLS typically authenticate the client compared with PEAP?",
+        "options": [
+          "EAP-TLS uses a client (and usually server) certificate; PEAP commonly tunnels an inner password method (e.g. MSCHAPv2) inside a TLS tunnel to the RADIUS server",
+          "EAP-TLS only shares one PSK for the whole SSID, like classic WPA2-Personal",
+          "PEAP requires a client certificate while EAP-TLS never uses certificates",
+          "Both methods disable RADIUS and authenticate only with the AP’s local user database"
+        ],
+        "correct": 0,
+        "explanation": "EAP-TLS is certificate-based: the client presents a cert (and validates the server). PEAP builds a TLS tunnel to the authentication server and usually runs an inner password method such as MSCHAPv2, so clients need credentials more often than certificates. Both still use 802.1X with a RADIUS backend (e.g. ISE); neither is a shared PSK.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What does Cisco CleanAir primarily help a wireless network do?",
+        "options": [
+          "Replace CAPWAP with proprietary mesh only on 900 MHz",
+          "Disable all non-Wi-Fi clients permanently without an AP",
+          "Detect and classify non-Wi-Fi RF interferers (microwaves, Bluetooth, rogue jammers) so RRM/IT can mitigate them",
+          "Encrypt every management frame with WEP by default"
+        ],
+        "correct": 2,
+        "explanation": "CleanAir uses spectrum analysis on capable APs to identify non-Wi-Fi interference sources that degrade Wi-Fi. Controllers/Catalyst Center can show interferers and drive RRM changes (channel/power). It is not a substitute for WPA3, CAPWAP, or hiding the SSID.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is the main goal of IEEE 802.11r (Fast Transition / Fast BSS Transition) for Wi-Fi clients?",
+        "options": [
+          "Speed up roaming between APs by reducing the time spent re-authenticating during a BSS transition",
+          "Force every SSID to use only the 2.4 GHz band",
+          "Replace DHCP with static APIPA addresses on roam",
+          "Turn off encryption whenever the client changes AP"
+        ],
+        "correct": 0,
+        "explanation": "802.11r (FT) lets a client complete key handshake steps in a way that shortens roam time between APs in the same mobility domain—important for voice/video. It does not remove encryption, change DHCP behaviour, or limit the band to 2.4 GHz. 802.11k/v often complement FT with neighbor reports and assisted roaming.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In a Cisco guest wireless design with auto-anchor (guest anchor), what is the role of the foreign controller versus the anchor controller?",
+        "options": [
+          "The foreign controller terminates the guest SSID locally and never tunnels anything; the anchor only stores DHCP leases offline",
+          "Both controllers must be in the same building and share one management IP, or guests cannot associate",
+          "The foreign controller is where the client associates; guest traffic is tunneled (typically CAPWAP/EoIP) to the anchor in the DMZ, which applies the guest VLAN/policy and often Internet egress",
+          "The anchor controller only handles 2.4 GHz; the foreign controller only handles 5 GHz"
+        ],
+        "correct": 2,
+        "explanation": "Auto-anchor (guest anchor) keeps guest clients associated to APs/WLCs in the campus (foreign) while tunneling their traffic to an anchor WLC in a DMZ/firewall zone. The anchor places guests on the guest VLAN and typically provides Internet access without letting them reach the internal LAN. It is not a band split, and the foreign side does not simply terminate guest traffic locally.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is a DHCP starvation attack trying to achieve on a LAN, and which switch feature commonly mitigates it?",
+        "options": [
+          "Exhaust the DHCP server’s available IP pool by requesting many leases (often with spoofed MACs) so legitimate clients get no address; mitigate with DHCP snooping (and often port-security / rate limits)",
+          "Flood the switch CAM table with fake MACs until the switch acts like a hub; mitigate only with spanning-tree PortFast",
+          "Encrypt all DHCP Offer messages with WEP so clients cannot renew; mitigate by disabling DHCP relay",
+          "Force every client to use APIPA 169.254.x.x permanently; mitigate by turning off ARP"
+        ],
+        "correct": 0,
+        "explanation": "DHCP starvation floods Discover/Request traffic (frequently with many spoofed client MACs) so the server’s pool runs out and real users cannot get leases. DHCP snooping limits untrusted ports and builds a binding table; port-security and DHCP rate limiting also help. CAM overflow is a different attack (MAC flooding). Disabling DHCP relay or ARP is not the fix.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is a practical difference between CDP and LLDP when discovering neighbors on a switch or router?",
+        "options": [
+          "CDP works only on fiber links; LLDP works only on copper",
+          "CDP is Cisco-proprietary and enabled by default on many Cisco devices; LLDP is an open IEEE 802.1AB standard used for multivendor neighbor discovery",
+          "LLDP elects the OSPF DR; CDP elects the STP root",
+          "Both protocols encrypt the entire neighbor table with IPsec, so they cannot be captured on a span port"
+        ],
+        "correct": 1,
+        "explanation": "CDP (Cisco Discovery Protocol) is proprietary and commonly on by default on Cisco gear. LLDP (IEEE 802.1AB) is vendor-neutral and preferred in mixed environments. Both advertise identity and capabilities over the link; neither elects OSPF/STP roles nor encrypts the neighbor database with IPsec by default.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "A technician builds a copper Ethernet straight-through patch cord using TIA-568 standards. Which statement is correct?",
+        "options": [
+          "Straight-through always means pins 1–8 on one end map randomly to pins 8–1 on the other end",
+          "You must use TIA-568A on one end and TIA-568B on the other end to make a straight-through cable",
+          "Fiber OM4 LC-LC jumpers follow the same TIA-568A/B color code as copper Cat6",
+          "Both ends use the same pinout standard (both TIA-568A or both TIA-568B); mixing A on one end and B on the other creates a crossover"
+        ],
+        "correct": 3,
+        "explanation": "A straight-through cable terminates both ends with the same TIA-568 wiring (A-A or B-B). Mixing 568A on one end and 568B on the other produces a crossover (TX/RX pairs swapped). Random reverse pin mapping is not the definition of straight-through, and fiber jumpers do not use the copper 568A/B color scheme.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is 802.1Q tunneling (Q-in-Q / double tagging) typically used for?",
+        "options": [
+          "Encrypting every Ethernet frame with IPsec between two access PCs",
+          "Replacing Spanning Tree with a single root bridge for the whole campus",
+          "Carrying a customer’s VLAN-tagged traffic across a provider network by adding an outer service VLAN tag, so the customer’s inner VLAN IDs are preserved end to end",
+          "Forcing all access ports into the same native VLAN as the management SVI"
+        ],
+        "correct": 2,
+        "explanation": "Q-in-Q (IEEE 802.1ad style double tagging) lets a service provider wrap a customer’s 802.1Q frames with an outer tag. The provider switches on the outer VLAN; the customer’s inner tags stay intact across the metro/WAN handoff. It is not IPsec encryption, not an STP replacement, and not a way to force every access port onto the management VLAN.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What does IEEE 802.11w (Protected Management Frames / PMF) protect in a Wi-Fi BSS?",
+        "options": [
+          "Selected unicast management frames (such as deauthentication and disassociation) so an attacker cannot easily forge them to kick clients offline",
+          "Only the SSID broadcast in every beacon, turning the network into a hidden SSID by default",
+          "The entire CAPWAP tunnel between AP and WLC with a second IPsec layer",
+          "DHCP Offer packets on the wired uplink of the AP"
+        ],
+        "correct": 0,
+        "explanation": "802.11w adds cryptographic protection to certain management frames (notably deauth/disassoc), reducing spoofed disconnect attacks. It does not hide the SSID by itself, does not wrap CAPWAP in extra IPsec, and does not secure wired DHCP on the AP uplink. WPA3 requires PMF; WPA2 can optionally enable it.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In Wi-Fi (802.11), what is Dynamic Frequency Selection (DFS) mainly used for on 5 GHz (and 6 GHz where required)?",
+        "options": [
+          "Forcing every client to roam to 2.4 GHz whenever RSSI drops below −70 dBm",
+          "Detecting radar and other regulated incumbents so the AP can vacate or avoid those channels, which can cause a CAC wait or a channel change",
+          "Encrypting management frames with AES-CCMP so beacons cannot be spoofed",
+          "Replacing CSMA/CA with a scheduled TDMA airtime plan on every AP"
+        ],
+        "correct": 1,
+        "explanation": "DFS (Dynamic Frequency Selection) lets APs use weather-radar and other regulated 5/6 GHz channels only if they can detect incumbents and leave the channel when required. That often means a Channel Availability Check (CAC) before use and a possible channel change mid-operation. It is not band steering, not 802.11w PMF, and not a TDMA scheduler.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is the practical difference between UPC and APC fiber connector polish styles?",
+        "options": [
+          "UPC is only for multimode and APC is only for single-mode; mixing them always works optically",
+          "APC adds a metal ferrule that doubles the launch power compared with UPC",
+          "UPC and APC differ only in the color of the strain-relief boot, with identical end-face geometry",
+          "APC uses an angled end-face that reflects light into the cladding, lowering return loss; UPC is flat (ultra polish) and should not be mated to APC"
+        ],
+        "correct": 3,
+        "explanation": "UPC (Ultra Physical Contact) has a flat polished end-face; APC (Angled Physical Contact) is typically ~8° angled so reflected light goes into the cladding instead of back toward the laser—critical for analog/PON and many single-mode links. APC and UPC must not be mated: geometry mismatch causes high loss and possible damage. Boot color often hints (green APC, blue UPC) but color alone is not the definition, and polish style is not “multimode-only vs single-mode-only.”",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Compared with older PoE (IEEE 802.3af/at), what does IEEE 802.3bt (Type 3/Type 4, often called PoE++) mainly enable on a compatible switch port?",
+        "options": [
+          "Only powering devices over fiber SFP ports instead of copper RJ-45",
+          "Replacing the data pairs with dedicated DC conductors so Ethernet frames no longer share the cable",
+          "Delivering substantially higher power (roughly up to ~60 W Type 3 / ~90 W Type 4 at the PSE) using more pairs, for devices such as PTZ cameras, access points, and thin clients",
+          "Negotiating Layer 3 routing adjacency over the same pairs that carry DC power"
+        ],
+        "correct": 2,
+        "explanation": "IEEE 802.3bt extends Power over Ethernet beyond 802.3af (~15 W) and 802.3at/PoE+ (~30 W) by using additional pairs and higher budgets (commonly cited ~60 W Type 3 and ~90 W Type 4 at the power-sourcing equipment). It still runs over copper Ethernet cabling with data and power sharing pairs after negotiation—not fiber SFPs, not “DC-only conductors instead of data,” and not a routing protocol.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In Wi-Fi 6 (802.11ax), what is the main purpose of OFDMA (Orthogonal Frequency-Division Multiple Access)?",
+        "options": [
+          "Splitting a channel into resource units so an AP can serve multiple clients in the same transmit opportunity with smaller, scheduled allocations, improving efficiency for many small frames",
+          "Forcing every client onto a single spatial stream so MU-MIMO is never used",
+          "Replacing WPA3 with an older WEP-based cipher suite for IoT endpoints",
+          "Extending the 2.4 GHz band to 80 MHz-wide channels identical to 5 GHz VHT80"
+        ],
+        "correct": 0,
+        "explanation": "OFDMA divides a Wi-Fi channel into smaller resource units (RUs) so one AP transmit/receive opportunity can address multiple stations with right-sized allocations—especially helpful under dense, short-packet traffic. It complements (does not disable) MU-MIMO; it is unrelated to WEP/WPA3 cipher choice; and it does not invent 80 MHz channels on 2.4 GHz like 5 GHz VHT80.",
         "difficulty": "Medium"
       }
     ]
@@ -6611,6 +6947,174 @@
         "correct": 2,
         "explanation": "Em redes broadcast multi-access o OSPF elege DR e BDR para reduzir flooding de adjacências. Ganha a maior prioridade de interface (0–255; 0 = inelegível); empates resolvem-se com o Router ID mais alto. Os outros routers formam full adjacency sobretudo com DR/BDR (DROTHER).",
         "difficulty": "Médio"
+      },
+      {
+        "question": "Na máquina de estados do vizinho BGP, que estado significa que a sessão está totalmente ativa e se podem trocar rotas?",
+        "options": [
+          "Idle — o BGP desativou permanentemente o vizinho",
+          "Active — o BGP só escuta e nunca envia mensagens Open",
+          "Connect — o TCP está em baixo, por isso as mensagens UPDATE são inundadas para todos os peers",
+          "Established — a sessão TCP e a troca BGP Open tiveram sucesso; seguem-se KEEPALIVE/UPDATE"
+        ],
+        "correct": 3,
+        "explanation": "Os vizinhos BGP avançam Idle → Connect → OpenSent → OpenConfirm → Established (Active é um caminho de retry/listen quando o Connect falha). Só Established significa que o peering está ativo e se podem anunciar prefixos. Em show ip bgp summary, um número em State/PfxRcd costuma significar Established; Idle/Active/OpenSent indicam que ainda não está up.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Qual é o objetivo da Duplicate Address Detection (DAD) em IPv6 antes de um host usar um endereço unicast?",
+        "options": [
+          "Encriptar o Neighbor Discovery com IPsec por omissão em todas as LANs",
+          "Verificar que nenhum outro nó no link já usa o endereço candidato, enviando um Neighbor Solicitation para esse endereço",
+          "Pedir um prefixo global exclusivamente a um servidor DHCPv6 e ignorar Router Advertisements",
+          "Converter todos os endereços link-local em anycast públicos na Internet"
+        ],
+        "correct": 1,
+        "explanation": "A DAD envia um NS (ICMPv6 tipo 135) para o endereço tentativo com origem não especificada (::). Se outro nó responder com NA, o endereço está duplicado e não deve ser usado. A DAD aplica-se a link-local e a endereços globalmente únicos (incluindo SLAAC ou DHCPv6). Por si só não encripta o ND nem substitui os RAs.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Porque é que um operador usa AS-path prepending nos anúncios BGP para um ISP?",
+        "options": [
+          "Para cifrar por omissão as mensagens BGP UPDATE com IPsec",
+          "Para forçar o vizinho permanentemente para o estado Idle",
+          "Para substituir métricas OSPF por hop count dentro da LAN",
+          "Para fazer um caminho parecer mais longo (menos preferido) e influenciar engenharia de tráfego de entrada / como os outros chegam até si"
+        ],
+        "correct": 3,
+        "explanation": "O AS-path prepending repete o teu número de AS no AS_PATH para que ASes externos vejam um caminho mais longo e tipicamente prefiram outro link. Influencia a seleção de caminho de entrada; não é encriptação, não põe o peer em Idle por si e não tem a ver com métricas OSPF na LAN. Local Preference e MED cobrem outras necessidades de engenharia de tráfego.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "O que é que o Unicast Reverse Path Forwarding (uRPF) verifica numa interface de router?",
+        "options": [
+          "Que o MAC de destino é igual ao BIA do router antes do hello OSPF",
+          "Que o IP de origem dos pacotes de entrada seria alcançável por essa mesma interface (anti-spoofing), usando o modo de verificação FIB/RPF",
+          "Que todos os pacotes têm marcação DSCP EF",
+          "Que os peers BGP estão em Established antes de encaminhar qualquer tráfego LAN"
+        ],
+        "correct": 1,
+        "explanation": "O uRPF descarta (ou alerta sobre) pacotes cujo endereço de origem não seria encaminhado de volta pela interface de chegada—mitiga spoofing de IP. O modo strict exige o melhor caminho por essa interface; o loose só exige que a origem exista na FIB. Não é um filtro de DSCP, MAC nem de estado BGP para o encaminhamento LAN.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Porque é que os engenheiros de rede configuram redistribuição de rotas entre dois protocolos de encaminhamento (por exemplo OSPF e EIGRP)?",
+        "options": [
+          "Para substituir a tabela MAC de cada router por LSAs OSPF",
+          "Para forçar o BGP a usar só a distância administrativa por omissão do RIP",
+          "Para cifrar automaticamente todas as atualizações de routing com IPsec sempre que dois IGPs se encontram",
+          "Para injetar rotas aprendidas num domínio de routing noutro, para os prefixos serem alcançáveis através das fronteiras de protocolo (com cuidado com loops, métricas e filtragem)"
+        ],
+        "correct": 3,
+        "explanation": "A redistribuição copia/transforma rotas de um protocolo para outro (ex. OSPF ↔ EIGRP, ou um IGP para BGP) para redes em domínios diferentes ficarem alcançáveis. É preciso controlar métricas iniciais (seed), distância administrativa, route-maps/filtros e risco de loops (incluindo redistribuição mútua). Não reescreve tabelas CAM, não força o AD do BGP para o do RIP, nem cifra magicamente as atualizações.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "No routing distance-vector (por exemplo RIP clássico), o que é que a regra de split-horizon evita?",
+        "options": [
+          "Usar mais do que um caminho de custo igual ao mesmo tempo (ECMP)",
+          "Anunciar uma rota de volta pela mesma interface pela qual foi aprendida, o que ajuda a limitar loops de routing simples",
+          "Enviar quaisquer pacotes Hello em segmentos broadcast",
+          "Aprender rotas por omissão via DHCP em interfaces LAN"
+        ],
+        "correct": 1,
+        "explanation": "O split-horizon diz: não anuncies uma rota de volta para o vizinho/interface que te ensinou essa rota. Isso bloqueia um padrão comum de loop entre dois routers em protocolos distance-vector. Poison reverse é uma técnica relacionada (anunciar a rota de volta como inalcançável). Split-horizon não tem a ver com ECMP, Hellos estilo OSPF nem defaults DHCP.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Num EtherChannel de um switch Cisco, o que é que o algoritmo de load-balancing (hash) decide principalmente?",
+        "options": [
+          "Qual membro do bundle encaminha um determinado fluxo, com base em campos como MAC ou IP de origem/destino (e opcionalmente portas), para distribuir o tráfego pelo canal",
+          "Se o EtherChannel negoceia exclusivamente com LACP ou com PAgP",
+          "A prioridade de root bridge STP de todas as VLANs no canal",
+          "O ID da VLAN nativa que tem de ser usada em todas as portas membro"
+        ],
+        "correct": 0,
+        "explanation": "O load-balancing do EtherChannel faz hash de campos selecionados do pacote (muitas vezes MAC src/dst, IP src/dst ou portas L4) para escolher um membro físico por fluxo. Não escolhe LACP vs PAgP, não define a prioridade de root STP nem a VLAN nativa — isso é configuração aparte.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "No EIGRP, qual é a relação entre Reported Distance (RD), Feasible Distance (FD) e um feasible successor?",
+        "options": [
+          "A Reported Distance é sempre igual à largura de banda da interface em kb/s; a Feasible Distance só é usada pelo OSPF",
+          "Um feasible successor é qualquer vizinho que anuncia métrica infinita (poison reverse)",
+          "Um vizinho só pode ser feasible successor se a sua Reported Distance for menor do que a Feasible Distance do successor (condição de viabilidade), fornecendo um caminho de backup sem loops",
+          "A Feasible Distance é o hop count do RIP; a Reported Distance é o valor MED do BGP copiado para o EIGRP"
+        ],
+        "correct": 2,
+        "explanation": "A FD é a melhor métrica conhecida para chegar a um prefixo via o successor. A RD é a métrica que um vizinho anuncia para esse prefixo (a distância dele ao destino). A condição de viabilidade (RD < FD do successor) garante um backup sem loops—o feasible successor—utilizável de imediato se o successor falhar. A RD não é só bandwidth, e a FD não é hop count do RIP nem MED do BGP.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "Em IPsec, qual é a diferença principal entre tunnel mode e transport mode?",
+        "options": [
+          "O tunnel mode só funciona com AH; o transport mode só funciona com ESP",
+          "O transport mode cifra todo o pacote IP original incluindo o cabeçalho exterior usado para o encaminhamento na Internet",
+          "Ambos os modos acrescentam sempre um cabeçalho GRE extra antes do ESP",
+          "O tunnel mode encapsula o pacote IP original (novo cabeçalho IP exterior); o transport mode protege sobretudo o payload e deixa o cabeçalho IP original no sítio para o encaminhamento"
+        ],
+        "correct": 3,
+        "explanation": "O tunnel mode embrulha o pacote IP original e acrescenta um novo cabeçalho IP exterior (típico em VPN site-to-site). O transport mode protege o payload (e normalmente deixa o cabeçalho IP original visível para o routing), o que é comum em proteção host-to-host. Tanto AH como ESP podem usar-se em qualquer modo; nenhum modo exige GRE por definição.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Num Cisco wireless LAN controller, qual é o objetivo do Band Select (band steering)?",
+        "options": [
+          "Forçar todos os clientes apenas para a banda de 6 GHz, mesmo que o cliente seja 802.11n",
+          "Incentivar clientes dual-band a preferir 5 GHz (quando adequado) em vez de congestionar os 2,4 GHz, atrasando as respostas a probes em 2,4 GHz",
+          "Substituir o CAPWAP por uma bridge Ethernet de Camada 2 entre AP e WLC",
+          "Desativar OFDM em 5 GHz para que só clientes DSSS se associem"
+        ],
+        "correct": 1,
+        "explanation": "O Band Select (band steering) empurra clientes dual-band para 5 GHz, respondendo mais lentamente (ou não de imediato) a probes em 2,4 GHz, reduzindo a congestão nessa banda. Não coloca clientes legacy em 6 GHz, não substitui o CAPWAP e não desativa OFDM em 5 GHz.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Num EtherChannel Cisco, que combinação de modos LACP forma com sucesso um canal entre dois switches?",
+        "options": [
+          "Um lado active e o outro passive (ou ambos active); o LACP negoceia o bundle",
+          "Um lado on (estático) e o outro desirable (palavra-chave só PAgP numa porta LACP)",
+          "Um lado auto e o outro auto sem troca de PDUs LACP",
+          "Um lado passive e o outro passive, porque ambos esperam indefinidamente que o peer inicie"
+        ],
+        "correct": 0,
+        "explanation": "O LACP (IEEE 802.3ad/802.1AX) usa active (inicia) e passive (responde). Active+passive ou active+active formam canal; passive+passive não. A palavra-chave on é EtherChannel estático sem negociação LACP. desirable/auto são modos PAgP, não LACP.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Em que se baseia o Path MTU Discovery (PMTUD) para descobrir o menor MTU ao longo de um caminho IPv4?",
+        "options": [
+          "ICMP Echo Request periódicos com exatamente 1500 bytes a partir de cada hop de router",
+          "O TCP anunciar sempre uma window de 536 bytes para nunca ser necessária fragmentação",
+          "Enviar pacotes com o bit DF (Don't Fragment) e usar mensagens ICMP Fragmentation Needed quando um hop tiver de os descartar",
+          "Forçar todas as interfaces de túnel a fazer clamp do TCP MSS para 40 bytes abaixo do MTU físico"
+        ],
+        "correct": 2,
+        "explanation": "O PMTUD clássico em IPv4 envia pacotes com DF. Se um hop tiver MTU menor, descarta o pacote e deve devolver ICMP Type 3 Code 4 (Fragmentation Needed) com o next-hop MTU para o emissor baixar o path MTU. Reduzir a window TCP ou fazer sempre clamp MSS para valores minúsculos não é o mecanismo do PMTUD (embora o clamp de MSS seja um workaround operacional quando o ICMP é filtrado).",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Em OSPF multi-área, porque é que a Area 0 (backbone) tem de existir e estar corretamente ligada?",
+        "options": [
+          "Porque o OSPF recusa eleger Designated Router fora da Area 0 em qualquer segmento multi-acesso",
+          "Porque a Area 0 é o único sítio onde são permitidas chaves de autenticação OSPF",
+          "Porque as LSA Type 1 (Router) só são inundadas dentro da Area 0 e nunca noutras áreas",
+          "Porque as áreas não-backbone trocam rotas inter-área através da Area 0 (ou de um virtual-link); sem um backbone contíguo, as áreas podem ficar particionadas do resto do domínio OSPF"
+        ],
+        "correct": 3,
+        "explanation": "O desenho hierárquico OSPF exige que todas as áreas se liguem (diretamente ou via virtual link) à Area 0 para as rotas inter-área resumidas pelos ABR permanecerem sem loops e alcançáveis. Um backbone em falta ou partido isola áreas umas das outras. A eleição DR/BDR é comportamento de segmento multi-acesso, não “só na Area 0”; a autenticação não está limitada à Area 0; as LSA Type 1 ficam intra-área em todas as áreas — isso não explica sozinho a necessidade do backbone.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "No Hot Standby Router Protocol (HSRP), que papéis têm os routers Active e Standby para um IP virtual usado como default gateway?",
+        "options": [
+          "Ambos encaminham tráfego de utilizador em ECMP active-active, partilhando sempre o mesmo MAC virtual em igualdade",
+          "O router Active detém o IP/MAC virtual e encaminha o tráfego desse grupo; o Standby está pronto a assumir se o Active falhar, após deteção baseada em Hellos",
+          "O Standby faz sempre NAT dos endereços dos clientes enquanto o Active só responde a ARP",
+          "O HSRP elege um Designated Router e um Backup Designated Router exatamente como o OSPF numa LAN"
+        ],
+        "correct": 1,
+        "explanation": "O HSRP clássico é redundância first-hop active/standby: um Active encaminha para o IP virtual (e MAC virtual associado), enquanto um Standby monitoriza Hellos e assume o papel active em falha. Por omissão não é ECMP active-active (isso aproxima-se mais do modelo do GLBP), não é uma divisão de funções NAT, e não é a eleição DR/BDR do OSPF.",
+        "difficulty": "Easy"
       }
     ],
     "en": [
@@ -8870,6 +9374,174 @@
         "correct": 2,
         "explanation": "On broadcast multi-access networks OSPF elects a DR and BDR to reduce adjacency flooding. Highest interface priority (0–255; 0 means ineligible) wins; ties break on highest Router ID. Other routers form full adjacency mainly with DR/BDR (DROTHER).",
         "difficulty": "Medium"
+      },
+      {
+        "question": "In the BGP neighbor finite-state machine, which state means the session is fully up and routes can be exchanged?",
+        "options": [
+          "Idle — BGP has permanently disabled the neighbor",
+          "Active — BGP is only listening and never sends Open messages",
+          "Connect — TCP is down so UPDATE messages are flooded to all peers",
+          "Established — the TCP session and BGP Open exchange succeeded; KEEPALIVE/UPDATE follow"
+        ],
+        "correct": 3,
+        "explanation": "BGP neighbors progress Idle → Connect → OpenSent → OpenConfirm → Established (Active is a retry/listen path when Connect fails). Only Established means the peering is up and prefixes can be advertised. In show ip bgp summary, a number under State/PfxRcd usually means Established; Idle/Active/OpenSent indicate it is not up yet.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is the purpose of IPv6 Duplicate Address Detection (DAD) before a host uses a unicast address?",
+        "options": [
+          "To encrypt Neighbor Discovery with IPsec by default on every LAN",
+          "To verify that no other node on the link is already using the candidate address, by sending a Neighbor Solicitation for that address",
+          "To request a global prefix exclusively from a DHCPv6 server and skip Router Advertisements",
+          "To convert every link-local address into a public anycast address on the Internet"
+        ],
+        "correct": 1,
+        "explanation": "DAD sends an NS (ICMPv6 type 135) for the tentative address with the unspecified source (::). If another node replies with an NA, the address is duplicate and must not be used. DAD applies to link-local and globally unique addresses (including those from SLAAC or DHCPv6). It does not encrypt ND by itself or replace RAs.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Why would an operator use BGP AS-path prepending on advertisements to an ISP?",
+        "options": [
+          "To encrypt BGP UPDATE messages with IPsec by default",
+          "To force the neighbor into the Idle state permanently",
+          "To replace OSPF metrics with hop count inside the LAN",
+          "To make a path look longer (less preferred) to inbound traffic engineering / influence how others reach you"
+        ],
+        "correct": 3,
+        "explanation": "AS-path prepending repeats your AS number in the AS_PATH so external ASes see a longer path and typically prefer an alternate link. It influences inbound path selection; it is not encryption, does not idle the peer by itself, and is unrelated to OSPF LAN metrics. Local Preference and MED address other traffic-engineering needs.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What does Unicast Reverse Path Forwarding (uRPF) check on a router interface?",
+        "options": [
+          "That the destination MAC equals the router’s BIA before OSPF hello",
+          "That the source IP of inbound packets would be reachable via that same interface (anti-spoofing), using the FIB/RPF check mode",
+          "That every packet has a DSCP EF marking",
+          "That BGP peers are in Established before forwarding any LAN traffic"
+        ],
+        "correct": 1,
+        "explanation": "uRPF drops (or alerts on) packets whose source address would not be routed back out the arrival interface—mitigating IP spoofing. Strict mode requires the best path via that interface; loose mode only requires the source to exist in the FIB. It is not a DSCP, MAC, or BGP-state gate for LAN forwarding.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Why do network engineers configure route redistribution between two routing protocols (for example OSPF and EIGRP)?",
+        "options": [
+          "To replace every router’s MAC address table with OSPF LSAs",
+          "To force BGP to use only the default administrative distance of RIP",
+          "To encrypt all routing updates with IPsec automatically whenever two IGPs meet",
+          "To inject routes learned in one routing domain into another so prefixes can be reached across protocol boundaries (with care for loops, metrics, and filtering)"
+        ],
+        "correct": 3,
+        "explanation": "Redistribution copies/transforms routes from one protocol into another (e.g. OSPF ↔ EIGRP, or an IGP into BGP) so networks in different domains become reachable. Engineers must control metric seed values, administrative distance, route-maps/filters, and loop risks (including mutual redistribution). It does not rewrite CAM tables, force BGP to RIP AD, or magically encrypt updates.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In distance-vector routing (for example classic RIP), what does the split-horizon rule prevent?",
+        "options": [
+          "Using more than one equal-cost path at a time (ECMP)",
+          "Advertising a route back out the same interface from which it was learned, which helps limit simple routing loops",
+          "Sending any Hello packets on broadcast segments",
+          "Learning default routes from DHCP on LAN interfaces"
+        ],
+        "correct": 1,
+        "explanation": "Split-horizon says: do not advertise a route back toward the neighbor/interface that taught you that route. That blocks a common two-router loop pattern in distance-vector protocols. Poison reverse is a related technique (advertise the route back as unreachable). Split-horizon is unrelated to ECMP, OSPF-style Hellos, or DHCP defaults.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "On a Cisco switch EtherChannel, what does the load-balancing (hash) algorithm primarily decide?",
+        "options": [
+          "Which member link of the bundle forwards a given flow, based on fields such as source/destination MAC or IP (and optionally ports), so traffic is distributed across the channel",
+          "Whether the EtherChannel negotiates with LACP or PAgP exclusively",
+          "The STP root bridge priority for all VLANs on the channel",
+          "The native VLAN ID that must be used on every member port"
+        ],
+        "correct": 0,
+        "explanation": "EtherChannel load-balancing hashes selected packet fields (often src/dst MAC, src/dst IP, or Layer-4 ports) to pick one physical member for each flow. It does not choose LACP vs PAgP, set STP root priority, or define the native VLAN—those are separate configuration concerns.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In EIGRP, what is the relationship between Reported Distance (RD), Feasible Distance (FD), and a feasible successor?",
+        "options": [
+          "Reported Distance is always equal to the interface bandwidth in kb/s; Feasible Distance is only used by OSPF",
+          "A feasible successor is any neighbor that advertises an infinite metric (poison reverse)",
+          "A neighbor can be a feasible successor only if its Reported Distance is less than the successor’s Feasible Distance (feasibility condition), providing a loop-free backup path",
+          "Feasible Distance is the hop count of RIP; Reported Distance is the BGP MED value copied into EIGRP"
+        ],
+        "correct": 2,
+        "explanation": "FD is the best metric known to reach a prefix via the successor. RD is the metric a neighbor advertises for that prefix (its distance to the destination). The feasibility condition (RD < FD of the successor) guarantees a loop-free backup—the feasible successor—usable immediately if the successor fails. RD is not bandwidth-only, and FD is not RIP hop count or BGP MED.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "In IPsec, what is the main difference between tunnel mode and transport mode?",
+        "options": [
+          "Tunnel mode only works with AH; transport mode only works with ESP",
+          "Transport mode encrypts the entire original IP packet including the outer header used for Internet routing",
+          "Both modes always add an extra GRE header before ESP",
+          "Tunnel mode encapsulates the original IP packet (new outer IP header); transport mode protects mainly the payload and leaves the original IP header in place for routing"
+        ],
+        "correct": 3,
+        "explanation": "Tunnel mode wraps the original IP packet and adds a new outer IP header (typical for site-to-site VPNs). Transport mode secures the payload (and usually leaves the original IP header visible for routing), which is common for host-to-host protection. Both AH and ESP can be used in either mode; neither mode requires GRE by definition.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "On a Cisco wireless LAN controller, what is the purpose of Band Select (band steering)?",
+        "options": [
+          "To force every client onto the 6 GHz band only, even if the client is 802.11n",
+          "To encourage dual-band clients to prefer 5 GHz (when suitable) instead of overcrowding 2.4 GHz, by delaying probe responses on 2.4 GHz",
+          "To replace CAPWAP with a Layer-2 Ethernet bridge between AP and WLC",
+          "To disable OFDM on 5 GHz so only DSSS clients can associate"
+        ],
+        "correct": 1,
+        "explanation": "Band Select (band steering) nudges dual-band capable clients toward 5 GHz by responding more slowly (or not at first) to 2.4 GHz probes, reducing 2.4 GHz congestion. It does not magically put legacy clients on 6 GHz, does not replace CAPWAP, and does not disable OFDM on 5 GHz.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "On Cisco EtherChannel, which LACP mode pairing will successfully form a channel between two switches?",
+        "options": [
+          "One side active and the other passive (or both active); LACP negotiates the bundle",
+          "One side on (static) and the other desirable (PAgP-only keyword on an LACP port)",
+          "One side auto and the other auto with no LACP PDUs exchanged",
+          "One side passive and the other passive, because both wait forever for the peer to start"
+        ],
+        "correct": 0,
+        "explanation": "LACP (IEEE 802.3ad/802.1AX) uses active (initiates) and passive (responds). Active+passive or active+active forms a channel; passive+passive does not. The keyword on is static EtherChannel without LACP negotiation. desirable/auto are PAgP modes, not LACP.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What does Path MTU Discovery (PMTUD) rely on to learn the smallest MTU along an IPv4 path?",
+        "options": [
+          "Periodic ICMP Echo Requests sized exactly to 1500 bytes from every router hop",
+          "TCP always advertising a window of 536 bytes so fragmentation is never needed",
+          "Sending packets with the DF (Don't Fragment) bit set and using ICMP Fragmentation Needed messages when a hop must drop them",
+          "Forcing every tunnel interface to clamp TCP MSS to 40 bytes less than the physical MTU"
+        ],
+        "correct": 2,
+        "explanation": "Classic IPv4 PMTUD sends packets with DF set. If a hop has a smaller MTU, it drops the packet and should return ICMP Type 3 Code 4 (Fragmentation Needed) with the next-hop MTU so the sender can lower its path MTU. Blindly shrinking TCP windows or always clamping MSS to tiny values is not how PMTUD works (though TCP MSS clamping is a related operational workaround when ICMP is filtered).",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In multi-area OSPF, why must Area 0 (the backbone) be present and correctly connected?",
+        "options": [
+          "Because OSPF refuses to elect a Designated Router outside Area 0 on any multi-access segment",
+          "Because Area 0 is the only place where OSPF authentication keys are allowed",
+          "Because Type 1 Router LSAs are flooded only inside Area 0 and never into other areas",
+          "Because non-backbone areas exchange inter-area routes through Area 0 (or a virtual-link substitute); without a contiguous backbone, areas can become partitioned from the rest of the OSPF domain"
+        ],
+        "correct": 3,
+        "explanation": "OSPF hierarchical design requires all areas to attach (directly or via a virtual link) to Area 0 so ABR-summarized inter-area routes stay loop-free and reachable. A broken or missing backbone isolates areas from each other. DR/BDR election is a multi-access segment behavior, not “Area 0 only”; authentication is not limited to Area 0; Type 1 LSAs stay intra-area, which is true for every area, not a special Area 0-only flood rule that explains the backbone requirement.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In Hot Standby Router Protocol (HSRP), what roles do the Active and Standby routers play for a virtual IP used as a default gateway?",
+        "options": [
+          "Both forward user traffic in active-active ECMP while sharing one virtual MAC equally at all times",
+          "The Active router owns the virtual IP/MAC and forwards traffic for that group; the Standby is ready to take over if the Active fails, after Hello-based detection",
+          "The Standby always NATs client addresses while the Active only answers ARP",
+          "HSRP elects a Designated Router and Backup Designated Router exactly like OSPF on a LAN"
+        ],
+        "correct": 1,
+        "explanation": "Classic HSRP is active/standby first-hop redundancy: one Active forwards for the virtual IP (and associated virtual MAC), while a Standby monitors Hellos and assumes the active role on failure. It is not load-balancing ECMP by default (that is closer to GLBP’s model), not a NAT function split, and not OSPF’s DR/BDR election.",
+        "difficulty": "Easy"
       }
     ]
   },
@@ -11066,6 +11738,174 @@
         "correct": 3,
         "explanation": "O vBond é o orquestrador: os WAN Edges autenticam-se primeiro nele; depois o vBond indica como chegar ao vSmart (controlo) e ao vManage (gestão). O data plane fica entre edges (muitas vezes com IPsec); o vSmart distribui política de controlo via OMP. O vBond é crítico no bring-up zero-touch e na ajuda com NAT.",
         "difficulty": "Difícil"
+      },
+      {
+        "question": "No Cisco ACI, o que é um Endpoint Group (EPG)?",
+        "options": [
+          "Um grupo de endpoints (VMs, bare metal, contentores, etc.) que partilham o mesmo tratamento de política—tipicamente mapeados a um segmento VLAN/VXLAN dentro de um Bridge Domain",
+          "O switch spine físico que substitui o cluster de controladores APIC",
+          "Uma community BGP que o ACI copia sem alterações para todos os WAN edges",
+          "Um template de sampler NetFlow guardado só no border leaf"
+        ],
+        "correct": 0,
+        "explanation": "Um EPG é o objeto de política fundamental para endpoints que devem ser tratados da mesma forma. Os endpoints de um EPG ficam sob um Bridge Domain (e hierarquia VRF/tenant). A comunicação entre EPGs controla-se com contracts (provided/consumed), não só por partilharem um BD. O APIC continua a ser o controlador; os spines são underlay do fabric, não EPGs.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "No Cisco ACI, como é que dois EPGs comunicam normalmente de forma segura e orientada a políticas?",
+        "options": [
+          "Inundam sempre todo o tráfego no underlay sem filtros assim que partilham o nome do tenant",
+          "Só se ambos os EPGs forem configurados como vizinhos OSPF no mesmo loopback",
+          "Através de contracts: um EPG fornece (provides) um contract e o outro consome-o (consumes), permitindo tráfego específico (filters) entre eles",
+          "Ativando Root Guard PVST+ clássico em todos os downlinks dos leafs"
+        ],
+        "correct": 2,
+        "explanation": "O ACI usa um modelo de whitelist entre EPGs: os contracts definem que tráfego é permitido (filters/subjects). Um EPG provider oferece o contract; um consumer consome-o. Partilhar só um Bridge Domain não abre acesso East-West arbitrário. É política application-centric, não só ACLs de VLAN clássicas nem funcionalidades de STP.",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "No Cisco ACI, de que é que um Bridge Domain (BD) é principalmente responsável?",
+        "options": [
+          "Ser o constructo de encaminhamento L2 (âmbito de broadcast/unknown unicast/multicast) ao qual os EPGs se ligam, muitas vezes com subnet/gateway SVI",
+          "Terminar todas as sessões BGP só com peers SPINE externos",
+          "Substituir o cluster APIC por um único leaf switch",
+          "Cifrar contracts com WPA3-Personal"
+        ],
+        "correct": 0,
+        "explanation": "O Bridge Domain é o constructo de Camada 2 no ACI: âmbito de flooding, muitas vezes com a subnet/gateway dos EPGs ligados. Os EPGs classificam endpoints; os contracts controlam a política entre EPGs; os VRFs separam contextos L3. O BD não é o APIC, não é só peering BGP nos spines e não é uma cifra wireless.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Para que serve o Guest Shell no Cisco IOS XE?",
+        "options": [
+          "Uma substituição da TCAM de hardware em todos os switches Catalyst",
+          "Um SSID wireless que desativa permanentemente o 802.1X",
+          "Um ambiente contentor Linux/CentOS no equipamento para correr scripts Python, pacotes yum e ferramentas de automação em paralelo com o IOS XE",
+          "Uma community BGP que define sempre Local Preference a 0"
+        ],
+        "correct": 2,
+        "explanation": "O Guest Shell é um contentor Linux on-box (muitas vezes baseado em CentOS) no IOS XE onde podes correr Python, instalar pacotes e usar comandos guestshell/run para automação sem sair do equipamento. Complementa EEM/Python on-box, mas não substitui a TCAM, não redefine SSIDs nem define communities BGP por si.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Para que se usa principalmente o Cisco pyATS na automatização e operação de redes?",
+        "options": [
+          "Como framework Python de testes e validação (muitas vezes com Genie) para interpretar o estado dos equipamentos, correr verificações e regredir alterações de rede com segurança",
+          "Substituir o IGP do underlay por um protocolo de routing proprietário só em Python em todos os PE",
+          "Como o único GUI suportado para configurar contracts ACI dentro do APIC",
+          "Como substituto do RADIUS na autenticação 802.1X em wireless"
+        ],
+        "correct": 0,
+        "explanation": "O pyATS (muitas vezes com parsers/modelos Genie) é o framework Python da Cisco para testes automatizados de rede: ligar a dispositivos, capturar/interpretar estado operacional, fazer diff before/after e construir suites reutilizáveis para CI/CD ou janelas de mudança. Não é um protocolo de routing, não é o GUI de contracts ACI, nem substitui RADIUS/802.1X.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "No Cisco ISE, o que é que uma avaliação de posture (posture assessment) tipicamente verifica antes (ou como parte) de conceder acesso total à rede?",
+        "options": [
+          "Apenas se a porta do switch está em err-disable por causa do BPDU Guard",
+          "Apenas o area ID OSPF configurado no portátil do utilizador",
+          "Se o endpoint cumpre a política de segurança (por exemplo estado do antivírus, nível de patches do SO, encriptação de disco ou um agente obrigatório), para dispositivos não conformes poderem ser colocados em quarentena ou remediação",
+          "Se o nome do SSID está escondido, o que por si só prova que o cliente é de confiança"
+        ],
+        "correct": 2,
+        "explanation": "A posture do ISE avalia a saúde/conformidade do endpoint que se liga (via módulo de posture do AnyConnect/secure client ou similar) face à política—AV, patches, firewall, encriptação, etc. Hosts não conformes podem receber VLAN/ACL restrita e portal de remediação. Não tem a ver com err-disable por BPDU Guard, area IDs OSPF em portáteis, nem com esconder o SSID.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "No Cisco SD-Access, qual é o papel principal do Control Plane Node?",
+        "options": [
+          "Termina todo o DHCP e NAT de utilizadores de cada edge switch apenas em hardware",
+          "Aloja a função LISP Map-Server/Map-Resolver: os edge nodes registam mapeamentos EID-to-RLOC dos endpoints e consultam o control plane para localizar destinos no fabric",
+          "Substitui o Spanning Tree inundando cada MAC desconhecido para todo o underlay",
+          "É apenas uma GUI de gestão e nunca participa no data nem no control plane"
+        ],
+        "correct": 1,
+        "explanation": "O SD-Access usa LISP no control plane do fabric. Os Control Plane Nodes atuam como Map-Server/Map-Resolver: os edge registam EIDs (endpoints) para RLOCs (locators edge/border) e resolvem EIDs remotos antes do encapsulamento VXLAN. Não são appliances de DHCP/NAT, não inundam MACs desconhecidos como Ethernet clássico, e não são só uma GUI (o Catalyst Center/DNA Center é o orquestrador).",
+        "difficulty": "Difícil"
+      },
+      {
+        "question": "Num zone-based policy firewall (ZBFW) Cisco IOS, como é controlado o tráfego entre interfaces?",
+        "options": [
+          "Todas as interfaces têm de estar na VLAN 1, e as ACLs nas linhas VTY filtram o tráfego de trânsito",
+          "O ZBFW só inspeciona joins PIM multicast e ignora unicast TCP/UDP",
+          "Configura-se só ip inspect CBAC globalmente; as zones são ignoradas quando o NAT está ativo",
+          "As interfaces são atribuídas a security zones; um zone-pair com policy-map (class-maps) define o que é inspecionado/permitido entre a zone de origem e a de destino (tráfego intra-zone tipicamente permitido por omissão)"
+        ],
+        "correct": 3,
+        "explanation": "O ZBFW agrupa interfaces em zones. Tráfego inter-zone exige um zone-pair explícito e uma policy (class-map/policy-map) que permite/inspeciona fluxos da zone origem para a destino. Tráfego na mesma zone costuma ser permitido sem zone-pair. Não se limita a PIM, não depende de ACLs VTY para forwarding de trânsito, e distingue-se de desenhos só com CBAC clássico por interface.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Num ambiente Cisco ISE / RADIUS, para que serve o Change of Authorization (CoA)?",
+        "options": [
+          "Substituir permanentemente o TACACS+ pelo RADIUS em todos os logins CLI dos equipamentos",
+          "Descarregar a imagem IOS do switch por TFTP após cada sessão 802.1X bem-sucedida",
+          "Permitir que o servidor de políticas envie uma atualização a uma sessão já autenticada (por exemplo reautenticar, terminar, ou mudar VLAN/ACL/SGT) sem esperar pelo próximo login do cliente",
+          "Eleger a root bridge do STP com base no shared secret do RADIUS"
+        ],
+        "correct": 2,
+        "explanation": "O CoA (autorização dinâmica RFC 5176) permite ao ISE/RADIUS enviar mensagens não solicitadas ao NAD para que uma sessão ativa seja reautenticada, desligada ou receba um novo resultado de autorização (VLAN, dACL, SGT, etc.). Não é uma política de substituição do TACACS, não descarrega imagens IOS e não tem relação com a eleição da root STP.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Que problema é que o Cisco OTV (Overlay Transport Virtualization) resolve principalmente?",
+        "options": [
+          "Estender VLANs / segmentos Ethernet de Camada 2 através de um DCI de Camada 3, contendo o STP e reduzindo flooding face a um stretch L2 ingénuo",
+          "Substituir o BGP por um IGP underlay proprietário só Cisco no core da Internet",
+          "Fornecer Power over Ethernet a servidores numa fabric leaf-spine",
+          "Cifrar consultas DNS entre resolvers recursivos e servidores autoritativos"
+        ],
+        "correct": 0,
+        "explanation": "O OTV é um overlay de encaminhamento MAC usado para estender VLANs entre data centers sobre transporte IP, com mecanismos que ajudam a conter domínios STP e a controlar flooding ARP/unknown unicast face a um link L2 esticado simples. Não é um IGP underlay da Internet, não é PoE e não cifra DNS.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "No BGP, o que permite principalmente o Graceful Restart (muitas vezes associado a NSF nas plataformas Cisco) durante um restart do plano de controlo?",
+        "options": [
+          "Converter automaticamente todas as sessões eBGP em iBGP para remover o número de AS",
+          "Preservar o forwarding (FIB) e pedir aos peers que mantenham rotas marcadas como stale até o speaker em restart recuperar e atualizar o RIB, reduzindo perda de tráfego",
+          "Forçar cada peer a limpar toda a tabela BGP e reconvergir do zero por consistência",
+          "Substituir o keepalive TCP por deteção só com BFD e apagar todos os labels MPLS"
+        ],
+        "correct": 1,
+        "explanation": "O BGP Graceful Restart / NSF mantém o plano de dados a fazer forwarding enquanto o plano de controlo reinicia. Os peers retêm rotas stale durante um timer de restart; após a recuperação, End-of-RIB e updates refrescam o estado. Não converte eBGP em iBGP, e o objetivo é evitar uma tempestade destrutiva de reconvergência, não forçá-la.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "Numa implementação Cisco Secure Firewall (antigo Firepower), qual é o papel principal do FMC (Firewall Management Center)?",
+        "options": [
+          "Servir de default gateway e fronteira NAT de todas as VLANs de acesso no campus",
+          "Terminar todos os túneis IPsec site-to-site para os sensores de ameaças nunca verem tráfego encriptado",
+          "Substituir o ISE na autenticação 802.1X das portas de acesso dos switches",
+          "Gestão centralizada de políticas, eventos e dispositivos dos sensores Secure Firewall / threat defense geridos (publicar políticas, recolher eventos, coordenar updates)"
+        ],
+        "correct": 3,
+        "explanation": "O FMC é o gestor: cria e publica políticas de access control / intrusion / malware, inventaria dispositivos e agrega eventos/saúde. Os sensores (FTD/Secure Firewall) ficam no caminho de dados. O FMC não é o default gateway do campus, não é um hub IPsec obrigatório para todos os túneis, e não substitui o ISE no 802.1X das portas de switch.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Num fabric VXLAN, o que representam um VTEP e um VNI?",
+        "options": [
+          "O VTEP é o endpoint do túnel VXLAN que encapsula/desencapsula tramas; o VNI (VXLAN Network Identifier) é o ID de segmento de 24 bits que separa redes Layer 2 do overlay",
+          "O VTEP é apenas um endereço de grupo multicast, e o VNI é o process ID OSPF do underlay",
+          "O VNI é o número de série físico do switch, e o VTEP é um shared secret RADIUS",
+          "Ambos os termos significam a mesma coisa: a porta UDP de destino exterior 4789"
+        ],
+        "correct": 0,
+        "explanation": "Um VTEP (VXLAN Tunnel Endpoint) fica na borda do overlay — muitas vezes num leaf ou hipervisor — e faz encapsulação/desencapsulação VXLAN. O VNI é um identificador de 24 bits que distingue segmentos do overlay (papel análogo a um VLAN ID, com espaço muito maior). Multicast/routing do underlay pode ajudar na replicação BUM, mas isso não é a definição de VTEP nem de VNI; nenhum é número de série, segredo RADIUS, ou apenas UDP/4789.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "No Cisco SD-WAN (arquitetura Viptela), que trio de papéis corresponde melhor a vManage, vSmart e vBond?",
+        "options": [
+          "vManage = ASIC de encaminhamento data-plane; vSmart = servidor DHCP; vBond = wireless controller",
+          "vManage = só IGP do underlay; vSmart = gateway NAT; vBond = coletor syslog",
+          "vManage = gestão/orquestração centralizada (UI e config); vSmart = plano de controlo, políticas e inteligência de routing do overlay; vBond = facilitador inicial de autenticação/orquestração que ajuda a integrar dispositivos no overlay",
+          "Os três appliances encaminham pacotes de utilizador no data plane e nunca participam no controlo ou na gestão"
+        ],
+        "correct": 2,
+        "explanation": "No split clássico de controladores Cisco SD-WAN: o vManage é o sistema de gestão/orquestração (GUI, templates, monitorização); o vSmart trata da inteligência de controlo do overlay e políticas centralizadas; o vBond ajuda no onboarding/autenticação segura dos WAN Edge e a apontá-los para o resto do fabric. Os routers Edge (vEdge/cEdge) levam o data plane — não os três controladores como forwarders de pacotes.",
+        "difficulty": "Medium"
       }
     ],
     "en": [
@@ -13260,6 +14100,468 @@
         "correct": 3,
         "explanation": "vBond is the orchestrator: WAN Edges authenticate to it first; vBond then tells them how to reach vSmart (control) and vManage (management). Data plane traffic stays between edges (often with IPsec); vSmart distributes control policy via OMP. vBond is critical for zero-touch bring-up and NAT traversal assistance.",
         "difficulty": "Hard"
+      },
+      {
+        "question": "In Cisco ACI, what is an Endpoint Group (EPG)?",
+        "options": [
+          "A group of endpoints (VMs, bare metal, containers, etc.) that share the same policy treatment—typically mapped to a VLAN/VXLAN segment inside a Bridge Domain",
+          "The physical spine switch that replaces the APIC controller cluster",
+          "A BGP community that ACI copies unchanged into every WAN edge",
+          "A NetFlow sampler template stored only on the border leaf"
+        ],
+        "correct": 0,
+        "explanation": "An EPG is the fundamental policy object for endpoints that should be treated alike. Endpoints in an EPG live under a Bridge Domain (and VRF/tenant hierarchy). Communication between EPGs is controlled by contracts (provided/consumed), not by simply sharing a BD. The APIC still remains the controller; spines are fabric underlay, not EPGs.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "In Cisco ACI, how do two EPGs normally communicate in a secure, policy-driven way?",
+        "options": [
+          "They always flood all traffic in the underlay with no filters once they share a tenant name",
+          "Only if both EPGs are configured as OSPF neighbors on the same loopback",
+          "Through contracts: one EPG provides a contract and the other consumes it, allowing specific traffic (filters) between them",
+          "By enabling classic PVST+ Root Guard on every leaf downlink"
+        ],
+        "correct": 2,
+        "explanation": "ACI uses a whitelist model between EPGs: contracts define which traffic is allowed (filters/subjects). A provider EPG offers a contract; a consumer EPG consumes it. Sharing a Bridge Domain alone does not open arbitrary East-West access. This is application-centric policy, not classic VLAN ACLs alone or STP features.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "In Cisco ACI, what is a Bridge Domain (BD) primarily responsible for?",
+        "options": [
+          "Acting as the L2 forwarding construct (broadcast/unknown unicast/multicast scope) that EPGs attach to, often with a subnet/SVI gateway",
+          "Terminating all BGP sessions to external SPINE peers only",
+          "Replacing the APIC cluster with a single leaf switch",
+          "Encrypting contracts with WPA3-Personal"
+        ],
+        "correct": 0,
+        "explanation": "A Bridge Domain is the ACI Layer-2 construct: flooding scope, often holding the gateway subnet for connected EPGs. EPGs classify endpoints; contracts control EPG-to-EPG policy; VRFs separate L3 contexts. The BD is not the APIC, not BGP-only spine peering, and not a wireless cipher.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is Guest Shell on Cisco IOS XE used for?",
+        "options": [
+          "A replacement for the hardware TCAM on every Catalyst switch",
+          "A wireless SSID that disables 802.1X permanently",
+          "A CentOS/Linux container environment on-box to run Python scripts, yum packages, and network automation tools alongside IOS XE",
+          "A BGP community that always sets Local Preference to 0"
+        ],
+        "correct": 2,
+        "explanation": "Guest Shell is an on-box Linux container (often CentOS-based) on IOS XE where you can run Python, install packages, and use guestshell/run commands for automation without leaving the device. It complements EEM/on-box Python but does not replace TCAM, redefine SSIDs, or set BGP communities by itself.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is Cisco pyATS primarily used for in network automation and operations?",
+        "options": [
+          "As a Python test and validation framework (often with Genie) to parse device state, run checks, and regress network changes safely",
+          "Replacing the underlay IGP with a proprietary Python-only routing protocol on every PE",
+          "As the only supported GUI to configure ACI contracts inside APIC",
+          "As a replacement for RADIUS when doing 802.1X on wireless"
+        ],
+        "correct": 0,
+        "explanation": "pyATS (often paired with Genie parsers/models) is Cisco’s Python framework for automated network testing: connect to devices, snapshot/parse operational state, diff before/after, and build reusable test suites for CI/CD or change windows. It is not a routing protocol, not the ACI contract GUI, and not an 802.1X/RADIUS replacement.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In Cisco ISE, what does a posture assessment typically check before (or as part of) granting full network access?",
+        "options": [
+          "Only whether the switchport is in err-disable because of BPDU Guard",
+          "Only the OSPF area ID configured on the user’s laptop",
+          "Whether the endpoint meets security policy (for example antivirus status, OS patch level, disk encryption, or a required agent) so non-compliant devices can be quarantined or remediated",
+          "Whether the SSID name is hidden, which alone proves the client is trusted"
+        ],
+        "correct": 2,
+        "explanation": "ISE posture evaluates the health/compliance of the connecting endpoint (via AnyConnect/secure client posture module or similar) against policy—AV, patches, firewall, encryption, etc. Non-compliant hosts can get a restricted VLAN/ACL and remediation portal. It is unrelated to BPDU Guard err-disable, OSPF area IDs on laptops, or hiding the SSID.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In Cisco SD-Access, what is the primary role of the Control Plane Node?",
+        "options": [
+          "It terminates all user DHCP and NAT for every edge switch in hardware only",
+          "It hosts the LISP Map-Server/Map-Resolver function: edge nodes register endpoint EID-to-RLOC mappings and query the control plane to locate destinations in the fabric",
+          "It replaces Spanning Tree by flooding every unknown MAC to the entire underlay",
+          "It is only a management GUI and never participates in the data or control plane"
+        ],
+        "correct": 1,
+        "explanation": "SD-Access uses LISP for the fabric control plane. Control Plane Nodes act as Map-Server/Map-Resolver: fabric edge nodes register EIDs (endpoints) to RLOCs (edge/border locators) and resolve remote EIDs before VXLAN encapsulation. They are not DHCP/NAT appliances, do not flood unknown MACs like classic Ethernet learning floods, and are not merely a GUI (Catalyst Center/DNA Center is the orchestrator).",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "In a Cisco IOS zone-based policy firewall (ZBFW), how is traffic between interfaces controlled?",
+        "options": [
+          "Every interface must be placed in VLAN 1, and ACLs on the VTY lines filter transit traffic",
+          "ZBFW only inspects multicast PIM joins and ignores unicast TCP/UDP",
+          "You configure classic ip inspect CBAC globally; zones are ignored when NAT is enabled",
+          "Interfaces are assigned to security zones; a zone-pair with a policy-map (class-maps) defines what is inspected/allowed between a source zone and a destination zone (intra-zone traffic is typically allowed by default)"
+        ],
+        "correct": 3,
+        "explanation": "ZBFW groups interfaces into zones. Inter-zone traffic requires an explicit zone-pair and a policy (class-map/policy-map) that permits/inspects flows from source zone to destination zone. Same-zone traffic is usually allowed without a zone-pair. It is not limited to PIM, does not rely on VTY ACLs for transit forwarding, and is distinct from legacy interface CBAC-only designs.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In a Cisco ISE / RADIUS deployment, what is Change of Authorization (CoA) used for?",
+        "options": [
+          "To permanently replace TACACS+ with RADIUS for all device CLI logins",
+          "To download the switch IOS image over TFTP after every successful 802.1X session",
+          "To let the policy server push an update to an already-authenticated session (for example reauthenticate, terminate, or change VLAN/ACL/SGT) without waiting for the next client login",
+          "To elect the STP root bridge based on the RADIUS shared secret"
+        ],
+        "correct": 2,
+        "explanation": "CoA (RFC 5176 dynamic authorization) lets ISE/RADIUS send unsolicited messages to the NAD so an active session can be reauthenticated, disconnected, or given a new authorization result (VLAN, dACL, SGT, etc.). It is not a TACACS replacement policy, not an IOS image download mechanism, and unrelated to STP root election.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What problem does Cisco OTV (Overlay Transport Virtualization) primarily solve?",
+        "options": [
+          "Extending Layer-2 VLANs / Ethernet segments across a Layer-3 data-center interconnect while containing STP and reducing flooding compared with a naive long L2 stretch",
+          "Replacing BGP with a proprietary Cisco-only underlay IGP in the Internet core",
+          "Providing Power over Ethernet to servers in a leaf-spine fabric",
+          "Encrypting DNS queries between recursive resolvers and authoritative servers"
+        ],
+        "correct": 0,
+        "explanation": "OTV is a MAC-routing overlay used to extend VLANs between data centers over an IP transport, with mechanisms that help contain STP domains and control ARP/unknown unicast flooding versus a simple stretched L2 link. It is not an Internet underlay IGP, not PoE, and not DNS encryption.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In BGP, what does Graceful Restart (often paired with NSF on Cisco platforms) primarily allow during a control-plane restart?",
+        "options": [
+          "Automatically converting all eBGP sessions into iBGP so the AS number can be removed",
+          "Preserving forwarding (FIB) and asking peers to keep routes marked stale until the restarting speaker recovers and refreshes the RIB, reducing traffic loss",
+          "Forcing every peer to clear its entire BGP table and reconverge from scratch for consistency",
+          "Replacing TCP session keepalive with BFD-only detection and deleting all MPLS labels"
+        ],
+        "correct": 1,
+        "explanation": "BGP Graceful Restart / NSF keeps the data plane forwarding while the control plane restarts. Peers retain stale routes for a restart timer; after recovery, End-of-RIB and updates refresh state. It does not convert eBGP to iBGP, and it aims to avoid a full destructive reconvergence storm rather than force one.",
+        "difficulty": "Hard"
+      },
+      {
+        "question": "In a Cisco Secure Firewall (formerly Firepower) deployment, what is the primary role of FMC (Firewall Management Center)?",
+        "options": [
+          "Acting as the default gateway and NAT boundary for every access VLAN in the campus",
+          "Terminating all site-to-site IPsec tunnels so threat sensors never see encrypted traffic",
+          "Replacing ISE for 802.1X authentication of switch access ports",
+          "Centralized policy, event, and device management for managed Secure Firewall / threat defense sensors (push policies, collect events, coordinate updates)"
+        ],
+        "correct": 3,
+        "explanation": "FMC is the manager: it authors and deploys access control / intrusion / malware policies, inventories devices, and aggregates events/health. The sensors (FTD/Secure Firewall) sit in the data path. FMC is not the campus default gateway, not a mandatory IPsec hub for every tunnel, and not a replacement for ISE 802.1X on switch ports.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In a VXLAN fabric, what do a VTEP and a VNI represent?",
+        "options": [
+          "The VTEP is the VXLAN tunnel endpoint that encapsulates/decapsulates frames; the VNI (VXLAN Network Identifier) is the 24-bit segment ID that separates overlay Layer 2 networks",
+          "The VTEP is only a multicast group address, and the VNI is the underlay OSPF process ID",
+          "The VNI is the physical switch serial number, and the VTEP is a RADIUS shared secret",
+          "Both terms mean the same thing: the outer UDP destination port 4789"
+        ],
+        "correct": 0,
+        "explanation": "A VTEP (VXLAN Tunnel Endpoint) sits at the edge of the overlay—often on a leaf or hypervisor—and performs VXLAN encapsulation/decapsulation. The VNI is a 24-bit identifier that distinguishes overlay segments (analogous in role to a VLAN ID, but with a much larger space). Multicast/underlay routing may help BUM replication, but that is not what “VTEP” or “VNI” mean; neither is a serial number, RADIUS secret, or merely UDP/4789.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In Cisco SD-WAN (Viptela architecture), which trio of roles best matches vManage, vSmart, and vBond?",
+        "options": [
+          "vManage = data-plane forwarding ASIC; vSmart = DHCP server; vBond = wireless controller",
+          "vManage = underlay IGP only; vSmart = NAT gateway; vBond = syslog collector",
+          "vManage = centralized management/orchestration UI and device config; vSmart = control-plane policy and overlay routing intelligence; vBond = initial authentication/orchestration facilitator that helps bring devices into the overlay",
+          "All three appliances forward user packets in the data plane and never participate in control or management"
+        ],
+        "correct": 2,
+        "explanation": "In the classic Cisco SD-WAN controller split: vManage is the management/orchestration system (GUI, templates, monitoring); vSmart handles control-plane overlay intelligence and centralized policy; vBond assists securely onboarding/authenticating WAN Edge devices and pointing them to the rest of the fabric. Edge routers (vEdge/cEdge) carry the data plane—not the three controllers as packet forwarders.",
+        "difficulty": "Medium"
+      }
+    ]
+  },
+  "cyber": {
+    "pt": [
+      {
+        "question": "Na tríade CIA da segurança da informação, o que representa a Confidentiality (Confidencialidade)?",
+        "options": [
+          "Garantir que os sistemas estão sempre disponíveis para utilizadores autorizados",
+          "Garantir que só entidades autorizadas acedem à informação, tipicamente com controlos de acesso e encriptação",
+          "Garantir que os dados não são alterados sem deteção, por exemplo com hashes e assinaturas",
+          "Garantir que o tráfego de rede usa sempre a porta 443"
+        ],
+        "correct": 1,
+        "explanation": "A tríade CIA é Confidentiality, Integrity e Availability. Confidencialidade protege o acesso à informação (quem pode ver); Integridade protege contra alterações não autorizadas; Disponibilidade assegura acesso quando necessário.",
+        "difficulty": "Fácil"
+      },
+      {
+        "question": "Um email pede-lhe urgentemente para clicar num link e «validar a conta Cisco» introduzindo a password. Que tipo de ataque de engenharia social é este?",
+        "options": [
+          "Phishing (ou spear phishing se for direcionado)",
+          "Ataque de força bruta contra o servidor RADIUS",
+          "Man-in-the-middle exclusivamente na camada física",
+          "DDoS por amplificação DNS"
+        ],
+        "correct": 0,
+        "explanation": "Phishing usa mensagens fraudulentas para induzir a vítima a revelar credenciais ou instalar malware. Spear phishing é a variante altamente personalizada. Não é força bruta, MITM físico nem DDoS.",
+        "difficulty": "Fácil"
+      },
+      {
+        "question": "Qual é a diferença principal entre um firewall de filtragem de pacotes e um sistema IDS/IPS?",
+        "options": [
+          "Um firewall só analisa malware em anexos de email; IDS/IPS só faz NAT",
+          "Firewall e IDS são a mesma coisa; IPS é apenas a marca comercial Cisco",
+          "O firewall aplica política de permitir/negar tráfego; o IDS deteta anomalias/assinaturas (alerta) e o IPS pode bloquear em linha",
+          "O IDS substitui completamente AAA (Authentication, Authorization, Accounting)"
+        ],
+        "correct": 2,
+        "explanation": "Firewalls controlam o que passa segundo regras. IDS (Intrusion Detection) monitoriza e alerta; IPS (Intrusion Prevention) atua em linha e pode descartar tráfego malicioso. São complementares, não substitutos de AAA.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "No modelo AAA usado em redes Cisco, o que significam Authentication, Authorization e Accounting?",
+        "options": [
+          "Apenas encriptação de ligações VPN site-to-site",
+          "Apenas balanceamento de carga entre controladores wireless",
+          "Apenas inventário automático de switches na LAN",
+          "Autenticar quem é o utilizador/dispositivo, autorizar o que pode fazer, e registar (accounting) o que fez"
+        ],
+        "correct": 3,
+        "explanation": "AAA: Authentication verifica identidade; Authorization define permissões/políticas; Accounting regista sessões e uso (útil para auditoria e faturação). Protocolos comuns: RADIUS e TACACS+.",
+        "difficulty": "Fácil"
+      },
+      {
+        "question": "Em VPNs, qual afirmação descreve melhor IPsec em comparação com SSL/TLS VPN (ex.: acesso remoto via browser ou AnyConnect em modo SSL)?",
+        "options": [
+          "IPsec opera tipicamente nas camadas de rede (protege pacotes IP) e é comum em site-to-site; SSL VPN trabalha sobretudo na sessão/transporte e é popular para acesso remoto de utilizadores",
+          "IPsec só funciona em IPv6; SSL VPN só em IPv4",
+          "SSL VPN substitui sempre o routing OSPF no núcleo",
+          "IPsec e SSL VPN são exatamente o mesmo protocolo com nomes diferentes"
+        ],
+        "correct": 0,
+        "explanation": "IPsec (AH/ESP, IKE) protege tráfego IP e é clássico em VPNs site-to-site. SSL/TLS VPNs encapsulam sessões de utilizador e são comuns em remote access. Ambos podem coexistir conforme o caso de uso.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Qual descrição corresponde corretamente a ransomware?",
+        "options": [
+          "Malware que cifra ficheiros da vítima e exige pagamento (resgate) para devolver o acesso",
+          "Um protocolo Cisco para sincronizar relógios NTP",
+          "Uma ACL que permite apenas HTTPS",
+          "Um tipo de cabo de fibra óptica multimodo"
+        ],
+        "correct": 0,
+        "explanation": "Ransomware encripta dados e pede resgate. Outros tipos: vírus, worms, trojans, spyware, rootkits. Mitigações: backups offline, patching, MFA, filtragem de email e least privilege.",
+        "difficulty": "Fácil"
+      },
+      {
+        "question": "O que é Zero Trust, em termos de princípios de segurança de rede?",
+        "options": [
+          "Confiar automaticamente em qualquer dispositivo dentro da LAN corporativa",
+          "Desligar todos os firewalls porque a cloud já é segura",
+          "Nunca confiar por predefinição: verificar continuamente identidade, contexto e postura antes de conceder acesso mínimo necessário",
+          "Usar apenas passwords partilhadas em switches de acesso"
+        ],
+        "correct": 2,
+        "explanation": "Zero Trust assume que a rede interna não é zona de confiança automática. Exige autenticação forte, autorização contextual, microsegmentação e verificação contínua (nunca trust, always verify).",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "No ecossistema Cisco de segurança, qual o papel típico do Cisco ISE (Identity Services Engine) face a uma plataforma de XDR/visão unificada como SecureX (ou sucessoras)?",
+        "options": [
+          "O ISE substitui completamente o routing BGP na Internet",
+          "O ISE foca-se em identidade, controlo de acesso (802.1X, guest, posture) e policy; plataformas tipo SecureX agregam telemetria e orquestram resposta entre produtos",
+          "SecureX é apenas um cabo consola; ISE é só um tema de wallpaper",
+          "Ambos servem exclusivamente para configurar VLANs em switches não geridos"
+        ],
+        "correct": 1,
+        "explanation": "Cisco ISE é o cérebro de AAA/policy NAC (802.1X, profiling, posture, guest). SecureX (e evoluções) integra alertas e workflows entre firewall, endpoint, email, etc. São complementares na arquitetura de segurança Cisco.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Qual é a diferença fundamental entre hashing e encriptação simétrica?",
+        "options": [
+          "Hashing e encriptação são sempre o mesmo algoritmo AES",
+          "A encriptação só funciona em texto português; hashing só em inglês",
+          "Hashing aumenta o tamanho dos dados; encriptação reduz sempre para 128 bits",
+          "Hashing é tipicamente unidirecional (integridade/verificação); encriptação simétrica é reversível com a chave partilhada (confidencialidade)"
+        ],
+        "correct": 3,
+        "explanation": "Hashes (SHA-256, etc.) não se «desfazem» para recuperar o original — servem para integridade e verificação. Encriptação simétrica (AES) cifra e decifra com a mesma chave. Assimétrico usa pares de chaves pública/privada.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Porque é que a autenticação multifator (MFA) reduz significativamente o risco de compromisso de contas?",
+        "options": [
+          "Porque elimina a necessidade de patches de segurança no sistema operativo",
+          "Porque torna o Wi-Fi automaticamente WPA3 sem configuração",
+          "Porque substitui firewalls perimetrais em todos os cenários",
+          "Porque exige algo mais do que só a password (ex.: app OTP, token, biometria), dificultando o uso de credenciais roubadas"
+        ],
+        "correct": 3,
+        "explanation": "MFA combina fatores (conhecimento, posse, inerência). Mesmo com password vazada, o atacante precisa do segundo fator. É controlo essencial em Zero Trust e em acesso administrativo Cisco (e não substitui patching nem firewalls).",
+        "difficulty": "Fácil"
+      },
+      {
+        "question": "O que é defense in depth (defesa em profundidade) num ambiente de rede?",
+        "options": [
+          "Usar uma única password complexa para todos os dispositivos",
+          "Confiar apenas num antivirus no endpoint e remover a segmentação",
+          "Aplicar várias camadas de controlos (perímetro, rede, identidade, endpoint, dados) para que a falha de um não comprometa tudo",
+          "Desativar logs para melhorar a performance"
+        ],
+        "correct": 2,
+        "explanation": "Defense in depth sobrepõe controlos complementares: firewalls, segmentação, AAA/MFA, EDR, encriptação, monitorização. Reduz o impacto de uma única falha.",
+        "difficulty": "Fácil"
+      },
+      {
+        "question": "Qual o benefício principal da segmentação de rede (ex.: VLANs, firewalls entre zonas) para a cibersegurança?",
+        "options": [
+          "Aumentar o broadcast domain para que o malware se propague mais depressa",
+          "Eliminar a necessidade de atualizar firmware",
+          "Permitir que convidados usem a mesma VLAN de gestão dos routers",
+          "Limitar movimento lateral: um compromisso numa zona não tem acesso automático a servidores críticos noutra zona"
+        ],
+        "correct": 3,
+        "explanation": "Segmentação (e microsegmentação) restringe east-west traffic. Isola IoT/guest da gestão e de data centers, alinhado com Zero Trust e least privilege.",
+        "difficulty": "Médio"
+      }
+    ],
+    "en": [
+      {
+        "question": "In the CIA triad of information security, what does Confidentiality mean?",
+        "options": [
+          "Ensuring systems are always available to authorized users",
+          "Ensuring only authorized entities can access information, typically with access controls and encryption",
+          "Ensuring data is not changed undetected, for example with hashes and signatures",
+          "Ensuring network traffic always uses port 443"
+        ],
+        "correct": 1,
+        "explanation": "The CIA triad is Confidentiality, Integrity, and Availability. Confidentiality protects who can see information; Integrity protects against unauthorized changes; Availability ensures access when needed.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "An email urgently asks you to click a link and “verify your Cisco account” by entering your password. What type of social-engineering attack is this?",
+        "options": [
+          "Phishing (or spear phishing if highly targeted)",
+          "Brute-force attack against a RADIUS server",
+          "Man-in-the-middle exclusively at the physical layer",
+          "DNS amplification DDoS"
+        ],
+        "correct": 0,
+        "explanation": "Phishing uses fraudulent messages to trick victims into revealing credentials or installing malware. Spear phishing is the highly personalized variant. It is not brute force, physical-layer MITM, or DDoS.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "What is the main difference between a packet-filtering firewall and an IDS/IPS?",
+        "options": [
+          "A firewall only scans email attachments for malware; IDS/IPS only performs NAT",
+          "Firewall and IDS are the same thing; IPS is just a Cisco brand name",
+          "A firewall enforces allow/deny policy; IDS detects anomalies/signatures (alerts) and IPS can block inline",
+          "IDS completely replaces AAA (Authentication, Authorization, Accounting)"
+        ],
+        "correct": 2,
+        "explanation": "Firewalls control what passes based on policy. IDS monitors and alerts; IPS sits inline and can drop malicious traffic. They complement AAA rather than replace it.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In the AAA model used in Cisco networks, what do Authentication, Authorization, and Accounting mean?",
+        "options": [
+          "Only encryption of site-to-site VPN links",
+          "Only load balancing between wireless controllers",
+          "Only automatic inventory of LAN switches",
+          "Authenticate who the user/device is, authorize what they may do, and account (log) what they did"
+        ],
+        "correct": 3,
+        "explanation": "AAA: Authentication verifies identity; Authorization defines permissions/policies; Accounting records sessions and usage (audit/billing). Common protocols: RADIUS and TACACS+.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "For VPNs, which statement best describes IPsec compared with SSL/TLS VPN (e.g., browser-based or AnyConnect SSL mode)?",
+        "options": [
+          "IPsec typically works at the network layer (protects IP packets) and is common for site-to-site; SSL VPN works mainly at session/transport and is popular for user remote access",
+          "IPsec only works on IPv6; SSL VPN only on IPv4",
+          "SSL VPN always replaces OSPF routing in the core",
+          "IPsec and SSL VPN are exactly the same protocol with different names"
+        ],
+        "correct": 0,
+        "explanation": "IPsec (AH/ESP, IKE) protects IP traffic and is classic for site-to-site VPNs. SSL/TLS VPNs encapsulate user sessions and are common for remote access. Both can coexist depending on the use case.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Which description correctly matches ransomware?",
+        "options": [
+          "Malware that encrypts the victim’s files and demands payment (ransom) to restore access",
+          "A Cisco protocol used to sync NTP clocks",
+          "An ACL that allows HTTPS only",
+          "A type of multimode fiber optic cable"
+        ],
+        "correct": 0,
+        "explanation": "Ransomware encrypts data and demands ransom. Related malware types include viruses, worms, trojans, spyware, and rootkits. Mitigations: offline backups, patching, MFA, email filtering, and least privilege.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "What is Zero Trust, in terms of network security principles?",
+        "options": [
+          "Automatically trust any device inside the corporate LAN",
+          "Turn off all firewalls because the cloud is already secure",
+          "Never trust by default: continuously verify identity, context, and posture before granting least-privilege access",
+          "Use only shared passwords on access switches"
+        ],
+        "correct": 2,
+        "explanation": "Zero Trust assumes the internal network is not an automatic trust zone. It requires strong authentication, contextual authorization, microsegmentation, and continuous verification (never trust, always verify).",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "In the Cisco security ecosystem, what is the typical role of Cisco ISE (Identity Services Engine) versus a unified XDR/visibility platform such as SecureX (or successors)?",
+        "options": [
+          "ISE completely replaces BGP routing on the Internet",
+          "ISE focuses on identity, access control (802.1X, guest, posture) and policy; SecureX-class platforms aggregate telemetry and orchestrate response across products",
+          "SecureX is only a console cable; ISE is only a wallpaper theme",
+          "Both exist solely to configure VLANs on unmanaged switches"
+        ],
+        "correct": 1,
+        "explanation": "Cisco ISE is the AAA/NAC policy engine (802.1X, profiling, posture, guest). SecureX-class platforms integrate alerts and workflows across firewall, endpoint, email, and more. They complement each other in Cisco security architecture.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is the fundamental difference between hashing and symmetric encryption?",
+        "options": [
+          "Hashing and encryption are always the same AES algorithm",
+          "Encryption only works on Portuguese text; hashing only on English",
+          "Hashing always increases data size; encryption always shrinks data to 128 bits",
+          "Hashing is typically one-way (integrity/verification); symmetric encryption is reversible with the shared key (confidentiality)"
+        ],
+        "correct": 3,
+        "explanation": "Hashes (SHA-256, etc.) are not reversed to recover the original — they support integrity and verification. Symmetric encryption (AES) encrypts and decrypts with the same key. Asymmetric crypto uses public/private key pairs.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Why does multi-factor authentication (MFA) significantly reduce account-compromise risk?",
+        "options": [
+          "Because it removes the need for operating-system security patches",
+          "Because it makes Wi-Fi automatically WPA3 with no configuration",
+          "Because it replaces perimeter firewalls in every scenario",
+          "Because it requires more than just a password (e.g., OTP app, token, biometrics), making stolen credentials harder to abuse"
+        ],
+        "correct": 3,
+        "explanation": "MFA combines factors (knowledge, possession, inherence). Even with a leaked password, the attacker still needs the second factor. It is essential in Zero Trust and for privileged Cisco access — and it does not replace patching or firewalls.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "What is defense in depth in a network environment?",
+        "options": [
+          "Using one complex password for every device",
+          "Relying only on endpoint antivirus and removing segmentation",
+          "Applying multiple layers of controls (perimeter, network, identity, endpoint, data) so one failure does not compromise everything",
+          "Disabling logs to improve performance"
+        ],
+        "correct": 2,
+        "explanation": "Defense in depth stacks complementary controls: firewalls, segmentation, AAA/MFA, EDR, encryption, and monitoring. It reduces the impact of any single failure.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "What is the main cybersecurity benefit of network segmentation (e.g., VLANs, firewalls between zones)?",
+        "options": [
+          "Enlarging the broadcast domain so malware spreads faster",
+          "Removing the need to update firmware",
+          "Letting guests share the same management VLAN as routers",
+          "Limiting lateral movement: a compromise in one zone does not automatically reach critical servers in another"
+        ],
+        "correct": 3,
+        "explanation": "Segmentation (and microsegmentation) restricts east-west traffic. It isolates IoT/guest from management and data centers, aligned with Zero Trust and least privilege.",
+        "difficulty": "Medium"
       }
     ]
   }

@@ -1,12 +1,12 @@
 # Cisco Quiz
 
-App nativa (**Android**, **iOS**, **Windows**) para praticar exames **CCST**, **CCNA** e **CCNP**. Interface predefinida em português, com strings em inglês. Nunca usa a marca Cricket na UI.
+App nativa (**Android**, **iOS**, **Windows**) para praticar exames **CCST**, **CCNA**, **CCNP** e **Cybersegurança**. Interface predefinida em português, com strings em inglês. Nunca usa a marca Cricket na UI.
 
 Site de referência: https://fgrilo80.github.io/cricket/
 
 ## O que faz
 
-- Ecrã inicial com cartões **CCST / CCNA / CCNP** e botões **PT** / **EN**.
+- Ecrã inicial com cartões **CCST / CCNA / CCNP / Cybersegurança** e botões **PT** / **EN**.
 - Modo **Prática** ou **Exame** (seletor no início):
   - **Prática**: revela certo/errado e a explicação a seguir a cada resposta. Até 50 perguntas, 45 minutos.
   - **Exame**: até 50 perguntas, 45 minutos, **sem** revelar por pergunta — pontuação e revisão completa só no fim.
@@ -30,7 +30,7 @@ A app **não inventa perguntas**. A base vem do JSON público (Pages, com fallba
 - https://fgrilo80.github.io/cricket/cricket.json
 - https://raw.githubusercontent.com/Fgrilo80/cricket/main/cricket.json
 
-A cópia incluída tem **1100 perguntas** (CCST 181, CCNA 187, CCNP 182 × PT/EN).
+A cópia incluída tem **1208 perguntas**: clássicos **1184** (CCST 195, CCNA 201, CCNP 196 × PT/EN) + **Cyber** starters 12×2. O 4.º trilho (`cyber`) está preparado para crescer.
 
 ### Atualizar perguntas (sem reinstalar)
 

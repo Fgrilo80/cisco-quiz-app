@@ -1,13 +1,14 @@
 import '../models/question.dart';
 
-const certKeys = ['ccst', 'ccna', 'ccnp'];
+const certKeys = ['ccst', 'ccna', 'ccnp', 'cyber'];
 const langKeys = ['pt', 'en'];
 
 /// Structural check used before replacing the in-memory bank.
 /// Empty lists are structurally ok here; [bankQuestionCount] catches emptiness.
+/// Requires the three classic tracks; `cyber` is accepted when present (v3.2+).
 bool bankHasExpectedShape(dynamic decoded) {
   if (decoded is! Map) return false;
-  for (final cert in certKeys) {
+  for (final cert in const ['ccst', 'ccna', 'ccnp']) {
     final block = decoded[cert];
     if (block is! Map) return false;
     if (block['pt'] is! List || block['en'] is! List) return false;
@@ -19,6 +20,7 @@ Map<String, Map<String, List<Question>>> emptyBank() => {
   'ccst': {'pt': [], 'en': []},
   'ccna': {'pt': [], 'en': []},
   'ccnp': {'pt': [], 'en': []},
+  'cyber': {'pt': [], 'en': []},
 };
 
 /// Parses the GitHub / bundled JSON, dropping malformed items instead of

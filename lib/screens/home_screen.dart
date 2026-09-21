@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Iterable<Question> get _allInLang sync* {
-    for (final cert in const ['ccst', 'ccna', 'ccnp']) {
+    for (final cert in const ['ccst', 'ccna', 'ccnp', 'cyber']) {
       yield* widget.bank.questions(cert, s.code);
       yield* widget.bank.questions(cert, s.code == 'pt' ? 'en' : 'pt');
     }
@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int get _filteredTotal {
     var n = 0;
-    for (final cert in const ['ccst', 'ccna', 'ccnp']) {
+    for (final cert in const ['ccst', 'ccna', 'ccnp', 'cyber']) {
       n += _pool(cert, 'pt').length;
       n += _pool(cert, 'en').length;
     }
@@ -134,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   (String, String) _locate(Question q) {
-    for (final cert in const ['ccst', 'ccna', 'ccnp']) {
+    for (final cert in const ['ccst', 'ccna', 'ccnp', 'cyber']) {
       for (final lang in const ['pt', 'en']) {
         if (widget.bank.questions(cert, lang).any((x) => x.id == q.id)) {
           return (cert, lang);
@@ -574,7 +574,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                for (final cert in const ['ccst', 'ccna', 'ccnp']) ...[
+                for (final cert in const ['ccst', 'ccna', 'ccnp', 'cyber']) ...[
                   CertCard(
                     cert: cert,
                     s: s,
@@ -871,7 +871,7 @@ class _StatsCard extends StatelessWidget {
                 Text(
                   s.lastByCertLine(
                     [
-                      for (final cert in const ['ccst', 'ccna', 'ccnp'])
+                      for (final cert in const ['ccst', 'ccna', 'ccnp', 'cyber'])
                         if (stats.lastPctByCert[cert] != null)
                           '${s.certTitle(cert)} ${stats.lastPctByCert[cert]}%',
                     ].join(' · '),
