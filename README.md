@@ -78,7 +78,7 @@ APKs de release (split-per-abi) ficam em `/workspace/cisco-quiz-apk/` (ex.: `Cis
 
 A pasta `build/` não vai para o Git. Para voltar a gerar: Android SDK 36 + JDK 21 e o comando acima.
 
-O executável Windows **não se constrói neste Linux**; a pasta `windows/` está incluída. Num PC Windows: `flutter build windows --release` (saída típica: `build/windows/x64/runner/Release`).
+O executável Windows **não se constrói neste Linux**; a pasta `windows/` está incluída. Sem o PC (DESKTOP-FGRILO), o workflow [Windows release](.github/workflows/windows-release.yml) gera `CiscoQuiz-1.2.8-Windows.zip` no GitHub. No PC: `scripts/build-windows-release.ps1`. Detalhe em [docs/windows-build.md](docs/windows-build.md). Saída local típica: `build/windows/x64/runner/Release`.
 
 ## Estrutura
 

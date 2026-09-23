@@ -1,0 +1,113 @@
+# Windows desktop release for Cisco Quiz.
+# Remote path when DESKTOP-FGRILO cannot run a local Shell build.
+# Does not modify assets/cricket.json or bump pubspec.yaml.
+
+name: Windows release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - app
+      # Feature branches so the zip can be built before merge to app.
+      - "cursor/**"
+    tags:
+      # Tag v1.2.8 may point at an older commit. See checkout step.
+      - "v1.2.8"
+    paths:
+      - "pubspec.yaml"
+      - "pubspec.lock"
+      - ".github/workflows/windows-release.yml"
+      - "lib/**"
+      - "windows/**"
+      - "assets/cricket.json"
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Build Windows release
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout triggering ref
+        if: github.ref_type != 'tag'
+        uses: actions/checkout@v4
+
+      - name: Checkout app for tag v1.2.8
+        if: github.ref_type == 'tag'
+        uses: actions/checkout@v4
+        with:
+          # Existing release tag can lag branch app. Build 1.2.8+10 from app
+          # and only attach the zip; do not move the tag.
+          ref: app
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          architecture: x64
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Check version and bundled bank
+        shell: pwsh
+        run: |
+          $versionLine = Select-String -Path pubspec.yaml -Pattern '^version:\s*(.+)\s*$' | Select-Object -First 1
+          if (-not $versionLine) { throw 'pubspec.yaml has no version line.' }
+          $version = $versionLine.Matches[0].Groups[1].Value.Trim()
+          if ($version -ne '1.2.8+10') {
+            throw "Expected pubspec version 1.2.8+10 (found '$version')."
+          }
+          $bank = Get-Content -Raw -Path assets/cricket.json
+          $count = ([regex]::Matches($bank, '"question"\s*:')).Count
+          if ($count -ne 1230) {
+            throw "Bundled bank has $count questions; expected 1230. Leave assets/cricket.json unchanged."
+          }
+          Write-Host "Version $version, bundled questions $count"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Windows release
+        run: flutter build windows --release
+
+      - name: Zip Release contents
+        shell: pwsh
+        run: |
+          $release = "build/windows/x64/runner/Release"
+          $exe = Join-Path $release "cisco_quiz.exe"
+          if (-not (Test-Path $exe)) {
+            throw "Expected executable not found: $exe"
+          }
+          if (Test-Path "CiscoQuiz-1.2.8-Windows.zip") {
+            Remove-Item -Force "CiscoQuiz-1.2.8-Windows.zip"
+          }
+          tar.exe -a -cf "CiscoQuiz-1.2.8-Windows.zip" -C $release .
+          $listing = tar.exe -tf "CiscoQuiz-1.2.8-Windows.zip"
+          $listing | Select-String -Pattern "cisco_quiz.exe" -SimpleMatch | Out-Host
+          if (-not ($listing | Select-String -Pattern "cisco_quiz.exe" -SimpleMatch)) {
+            throw "Zip is missing cisco_quiz.exe"
+          }
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CiscoQuiz-1.2.8-Windows
+          path: CiscoQuiz-1.2.8-Windows.zip
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Attach zip to existing release v1.2.8
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        run: |
+          Write-Host "Assets before upload:"
+          gh release view v1.2.8 --repo "${{ github.repository }}" --json assets --jq ".assets[].name"
+          # --clobber replaces only an asset of the same name. The APK stays.
+          gh release upload v1.2.8 "CiscoQuiz-1.2.8-Windows.zip" --repo "${{ github.repository }}" --clobber
+          Write-Host "Assets after upload:"
+          gh release view v1.2.8 --repo "${{ github.repository }}" --json assets --jq ".assets[].name"
