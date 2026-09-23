@@ -4,6 +4,7 @@
 
 - Banco sincronizado com Cricket **v3.2.1**: clássicos **1190** (CCST 196, CCNA 202, CCNP 197 × PT/EN) + **Cybersegurança** 20×2.
 - Contagens e testes atualizados (total **1230**). Trilho `cyber` mantido.
+- Release Windows: instruções em `docs/windows-build.md` e `scripts/build-windows-release.ps1` (correr em DESKTOP-FGRILO). O banco incluído não é alterado por esse passo.
 
 ## 1.2.7+9 — 2026-09-21
 
