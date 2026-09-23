@@ -30,7 +30,7 @@ A app **não inventa perguntas**. A base vem do JSON público (Pages, com fallba
 - https://fgrilo80.github.io/cricket/cricket.json
 - https://raw.githubusercontent.com/Fgrilo80/cricket/main/cricket.json
 
-A cópia incluída tem **1208 perguntas**: clássicos **1184** (CCST 195, CCNA 201, CCNP 196 × PT/EN) + **Cyber** starters 12×2. O 4.º trilho (`cyber`) está preparado para crescer.
+A cópia incluída tem **1230 perguntas**: clássicos **1190** (CCST 196, CCNA 202, CCNP 197 × PT/EN) + **Cybersegurança** 20×2. O 4.º trilho (`cyber`) acompanha o banco publicado.
 
 ### Atualizar perguntas (sem reinstalar)
 
@@ -74,7 +74,7 @@ flutter build apk --split-per-abi --release
 # saída arm64: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
 ```
 
-APKs de release (split-per-abi) ficam em `/workspace/cisco-quiz-apk/` (ex.: `CiscoQuiz-1.2.6-arm64.apk`). Ver também [docs/ios-build.md](docs/ios-build.md) para iOS.
+APKs de release (split-per-abi) ficam em `/workspace/cisco-quiz-apk/` (ex.: `CiscoQuiz-1.2.8-arm64.apk`). Ver também [docs/ios-build.md](docs/ios-build.md) para iOS.
 
 A pasta `build/` não vai para o Git. Para voltar a gerar: Android SDK 36 + JDK 21 e o comando acima.
 

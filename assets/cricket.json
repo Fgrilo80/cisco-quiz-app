@@ -2342,6 +2342,18 @@
         "correct": 0,
         "explanation": "O OFDMA divide um canal Wi-Fi em resource units (RUs) mais pequenas para que uma oportunidade de TX/RX do AP possa endereçar várias estações com alocações dimensionadas — útil em ambientes densos com muitas tramas curtas. Complementa (não desativa) o MU-MIMO; não tem a ver com a escolha de cifras WEP/WPA3; e não cria canais de 80 MHz em 2,4 GHz como o VHT80 nos 5 GHz.",
         "difficulty": "Medium"
+      },
+      {
+        "question": "Num switch de acesso Cisco, qual é o objetivo principal do port security numa interface?",
+        "options": [
+          "Encriptar todas as tramas na porta com MACsec para que switches não autorizados não formem EtherChannel",
+          "Limitar que endereços MAC podem enviar tráfego nessa porta (e definir o que acontece em violação), para reduzir a ligação de endpoints não autorizados",
+          "Substituir o STP por uma blacklist de aprendizagem MAC que desativa permanentemente as VLANs no uplink",
+          "Forçar a porta a operar apenas como interface Layer 3 com máscara /30"
+        ],
+        "correct": 1,
+        "explanation": "O port security associa uma porta de acesso a um conjunto limitado de MACs de origem permitidos (estáticos, sticky ou aprendizagem dinâmica até um máximo) e aplica uma ação de violação (protect, restrict ou shutdown). Serve para controlar que endpoints podem usar a porta — não é encriptação MACsec de todas as tramas, não desativa STP/VLANs no uplink, e não transforma a porta numa routed /30.",
+        "difficulty": "Easy"
       }
     ],
     "en": [
@@ -4686,6 +4698,18 @@
         "correct": 0,
         "explanation": "OFDMA divides a Wi-Fi channel into smaller resource units (RUs) so one AP transmit/receive opportunity can address multiple stations with right-sized allocations—especially helpful under dense, short-packet traffic. It complements (does not disable) MU-MIMO; it is unrelated to WEP/WPA3 cipher choice; and it does not invent 80 MHz channels on 2.4 GHz like 5 GHz VHT80.",
         "difficulty": "Medium"
+      },
+      {
+        "question": "On a Cisco access switch, what is the main goal of interface port security?",
+        "options": [
+          "Encrypting all frames on the port with MACsec so unauthorized switches cannot form an EtherChannel",
+          "Limiting which MAC addresses may send traffic on that port (and defining what happens on violation), to reduce unauthorized endpoint attachment",
+          "Replacing STP with a MAC-learning blacklist that permanently disables VLANs on the uplink",
+          "Forcing the port to operate only as a Layer 3 routed interface with a /30 mask"
+        ],
+        "correct": 1,
+        "explanation": "Port security binds an access port to a limited set of allowed source MAC addresses (static, sticky, or dynamic learning up to a maximum) and applies a violation action (protect, restrict, or shutdown). It is about controlling which endpoints may use the port—not MACsec encryption of every frame, not disabling STP/VLANs on uplinks, and not converting the port into a routed /30.",
+        "difficulty": "Easy"
       }
     ]
   },
@@ -7115,6 +7139,18 @@
         "correct": 1,
         "explanation": "O HSRP clássico é redundância first-hop active/standby: um Active encaminha para o IP virtual (e MAC virtual associado), enquanto um Standby monitoriza Hellos e assume o papel active em falha. Por omissão não é ECMP active-active (isso aproxima-se mais do modelo do GLBP), não é uma divisão de funções NAT, e não é a eleição DR/BDR do OSPF.",
         "difficulty": "Easy"
+      },
+      {
+        "question": "Num desenho Cisco DMVPN Phase 2/3, qual é o papel principal do NHRP (Next Hop Resolution Protocol)?",
+        "options": [
+          "Encriptar os payloads spoke-to-spoke com um perfil IPsec separado que substitui completamente o IKEv2",
+          "Anunciar tabelas BGP completas da Internet a partir de cada spoke para o hub para os spokes nunca precisarem de túnel",
+          "Atuar como IGP do underlay que substitui OSPF ou EIGRP nas interfaces WAN físicas",
+          "Permitir que os spokes resolvam dinamicamente os endereços de túnel (NBMA) uns dos outros para formarem túneis spoke-to-spoke diretos em vez de enviar todo o tráfego pelo hub"
+        ],
+        "correct": 3,
+        "explanation": "O NHRP é o serviço de mapeamento no DMVPN: os spokes registam o endereço público/NBMA no hub (NHS) e podem consultar mapeamentos para criar túneis spoke-to-spoke sob procura. O IPsec/IKEv2 continua a proteger os túneis; o NHRP não substitui o IGP do underlay nas ligações físicas, e não serve para despejar tabelas BGP da Internet no overlay.",
+        "difficulty": "Medium"
       }
     ],
     "en": [
@@ -9542,6 +9578,18 @@
         "correct": 1,
         "explanation": "Classic HSRP is active/standby first-hop redundancy: one Active forwards for the virtual IP (and associated virtual MAC), while a Standby monitors Hellos and assumes the active role on failure. It is not load-balancing ECMP by default (that is closer to GLBP’s model), not a NAT function split, and not OSPF’s DR/BDR election.",
         "difficulty": "Easy"
+      },
+      {
+        "question": "In a Cisco DMVPN Phase 2/3 design, what is the primary role of NHRP (Next Hop Resolution Protocol)?",
+        "options": [
+          "Encrypting spoke-to-spoke payloads with a separate IPsec profile that replaces IKEv2 entirely",
+          "Advertising full Internet BGP tables from each spoke into the hub so spokes never need a tunnel",
+          "Acting as the underlay IGP that replaces OSPF or EIGRP on the physical WAN interfaces",
+          "Letting spokes dynamically resolve each other’s tunnel (NBMA) addresses so direct spoke-to-spoke tunnels can form instead of hairpinning all traffic through the hub"
+        ],
+        "correct": 3,
+        "explanation": "NHRP is the mapping service in DMVPN: spokes register their public/NBMA address with the hub (NHS), and can query mappings to build on-demand spoke-to-spoke tunnels. IPsec/IKEv2 still protect the tunnels; NHRP does not replace the underlay IGP on physical links, and it is not a mechanism to dump full BGP Internet tables into the overlay.",
+        "difficulty": "Medium"
       }
     ]
   },
@@ -11906,6 +11954,18 @@
         "correct": 2,
         "explanation": "No split clássico de controladores Cisco SD-WAN: o vManage é o sistema de gestão/orquestração (GUI, templates, monitorização); o vSmart trata da inteligência de controlo do overlay e políticas centralizadas; o vBond ajuda no onboarding/autenticação segura dos WAN Edge e a apontá-los para o resto do fabric. Os routers Edge (vEdge/cEdge) levam o data plane — não os três controladores como forwarders de pacotes.",
         "difficulty": "Medium"
+      },
+      {
+        "question": "No Cisco IOS/IOS XE, para que se usa mais frequentemente um route map?",
+        "options": [
+          "Corresponder rotas ou tráfego com condições (prefix lists, ACLs, métricas, tags, etc.) e depois aplicar ações set — por exemplo em redistribuição, PBR ou manipulação de atributos BGP",
+          "Substituir completamente a FIB por uma lista estática de endereços MAC aprendidos de vizinhos CDP",
+          "Terminar sessões SSL/TLS no route processor para que todos os pacotes sejam desencriptados em software",
+          "Eleger o Designated Router OSPF em segmentos broadcast quando os hello timers diferem"
+        ],
+        "correct": 0,
+        "explanation": "Um route map é uma lista sequenciada de cláusulas match/set. Usa-se muito para controlar redistribuição (que prefixos, com que métrica/tag), policy-based routing e alterações de atributos BGP. Não substitui a FIB/MAC, não é offload SSL no RP, e não é o mecanismo de eleição do DR no OSPF.",
+        "difficulty": "Medium"
       }
     ],
     "en": [
@@ -14268,6 +14328,18 @@
         "correct": 2,
         "explanation": "In the classic Cisco SD-WAN controller split: vManage is the management/orchestration system (GUI, templates, monitoring); vSmart handles control-plane overlay intelligence and centralized policy; vBond assists securely onboarding/authenticating WAN Edge devices and pointing them to the rest of the fabric. Edge routers (vEdge/cEdge) carry the data plane—not the three controllers as packet forwarders.",
         "difficulty": "Medium"
+      },
+      {
+        "question": "In Cisco IOS/IOS XE, what is a route map most commonly used for?",
+        "options": [
+          "Matching routes or traffic with conditions (prefix lists, ACLs, metrics, tags, etc.) and then applying set actions—for example in redistribution, PBR, or BGP attribute manipulation",
+          "Replacing the FIB entirely with a static list of MAC addresses learned from CDP neighbors",
+          "Terminating SSL/TLS sessions on the route processor so every packet is decrypted in software",
+          "Electing the OSPF Designated Router on broadcast segments when hello timers differ"
+        ],
+        "correct": 0,
+        "explanation": "A route map is a sequenced list of match/set clauses. It is widely used to control redistribution (which prefixes, with what metric/tag), policy-based routing, and BGP path-attribute changes. It is not a MAC/FIB substitute, not an SSL offload feature on the RP, and not the OSPF DR election mechanism.",
+        "difficulty": "Medium"
       }
     ]
   },
@@ -14416,6 +14488,102 @@
         "correct": 3,
         "explanation": "Segmentação (e microsegmentação) restringe east-west traffic. Isola IoT/guest da gestão e de data centers, alinhado com Zero Trust e least privilege.",
         "difficulty": "Médio"
+      },
+      {
+        "question": "Qual é o objetivo principal de uma plataforma SIEM (Security Information and Event Management)?",
+        "options": [
+          "Substituir todos os agentes antivírus de endpoint por um único packet broker no switch core",
+          "Emitir certificados TLS públicos para servidores internos sem uma CA privada",
+          "Recolher e correlacionar logs/eventos de muitas fontes, detetar padrões suspeitos e apoiar alertas e investigação",
+          "Garantir zero falsos positivos bloqueando todas as consultas DNS de saída"
+        ],
+        "correct": 2,
+        "explanation": "Um SIEM agrega logs e eventos de segurança (firewalls, endpoints, identidade, cloud, etc.), normaliza e correlaciona-os, e ajuda analistas a detetar, alertar e investigar incidentes. Não substitui AV por um packet broker, não funciona como CA pública de TLS, e não promete zero falsos positivos ao bloquear DNS às cegas.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "Em cibersegurança, para que se usa principalmente o framework MITRE ATT&CK?",
+        "options": [
+          "Um guia de sintaxe CLI específico de fabricante para configurar access lists no ASA",
+          "Uma base de conhecimento de táticas e técnicas de adversários (e procedimentos relacionados) usada para mapear deteções, planear defesas e falar de ameaças numa linguagem comum",
+          "Um algoritmo de encriptação obrigatório que substitui o AES em todos os handshakes TLS 1.3",
+          "Uma norma de layout físico de racks para densidade de cablagem em data centers"
+        ],
+        "correct": 1,
+        "explanation": "O MITRE ATT&CK cataloga táticas (o «porquê») e técnicas (o «como») de adversários no mundo real, muitas vezes com exemplos de procedimentos. Os defensores usam-no para analisar falhas de cobertura, escrever deteções e discutir incidentes de forma consistente. Não é documentação CLI do ASA, não é uma cifra que substitui o AES, e não é uma norma de cablagem.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Contra o que é que um Web Application Firewall (WAF) protege principalmente?",
+        "options": [
+          "Ataques à camada de aplicação contra apps HTTP/HTTPS (por exemplo SQLi, XSS e abuso de URLs ou APIs vulneráveis), inspecionando e filtrando pedidos web",
+          "Cortes de cabo Layer 1 entre o switch de acesso e o PC do utilizador",
+          "Esgotamento de memória da LSDB OSPF nos routers core causado por demasiados LSAs Type 5",
+          "Falha da bateria de um UPS que alimenta os wireless controllers"
+        ],
+        "correct": 0,
+        "explanation": "Um WAF fica à frente de aplicações web e inspeciona tráfego HTTP/S para bloquear ou desafiar ataques comuns à camada de aplicação, como SQL injection, cross-site scripting e padrões de pedido conhecidos como maus. Não resolve cortes físicos de cabo, dimensionamento da LSDB OSPF, nem baterias de UPS.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "Qual é o objetivo principal do DNSSEC?",
+        "options": [
+          "Encriptar cada consulta DNS para que o resolver recursivo nunca veja o nome pedido (isso é DNS over TLS ou DNS over HTTPS, não DNSSEC)",
+          "Substituir o SPF para que os servidores de correio deixem de verificar que hosts podem enviar pelo domínio",
+          "Assinar digitalmente os dados DNS para que os resolvers validadores detetem respostas forjadas ou alteradas (autenticidade e integridade), sem esconder a própria consulta",
+          "Bloquear automaticamente todas as transferências de malware no endpoint"
+        ],
+        "correct": 2,
+        "explanation": "O DNSSEC acrescenta assinaturas digitais (registos RRSIG e DNSKEY, encadeados com DS no pai) para um resolver validador confirmar que os dados vieram da zona autoritativa e não foram modificados. A confidencialidade da consulta vem de DoT ou DoH, não do DNSSEC. Não substitui a autenticação de email nem a proteção de endpoint.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Em conjunto, o que fazem SPF, DKIM e DMARC na segurança do correio eletrónico?",
+        "options": [
+          "Encriptam o corpo da mensagem de ponta a ponta para só o destinatário a poder ler (isso é S/MIME ou PGP)",
+          "O SPF indica que servidores podem enviar em nome do domínio, o DKIM assina criptograficamente a mensagem e o DMARC diz aos recetores o que fazer quando essas verificações falham e como reportar — reduzindo o spoofing do domínio visível no From",
+          "Analisam anexos à procura de ransomware dentro do MTA usando apenas a porta TCP 25",
+          "Substituem o TLS na submissão SMTP (porta 587)"
+        ],
+        "correct": 1,
+        "explanation": "O SPF autoriza hosts de envio num registo TXT de DNS. O DKIM assina cabeçalhos selecionados e o corpo com uma chave do domínio publicada em DNS. O DMARC exige que o domínio visível do From alinhe com SPF e/ou DKIM e publica uma política (none, quarantine ou reject) mais relatórios. Em conjunto combatem a falsificação do domínio; não encriptam a mensagem nem substituem o TLS do SMTP.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Qual é a diferença principal entre EDR e XDR?",
+        "options": [
+          "O EDR só encripta discos; o XDR só configura VLANs",
+          "São o mesmo produto; XDR é apenas o nome Cisco do mesmo ficheiro de assinaturas de antivírus",
+          "O EDR substitui o firewall; o XDR substitui o DNS",
+          "O EDR foca telemetria e resposta no endpoint (processos, ficheiros e comportamento no host); o XDR correlaciona isso com outras fontes (rede, email, identidade, cloud) para uma visão mais ampla de deteção e resposta"
+        ],
+        "correct": 3,
+        "explanation": "EDR (Endpoint Detection and Response) recolhe telemetria e apoia a resposta nos endpoints. XDR (Extended Detection and Response) alarga a deteção e a resposta a vários pontos de controlo, correlacionando o endpoint com rede, email, cloud e identidade. O Cisco XDR é um exemplo deste modelo mais largo. Nenhum dos dois substitui, por si, o firewall ou a encriptação de disco.",
+        "difficulty": "Médio"
+      },
+      {
+        "question": "Para que serve principalmente uma plataforma SOAR?",
+        "options": [
+          "Security Orchestration, Automation and Response: playbooks que automatizam e coordenam passos de resposta entre ferramentas (tickets, bloqueios na firewall, enriquecimento) para os analistas tratarem trabalho repetitivo de incidentes mais depressa",
+          "Um protocolo de routing que substitui o OSPF no data center",
+          "Um cofre físico para guardar passwords de firewalls",
+          "Uma norma que obriga a espelhar todos os pacotes para uma única porta SPAN"
+        ],
+        "correct": 0,
+        "explanation": "SOAR (orquestração, automação e resposta) executa playbooks: enriquecer alertas, abrir casos, isolar hosts, bloquear indicadores e notificar equipas. Complementa o SIEM, que deteta e guarda eventos, em vez de substituir routing ou SPAN.",
+        "difficulty": "Fácil"
+      },
+      {
+        "question": "Numa equipa de operações de segurança, o que é threat hunting?",
+        "options": [
+          "Esperar apenas por alertas SIEM de severidade alta e fechá-los sem procurar atividade relacionada",
+          "Desligar os logs para o atacante não perceber que foi detetado",
+          "Uma procura proativa na telemetria por atividade de adversário que as deteções automáticas possam ter falhado, muitas vezes guiada por uma hipótese e por frameworks como o MITRE ATT&CK",
+          "Substituir todos os controlos preventivos (firewall, MFA, patches) por uma revisão manual semanal de logs"
+        ],
+        "correct": 2,
+        "explanation": "Threat hunting parte do princípio de que algumas intrusões escapam aos alertas. O hunter formula uma hipótese (por exemplo uma técnica do ATT&CK), consulta dados de endpoint, rede ou identidade, e transforma achados em novas deteções. Complementa SIEM e EDR; não substitui a prevenção nem significa ignorar alertas.",
+        "difficulty": "Médio"
       }
     ],
     "en": [
@@ -14561,6 +14729,102 @@
         ],
         "correct": 3,
         "explanation": "Segmentation (and microsegmentation) restricts east-west traffic. It isolates IoT/guest from management and data centers, aligned with Zero Trust and least privilege.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is the primary purpose of a SIEM (Security Information and Event Management) platform?",
+        "options": [
+          "Replacing every endpoint antivirus agent with a single packet broker on the core switch",
+          "Issuing public TLS certificates for internal servers without a private CA",
+          "Collecting and correlating logs/events from many sources, detecting suspicious patterns, and supporting alerting and investigation",
+          "Guaranteeing zero false positives by blocking all outbound DNS queries"
+        ],
+        "correct": 2,
+        "explanation": "A SIEM aggregates logs and security events (firewalls, endpoints, identity, cloud, etc.), normalizes and correlates them, and helps analysts detect, alert on, and investigate incidents. It does not replace AV with a packet broker, does not act as a public CA for TLS, and cannot promise zero false positives by blindly blocking DNS.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "In cybersecurity, what is the MITRE ATT&CK framework mainly used for?",
+        "options": [
+          "A vendor-specific CLI syntax guide for configuring ASA access lists",
+          "A knowledge base of adversary tactics and techniques (and related procedures) used to map detections, plan defenses, and communicate about threats in a common language",
+          "A mandatory encryption algorithm that replaces AES in all TLS 1.3 handshakes",
+          "A physical rack layout standard for data-center cabling density"
+        ],
+        "correct": 1,
+        "explanation": "MITRE ATT&CK catalogs real-world adversary tactics (the “why”) and techniques (the “how”), often with procedure examples. Defenders use it to gap-analyze coverage, write detections, and discuss incidents consistently. It is not ASA CLI documentation, not a cipher that replaces AES, and not a cabling standard.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What does a Web Application Firewall (WAF) primarily protect against?",
+        "options": [
+          "Application-layer attacks against HTTP/HTTPS apps (for example SQLi, XSS, and abuse of vulnerable URLs or APIs), by inspecting and filtering web requests",
+          "Layer 1 cable cuts between the access switch and the end user PC",
+          "Exhaustion of OSPF LSDB memory on core routers caused by too many Type 5 LSAs",
+          "Battery failure in a UPS that powers the wireless controllers"
+        ],
+        "correct": 0,
+        "explanation": "A WAF sits in front of web applications and inspects HTTP/S traffic to block or challenge common app-layer attacks such as SQL injection, cross-site scripting, and known bad request patterns. It does not fix physical cable cuts, OSPF LSDB sizing, or UPS batteries.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "What is the primary purpose of DNSSEC?",
+        "options": [
+          "Encrypting each DNS query so the recursive resolver never sees the name being looked up (that is DNS over TLS or DNS over HTTPS, not DNSSEC)",
+          "Replacing SPF so mail servers no longer need to check which hosts may send for a domain",
+          "Digitally signing DNS data so validating resolvers can detect forged or tampered answers (authenticity and integrity), without hiding the query itself",
+          "Automatically blocking every malware download on the endpoint"
+        ],
+        "correct": 2,
+        "explanation": "DNSSEC adds digital signatures (RRSIG and DNSKEY records, chained with DS records in the parent) so a validating resolver can confirm that the data came from the authoritative zone and was not modified. Query confidentiality comes from DoT or DoH, not from DNSSEC. It does not replace email authentication or endpoint protection.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "Working together, what do SPF, DKIM, and DMARC do for email security?",
+        "options": [
+          "They encrypt the message body end to end so only the recipient can read it (that is S/MIME or PGP)",
+          "SPF lists which servers may send for a domain, DKIM cryptographically signs the message, and DMARC tells receivers what to do when those checks fail and how to report — reducing spoofing of the visible From domain",
+          "They scan attachments for ransomware inside the MTA using only TCP port 25",
+          "They replace TLS on SMTP submission (port 587)"
+        ],
+        "correct": 1,
+        "explanation": "SPF authorizes sending hosts in a DNS TXT record. DKIM signs selected headers and the body with a domain key published in DNS. DMARC requires the visible From domain to align with SPF and/or DKIM and publishes a policy (none, quarantine, or reject) plus reporting. Together they fight domain spoofing; they do not encrypt the message and they do not replace SMTP TLS.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is the main difference between EDR and XDR?",
+        "options": [
+          "EDR only encrypts disks; XDR only configures VLANs",
+          "They are the same product; XDR is just the Cisco name for the same antivirus signature file",
+          "EDR replaces the firewall; XDR replaces DNS",
+          "EDR focuses on endpoint telemetry and response (processes, files, and host behavior); XDR correlates that with other sources such as network, email, identity, and cloud for a wider detection and response picture"
+        ],
+        "correct": 3,
+        "explanation": "EDR (Endpoint Detection and Response) collects telemetry and supports response on endpoints. XDR (Extended Detection and Response) extends detection and response across control points, correlating endpoint data with network, email, cloud, and identity. Cisco XDR is an example of that broader model. Neither one, by itself, replaces the firewall or disk encryption.",
+        "difficulty": "Medium"
+      },
+      {
+        "question": "What is a SOAR platform mainly used for?",
+        "options": [
+          "Security Orchestration, Automation, and Response: playbooks that automate and coordinate response steps across tools (tickets, firewall blocks, enrichment) so analysts handle repetitive incident work faster",
+          "A routing protocol that replaces OSPF inside the data center",
+          "A physical safe for storing firewall passwords",
+          "A standard that forces every packet to be mirrored to a single SPAN port"
+        ],
+        "correct": 0,
+        "explanation": "SOAR (orchestration, automation, and response) runs playbooks: enrich alerts, open cases, isolate hosts, block indicators, and notify teams. It complements a SIEM, which detects and stores events, rather than replacing routing or SPAN.",
+        "difficulty": "Easy"
+      },
+      {
+        "question": "In a security operations team, what is threat hunting?",
+        "options": [
+          "Waiting only for high-severity SIEM alerts and closing them without looking for related activity",
+          "Turning logging off so an attacker cannot tell they were detected",
+          "A proactive search through telemetry for adversary activity that automated detections may have missed, often guided by a hypothesis and by frameworks such as MITRE ATT&CK",
+          "Replacing every preventive control (firewall, MFA, patching) with a weekly manual log review"
+        ],
+        "correct": 2,
+        "explanation": "Threat hunting assumes some intrusions evade alerts. Hunters form a hypothesis (for example a technique from ATT&CK), query endpoint, network, or identity data, and turn findings into new detections. It complements SIEM and EDR; it does not replace prevention and it does not mean ignoring alerts.",
         "difficulty": "Medium"
       }
     ]

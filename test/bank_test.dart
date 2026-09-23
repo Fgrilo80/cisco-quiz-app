@@ -12,7 +12,7 @@ void main() {
     final decoded = jsonDecode(file.readAsStringSync());
     expect(decoded, isA<Map>());
     final data = decoded as Map;
-    const expected = {'ccst': 195, 'ccna': 201, 'ccnp': 196, 'cyber': 12};
+    const expected = {'ccst': 196, 'ccna': 202, 'ccnp': 197, 'cyber': 20};
     for (final cert in expected.keys) {
       for (final lang in const ['pt', 'en']) {
         final list = (data[cert] as Map)[lang] as List;
@@ -26,7 +26,7 @@ void main() {
       }
     }
     final parsed = parseQuestionBank(decoded);
-    expect(bankQuestionCount(parsed), 1208);
+    expect(bankQuestionCount(parsed), 1230);
   });
 
   test('parses optional cli field', () {
