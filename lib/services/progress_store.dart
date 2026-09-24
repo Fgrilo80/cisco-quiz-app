@@ -38,6 +38,7 @@ class ProgressStore {
   static const _missKey = 'miss_times';
   static const _bankSyncKey = 'bank_last_sync_ms';
   static const _bankTotalKey = 'bank_last_remote_total';
+  static const _bankHashKey = 'bank_last_applied_hash';
 
   static String _seenKey(String cert, String lang) => 'seen_${cert}_$lang';
 
@@ -69,6 +70,16 @@ class ProgressStore {
 
   Future<void> setLastBankTotal(int total) =>
       _prefs.setString(_bankTotalKey, '$total');
+
+  /// SHA-256 hex of the bank bytes last applied (remote body, or empty if none).
+  String? get lastBankHash {
+    final raw = _prefs.getString(_bankHashKey);
+    if (raw == null || raw.trim().isEmpty) return null;
+    return raw.trim();
+  }
+
+  Future<void> setLastBankHash(String hash) =>
+      _prefs.setString(_bankHashKey, hash.trim().toLowerCase());
 
   String get filterDifficulty => _prefs.getString(_diffKey) ?? '';
 

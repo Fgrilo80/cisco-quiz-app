@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,6 +12,7 @@ class AppVersionInfo {
   const AppVersionInfo({
     required this.remoteVersion,
     required this.apkUrl,
+    this.windowsUrl,
     this.windowsNote,
     this.releasesUrl,
     this.notes,
@@ -17,6 +20,9 @@ class AppVersionInfo {
 
   final String remoteVersion;
   final String apkUrl;
+
+  /// Windows zip. Optional; Android and iOS keep using [apkUrl].
+  final String? windowsUrl;
   final String? windowsNote;
   final String? releasesUrl;
   final String? notes;
@@ -45,7 +51,45 @@ int compareVersions(String a, String b) {
   return 0;
 }
 
+String? _nonEmpty(dynamic value) {
+  final text = value?.toString().trim() ?? '';
+  if (text.isEmpty) return null;
+  return text;
+}
+
+/// Windows opens [AppVersionInfo.windowsUrl], then the releases page, then
+/// [AppVersionInfo.apkUrl]. Android and iOS always use [AppVersionInfo.apkUrl].
+String resolveAppDownloadUrl(AppVersionInfo info, {required bool isWindows}) {
+  if (isWindows) {
+    final windows = info.windowsUrl?.trim() ?? '';
+    if (windows.isNotEmpty) return windows;
+    final releases = info.releasesUrl?.trim() ?? '';
+    if (releases.isNotEmpty) return releases;
+  }
+  return info.apkUrl;
+}
+
+typedef AppDownloadLauncher = Future<bool> Function(Uri uri);
+
 class AppUpdateService {
+  AppUpdateService({
+    bool Function()? isWindows,
+    AppDownloadLauncher? launch,
+  })  : _isWindows = isWindows ?? _platformIsWindows,
+        _launch = launch ?? _launchExternal;
+
+  final bool Function() _isWindows;
+  final AppDownloadLauncher _launch;
+
+  static bool _platformIsWindows() {
+    if (kIsWeb) return false;
+    return Platform.isWindows;
+  }
+
+  static Future<bool> _launchExternal(Uri uri) {
+    return launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
   Future<PackageInfo> localInfo() => PackageInfo.fromPlatform();
 
   Future<AppVersionInfo?> fetchRemoteManifest() async {
@@ -64,9 +108,10 @@ class AppUpdateService {
         return AppVersionInfo(
           remoteVersion: version,
           apkUrl: apkUrl,
-          windowsNote: decoded['windowsNote']?.toString(),
-          releasesUrl: decoded['releasesUrl']?.toString(),
-          notes: decoded['notes']?.toString(),
+          windowsUrl: _nonEmpty(decoded['windowsUrl']),
+          windowsNote: _nonEmpty(decoded['windowsNote']),
+          releasesUrl: _nonEmpty(decoded['releasesUrl']),
+          notes: _nonEmpty(decoded['notes']),
         );
       } catch (_) {
         continue;
@@ -84,8 +129,10 @@ class AppUpdateService {
   }
 
   Future<bool> openDownload(AppVersionInfo info) async {
-    final uri = Uri.tryParse(info.apkUrl);
+    final uri = Uri.tryParse(
+      resolveAppDownloadUrl(info, isWindows: _isWindows()),
+    );
     if (uri == null) return false;
-    return launchUrl(uri, mode: LaunchMode.externalApplication);
+    return _launch(uri);
   }
 }

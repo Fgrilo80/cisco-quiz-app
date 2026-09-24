@@ -1,5 +1,11 @@
 # Changelog — Cisco Quiz (Flutter)
 
+## 1.2.10+12 — 2026-09-24
+
+- A base online atualiza por **SHA-256** do corpo descarregado. A mesma contagem (1230) com texto diferente — como a reescrita length-bias — marca «nova base» e aplica-se sozinha no arranque.
+- No Windows, descarregar a app abre o zip (`windowsUrl`), com fallback para a página de releases. Android e iOS continuam no APK (`apkUrl`). A comparação de versão continua a ser o `versionName`.
+- O APK arm64 de release continua assinado com a chave de **debug** (não há keystore de release no repositório).
+
 ## 1.2.9+11 — 2026-09-24
 
 - Banco sincronizado com Cricket `main` `02c0a868` (pós length-bias): mesmas **1230** perguntas; distratores reescritos para o comprimento não indicar a resposta certa.

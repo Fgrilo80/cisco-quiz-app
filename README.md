@@ -30,11 +30,11 @@ A app **não inventa perguntas**. A base vem do JSON público (Pages, com fallba
 - https://fgrilo80.github.io/cricket/cricket.json
 - https://raw.githubusercontent.com/Fgrilo80/cricket/main/cricket.json
 
-A cópia incluída tem **1230 perguntas**: clássicos **1190** (CCST 196, CCNA 202, CCNP 197 × PT/EN) + **Cybersegurança** 20×2. O 4.º trilho (`cyber`) acompanha o banco publicado. O snapshot **1.2.9+11** é o `cricket.json` de Cricket `main` depois da reescrita length-bias (o total não muda; o texto das opções sim).
+A cópia incluída tem **1230 perguntas**: clássicos **1190** (CCST 196, CCNA 202, CCNP 197 × PT/EN) + **Cybersegurança** 20×2. O 4.º trilho (`cyber`) acompanha o banco publicado. O snapshot **1.2.10+12** mantém esse `cricket.json` (pós length-bias). Clientes com a mesma contagem e texto antigo atualizam pelo hash do ficheiro.
 
 ### Atualizar perguntas (sem reinstalar)
 
-Ao abrir a app, é feita uma verificação silenciosa da base remota. Se o remoto tiver **mais perguntas**, a app aplica-as automaticamente e mostra um SnackBar. Também podes tocar em **Atualizar perguntas**. A cópia offline / cache local permanece como fallback.
+Ao abrir a app, é feita uma verificação silenciosa da base remota. O cliente calcula o SHA-256 do corpo descarregado e compara com o hash da cópia carregada (cache ou bundle), guardado também nas preferências depois de aplicar. Se o hash diferir — mesmo com o mesmo número de perguntas — a app aplica a base e mostra o aviso de nova base. Sem hash local, mantém-se a regra antiga: só aplica quando o remoto tem mais perguntas. Também podes tocar em **Atualizar perguntas**. A cópia offline / cache local permanece como fallback.
 
 ### Atualizar o código da app (APK raro)
 
@@ -42,7 +42,7 @@ Ao abrir a app, é feita uma verificação silenciosa da base remota. Se o remot
 
 https://fgrilo80.github.io/cricket/app-version.json
 
-Se a versão remota for maior que a instalada (`package_info_plus`), abre o link de download (APK / releases). Em Android sideload, o sistema pede «Instalar» **só** para mudanças de código — as perguntas não exigem isso.
+Se a versão remota (`version`, o versionName) for maior que a instalada (`package_info_plus`), abre o download. Android e iOS usam `apkUrl`. No Windows abre `windowsUrl` (zip), senão `releasesUrl`, e só depois o APK. Em Android sideload, o sistema pede «Instalar» **só** para mudanças de código — as perguntas não exigem isso. O campo opcional `windowsUrl` aponta para o zip da release.
 
 ## Como correr
 
@@ -74,11 +74,11 @@ flutter build apk --split-per-abi --release
 # saída arm64: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
 ```
 
-APKs de release (split-per-abi) ficam em `/workspace/cisco-quiz-apk/` (ex.: `CiscoQuiz-1.2.9-arm64.apk`). Ver também [docs/ios-build.md](docs/ios-build.md) para iOS.
+APKs de release (split-per-abi) ficam em `/workspace/cisco-quiz-apk/` (ex.: `CiscoQuiz-1.2.10-arm64.apk`). O APK de release usa a signingConfig de debug — não há keystore de release no repositório. Ver também [docs/ios-build.md](docs/ios-build.md) para iOS.
 
 A pasta `build/` não vai para o Git. Para voltar a gerar: Android SDK 36 + JDK 21 e o comando acima.
 
-O executável Windows **não se constrói neste Linux**; a pasta `windows/` está incluída. Sem o PC (DESKTOP-FGRILO), o workflow [Windows release](.github/workflows/windows-release.yml) gera `CiscoQuiz-1.2.9-Windows.zip` no GitHub. No PC: `scripts/build-windows-release.ps1`. Detalhe em [docs/windows-build.md](docs/windows-build.md). Saída local típica: `build/windows/x64/runner/Release`.
+O executável Windows **não se constrói neste Linux**; a pasta `windows/` está incluída. Sem o PC (DESKTOP-FGRILO), o workflow [Windows release](.github/workflows/windows-release.yml) gera `CiscoQuiz-1.2.10-Windows.zip` no GitHub. No PC: `scripts/build-windows-release.ps1`. Detalhe em [docs/windows-build.md](docs/windows-build.md). Saída local típica: `build/windows/x64/runner/Release`.
 
 ## Estrutura
 
