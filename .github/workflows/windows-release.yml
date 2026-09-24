@@ -100,17 +100,7 @@ jobs:
           $repo = "${{ github.repository }}"
           gh release view v1.2.9 --repo $repo
           if ($LASTEXITCODE -ne 0) {
-            $notes = @'
-## Cisco Quiz 1.2.9+11
-
-- Banco Cricket main 02c0a868 (pos length-bias): classicos 1190 (CCST 196, CCNA 202, CCNP 197 x PT/EN) + Ciberseguranca 20x2 (1230 total).
-- O numero de perguntas nao muda; o texto das opcoes (distratores) foi reescrito.
-- Site: https://fgrilo80.github.io/cricket/
-
-### Ficheiros
-- CiscoQuiz-1.2.9-arm64.apk — telemoveis modernos. Assinado com a debug keystore do projeto (nao ha keystore de release no repositorio).
-- CiscoQuiz-1.2.9-Windows.zip — conteudo de build/windows/x64/runner/Release na raiz do zip.
-'@
+            $notes = "Cisco Quiz 1.2.9+11. Bank 1230 from Cricket main 02c0a868 (length-bias rewrite; count unchanged). CiscoQuiz-1.2.9-arm64.apk is debug-signed (no release keystore in the repo). CiscoQuiz-1.2.9-Windows.zip is the Release folder at the zip root. Site: https://fgrilo80.github.io/cricket/"
             gh release create v1.2.9 --repo $repo --target "${{ github.sha }}" --title "Cisco Quiz 1.2.9 — 1230 perguntas" --notes $notes
             if ($LASTEXITCODE -ne 0) { throw "gh release create failed with $LASTEXITCODE" }
           }
