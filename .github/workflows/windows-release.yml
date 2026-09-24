@@ -1,0 +1,113 @@
+# Windows desktop release for Cisco Quiz 1.2.10+12.
+# Remote path when DESKTOP-FGRILO cannot run a local Shell build.
+
+name: Windows release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - app
+      # Feature branches so the zip can be built before merge to app.
+      - "cursor/**"
+    tags:
+      - "v1.2.10"
+    paths:
+      - "pubspec.yaml"
+      - "pubspec.lock"
+      - ".github/workflows/windows-release.yml"
+      - "lib/**"
+      - "windows/**"
+      - "assets/cricket.json"
+      - ".gitattributes"
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Build Windows release
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout triggering ref
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.2
+          architecture: x64
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Check version and bundled bank
+        shell: pwsh
+        run: |
+          $versionLine = Select-String -Path pubspec.yaml -Pattern '^version:\s*(.+)\s*$' | Select-Object -First 1
+          if (-not $versionLine) { throw 'pubspec.yaml has no version line.' }
+          $version = $versionLine.Matches[0].Groups[1].Value.Trim()
+          if ($version -ne '1.2.10+12') {
+            throw "Expected pubspec version 1.2.10+12 (found '$version')."
+          }
+          $bank = Get-Content -Raw -Path assets/cricket.json
+          $count = ([regex]::Matches($bank, '"question"\s*:')).Count
+          if ($count -ne 1230) {
+            throw "Bundled bank has $count questions; expected 1230."
+          }
+          Write-Host "Version $version, bundled questions $count"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Windows release
+        run: flutter build windows --release
+
+      - name: Zip Release contents
+        shell: pwsh
+        run: |
+          $release = "build/windows/x64/runner/Release"
+          $exe = Join-Path $release "cisco_quiz.exe"
+          if (-not (Test-Path $exe)) {
+            throw "Expected executable not found: $exe"
+          }
+          if (Test-Path "CiscoQuiz-1.2.10-Windows.zip") {
+            Remove-Item -Force "CiscoQuiz-1.2.10-Windows.zip"
+          }
+          tar.exe -a -cf "CiscoQuiz-1.2.10-Windows.zip" -C $release .
+          $listing = tar.exe -tf "CiscoQuiz-1.2.10-Windows.zip"
+          $listing | Select-String -Pattern "cisco_quiz.exe" -SimpleMatch | Out-Host
+          if (-not ($listing | Select-String -Pattern "cisco_quiz.exe" -SimpleMatch)) {
+            throw "Zip is missing cisco_quiz.exe"
+          }
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CiscoQuiz-1.2.10-Windows
+          path: CiscoQuiz-1.2.10-Windows.zip
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Attach zip to release v1.2.10
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Continue'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $repo = "${{ github.repository }}"
+          gh release view v1.2.10 --repo $repo
+          if ($LASTEXITCODE -ne 0) {
+            $notes = "Cisco Quiz 1.2.10+12. Bank refresh compares SHA-256 of the remote body, so the same 1230 questions still update when the text changes. Windows openDownload uses windowsUrl (CiscoQuiz-1.2.10-Windows.zip) and keeps apkUrl on Android. CiscoQuiz-1.2.10-arm64.apk is debug-signed (no release keystore in the repo). The zip is the Release folder at the archive root. Site: https://fgrilo80.github.io/cricket/"
+            gh release create v1.2.10 --repo $repo --target "${{ github.sha }}" --title "Cisco Quiz 1.2.10 — hash da base e zip Windows" --notes $notes
+            if ($LASTEXITCODE -ne 0) { throw "gh release create failed with $LASTEXITCODE" }
+          }
+          Write-Host "Assets before upload:"
+          gh release view v1.2.10 --repo $repo --json assets --jq ".assets[].name"
+          gh release upload v1.2.10 "CiscoQuiz-1.2.10-Windows.zip" --repo $repo --clobber
+          if ($LASTEXITCODE -ne 0) { throw "gh release upload failed with $LASTEXITCODE" }
+          Write-Host "Assets after upload:"
+          gh release view v1.2.10 --repo $repo --json assets --jq ".assets[].name"
