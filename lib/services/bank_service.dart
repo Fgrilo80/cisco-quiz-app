@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -10,6 +11,26 @@ import '../models/question.dart';
 import 'bank_parser.dart';
 import 'progress_store.dart';
 
+/// SHA-256 hex of raw bank bytes (HTTP body, cache file, or bundled asset).
+String bankContentHash(List<int> bytes) => sha256.convert(bytes).toString();
+
+/// Remote bank should replace the local copy.
+/// A different content hash counts even when the question totals match.
+/// With no local hash, keep the previous rule: only a larger remote total.
+bool bankShouldRefresh({
+  required int localTotal,
+  required int remoteTotal,
+  required String? localHash,
+  required String remoteHash,
+}) {
+  final local = localHash?.trim().toLowerCase() ?? '';
+  final remote = remoteHash.trim().toLowerCase();
+  if (local.isNotEmpty && remote.isNotEmpty) {
+    return local != remote;
+  }
+  return remoteTotal > localTotal;
+}
+
 const bundledAsset = 'assets/cricket.json';
 
 class RemoteBankProbe {
@@ -17,17 +38,28 @@ class RemoteBankProbe {
     required this.total,
     required this.bodyBytes,
     required this.url,
+    required this.contentHash,
   });
 
   final int total;
   final List<int> bodyBytes;
   final String url;
+
+  /// SHA-256 of [bodyBytes] (the raw response body).
+  final String contentHash;
 }
 
 class BankService extends ChangeNotifier {
-  BankService({this._store});
+  BankService({
+    this._store,
+    this._httpClient,
+    this._cacheDirectory,
+  });
 
   ProgressStore? _store;
+  final http.Client? _httpClient;
+  final Directory? _cacheDirectory;
+  String? _loadedHash;
 
   void attachStore(ProgressStore store) {
     _store = store;
@@ -87,8 +119,9 @@ class BankService extends ChangeNotifier {
       var usedCache = false;
       try {
         final cached = await _readCached();
-        if (shouldUseCachedBank(cached)) {
-          _data = parseQuestionBank(cached);
+        if (cached != null && shouldUseCachedBank(cached.decoded)) {
+          _data = parseQuestionBank(cached.decoded);
+          _rememberBytes(cached.bytes);
           source = 'cache';
           usedCache = true;
         }
@@ -96,8 +129,13 @@ class BankService extends ChangeNotifier {
         // Corrupt cache must not block the offline bundle.
       }
       if (!usedCache) {
-        final raw = await rootBundle.loadString(bundledAsset);
-        _data = parseQuestionBank(jsonDecode(raw));
+        final data = await rootBundle.load(bundledAsset);
+        final bytes = data.buffer.asUint8List(
+          data.offsetInBytes,
+          data.lengthInBytes,
+        );
+        _data = parseQuestionBank(jsonDecode(utf8.decode(bytes)));
+        _rememberBytes(bytes);
         source = 'bundle';
       }
       if (total == 0) {
@@ -119,22 +157,27 @@ class BankService extends ChangeNotifier {
     try {
       for (final url in bankRemoteUrls) {
         try {
-          final response = await http
-              .get(Uri.parse(url))
-              .timeout(const Duration(seconds: 25));
+          final response = await _httpGet(Uri.parse(url));
           if (response.statusCode != 200) continue;
           final decoded = jsonDecode(utf8.decode(response.bodyBytes));
           if (!bankHasExpectedShape(decoded)) continue;
           final parsed = parseQuestionBank(decoded);
           final n = bankQuestionCount(parsed);
           if (n == 0) continue;
+          final hash = bankContentHash(response.bodyBytes);
           remoteAvailableTotal = n;
           lastRemoteUrl = url;
-          updateAvailable = n > total;
+          updateAvailable = bankShouldRefresh(
+            localTotal: total,
+            remoteTotal: n,
+            localHash: _localHash,
+            remoteHash: hash,
+          );
           return RemoteBankProbe(
             total: n,
             bodyBytes: response.bodyBytes,
             url: url,
+            contentHash: hash,
           );
         } catch (_) {
           continue;
@@ -164,9 +207,11 @@ class BankService extends ChangeNotifier {
       updateAvailable = false;
       lastRemoteUrl = probe.url;
       lastSyncedAt = DateTime.now();
+      _rememberBytes(probe.bodyBytes);
       await _writeCached(probe.bodyBytes);
       await _store?.setLastBankSyncAt(lastSyncedAt!);
       await _store?.setLastBankTotal(n);
+      await _store?.setLastBankHash(probe.contentHash);
       return true;
     } catch (_) {
       return false;
@@ -182,12 +227,18 @@ class BankService extends ChangeNotifier {
     return applyRemote(probe);
   }
 
-  /// After local load: if remote has more questions, auto-apply.
-  /// Returns applied total, or null if nothing applied.
+  /// After local load: auto-apply when the remote hash differs
+  /// (including the same question count) or, with no local hash, when
+  /// the remote total is larger. Returns applied total, or null.
   Future<int?> checkAndAutoRefresh() async {
     final probe = await probeRemote();
     if (probe == null) return null;
-    if (probe.total <= total) {
+    if (!bankShouldRefresh(
+      localTotal: total,
+      remoteTotal: probe.total,
+      localHash: _localHash,
+      remoteHash: probe.contentHash,
+    )) {
       updateAvailable = false;
       notifyListeners();
       return null;
@@ -196,9 +247,25 @@ class BankService extends ChangeNotifier {
     return ok ? total : null;
   }
 
+  String? get _localHash {
+    final loaded = _loadedHash?.trim() ?? '';
+    if (loaded.isNotEmpty) return loaded;
+    return _store?.lastBankHash;
+  }
+
+  void _rememberBytes(List<int> bytes) {
+    _loadedHash = bankContentHash(bytes);
+  }
+
+  Future<http.Response> _httpGet(Uri uri) {
+    final client = _httpClient;
+    final future = client != null ? client.get(uri) : http.get(uri);
+    return future.timeout(const Duration(seconds: 25));
+  }
+
   Future<File?> _cacheFile() async {
     try {
-      final dir = await LocalStore.dataDirectory();
+      final dir = _cacheDirectory ?? await LocalStore.dataDirectory();
       await dir.create(recursive: true);
       return File('${dir.path}/cricket.json');
     } catch (_) {
@@ -206,11 +273,11 @@ class BankService extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> _readCached() async {
+  Future<({List<int> bytes, dynamic decoded})?> _readCached() async {
     final file = await _cacheFile();
     if (file == null || !await file.exists()) return null;
-    final text = await file.readAsString();
-    return jsonDecode(text);
+    final bytes = await file.readAsBytes();
+    return (bytes: bytes, decoded: jsonDecode(utf8.decode(bytes)));
   }
 
   Future<void> _writeCached(List<int> bytes) async {

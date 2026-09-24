@@ -442,7 +442,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
                 if (bank.updateAvailable &&
-                    (bank.remoteAvailableTotal ?? 0) > bank.total) ...[
+                    (bank.remoteAvailableTotal ?? 0) > 0) ...[
                   const SizedBox(height: 12),
                   Card(
                     color: const Color(0xFF052E1C),

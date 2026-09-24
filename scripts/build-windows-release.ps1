@@ -1,19 +1,19 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-  Windows release for Cisco Quiz 1.2.9+11 (bundled bank 1230).
+  Windows release for Cisco Quiz 1.2.10+12 (bundled bank 1230).
 
 .DESCRIPTION
   Local path on DESKTOP-FGRILO. When that PC is unavailable, GitHub Actions
   builds the same version: .github/workflows/windows-release.yml
   (see docs/windows-build.md). This script does not run on the Linux cloud VM.
 
-  Clones or fast-forwards branch app, checks pubspec 1.2.9+11 and that
+  Clones or fast-forwards branch app, checks pubspec 1.2.10+12 and that
   assets\cricket.json still has 1230 questions, then:
     flutter pub get
     flutter build windows --release
     copies build\windows\x64\runner\Release to Desktop\CiscoQuiz
-    zips Desktop\CiscoQuiz-1.2.9-Windows.zip
+    zips Desktop\CiscoQuiz-1.2.10-Windows.zip
 
   Does not edit the quiz bank.
 #>
@@ -21,12 +21,12 @@ $ErrorActionPreference = 'Stop'
 
 $RepoUrl = 'https://github.com/Fgrilo80/cisco-quiz-app.git'
 $Branch = 'app'
-$ExpectedVersion = '1.2.9+11'
+$ExpectedVersion = '1.2.10+12'
 $ExpectedQuestions = 1230
 $Desktop = [Environment]::GetFolderPath('Desktop')
 $RepoDir = Join-Path $env:USERPROFILE 'src\cisco-quiz-app'
 $OutDir = Join-Path $Desktop 'CiscoQuiz'
-$ZipPath = Join-Path $Desktop 'CiscoQuiz-1.2.9-Windows.zip'
+$ZipPath = Join-Path $Desktop 'CiscoQuiz-1.2.10-Windows.zip'
 
 function Assert-ExitCode([string]$Step) {
   if ($LASTEXITCODE -ne 0) {
