@@ -19,6 +19,7 @@ on:
       - "lib/**"
       - "windows/**"
       - "assets/cricket.json"
+      - ".gitattributes"
 
 permissions:
   contents: write
