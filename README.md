@@ -30,7 +30,7 @@ A app **não inventa perguntas**. A base vem do JSON público (Pages, com fallba
 - https://fgrilo80.github.io/cricket/cricket.json
 - https://raw.githubusercontent.com/Fgrilo80/cricket/main/cricket.json
 
-A cópia incluída tem **1230 perguntas**: clássicos **1190** (CCST 196, CCNA 202, CCNP 197 × PT/EN) + **Cybersegurança** 20×2. O 4.º trilho (`cyber`) acompanha o banco publicado.
+A cópia incluída tem **1230 perguntas**: clássicos **1190** (CCST 196, CCNA 202, CCNP 197 × PT/EN) + **Cybersegurança** 20×2. O 4.º trilho (`cyber`) acompanha o banco publicado. O snapshot **1.2.9+11** é o `cricket.json` de Cricket `main` depois da reescrita length-bias (o total não muda; o texto das opções sim).
 
 ### Atualizar perguntas (sem reinstalar)
 
@@ -74,11 +74,11 @@ flutter build apk --split-per-abi --release
 # saída arm64: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
 ```
 
-APKs de release (split-per-abi) ficam em `/workspace/cisco-quiz-apk/` (ex.: `CiscoQuiz-1.2.8-arm64.apk`). Ver também [docs/ios-build.md](docs/ios-build.md) para iOS.
+APKs de release (split-per-abi) ficam em `/workspace/cisco-quiz-apk/` (ex.: `CiscoQuiz-1.2.9-arm64.apk`). Ver também [docs/ios-build.md](docs/ios-build.md) para iOS.
 
 A pasta `build/` não vai para o Git. Para voltar a gerar: Android SDK 36 + JDK 21 e o comando acima.
 
-O executável Windows **não se constrói neste Linux**; a pasta `windows/` está incluída. Num PC Windows: `flutter build windows --release` (saída típica: `build/windows/x64/runner/Release`).
+O executável Windows **não se constrói neste Linux**; a pasta `windows/` está incluída. Sem o PC (DESKTOP-FGRILO), o workflow [Windows release](.github/workflows/windows-release.yml) gera `CiscoQuiz-1.2.9-Windows.zip` no GitHub. No PC: `scripts/build-windows-release.ps1`. Detalhe em [docs/windows-build.md](docs/windows-build.md). Saída local típica: `build/windows/x64/runner/Release`.
 
 ## Estrutura
 

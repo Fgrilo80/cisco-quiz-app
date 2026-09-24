@@ -21,7 +21,7 @@ class S {
       ? 'Prática com feedback imediato, ou exame de 50 perguntas. Filtros, revisão de erros e labs CLI. Sem contas, sem anúncios.'
       : 'Practice with instant feedback, or a 50-question exam. Filters, missed-question review and CLI labs. No accounts, no ads.';
 
-  String get versionBadge => isPt ? 'VERSÃO 1.2.8 • 2026' : 'VERSION 1.2.8 • 2026';
+  String get versionBadge => isPt ? 'VERSÃO 1.2.9 • 2026' : 'VERSION 1.2.9 • 2026';
 
   String get portuguese => 'Português';
   String get english => 'English';
