@@ -1,0 +1,3 @@
+# Keep the bundled bank byte-identical on Windows checkouts.
+# Default Git for Windows rewrites LF to CRLF, which would ship a different cricket.json.
+assets/cricket.json text eol=lf
