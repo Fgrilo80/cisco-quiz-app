@@ -1,8 +1,51 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
+}
+
+fun signingValue(propertyName: String, envName: String): String? {
+    val fromFile = keystoreProperties.getProperty(propertyName)?.trim()?.takeIf { it.isNotEmpty() }
+    if (fromFile != null) {
+        return fromFile
+    }
+    return System.getenv(envName)?.trim()?.takeIf { it.isNotEmpty() }
+}
+
+val releaseStorePassword = signingValue("storePassword", "ANDROID_KEYSTORE_PASSWORD")
+val releaseKeyPassword = signingValue("keyPassword", "ANDROID_KEY_PASSWORD")
+val releaseKeyAlias = signingValue("keyAlias", "ANDROID_KEY_ALIAS")
+val releaseStoreFilePath = signingValue("storeFile", "ANDROID_KEYSTORE_FILE")
+val hasReleaseKeystore =
+    listOf(releaseStorePassword, releaseKeyPassword, releaseKeyAlias, releaseStoreFilePath)
+        .all { it != null }
+
+val resolvedReleaseStore =
+    if (hasReleaseKeystore) {
+        val path = releaseStoreFilePath!!
+        val fromAndroidDir = rootProject.file(path)
+        val fromAppDir = file(path)
+        when {
+            fromAndroidDir.exists() -> fromAndroidDir
+            fromAppDir.exists() -> fromAppDir
+            else ->
+                throw org.gradle.api.GradleException(
+                    "Release keystore was configured but not found at ${fromAndroidDir.absolutePath} (also checked ${fromAppDir.absolutePath}).",
+                )
+        }
+    } else {
+        null
+    }
+
+val runningInCi = System.getenv("CI") == "true" || System.getenv("GITHUB_ACTIONS") == "true"
 
 android {
     namespace = "pt.fgrilo.ciscoquiz.cisco_quiz"
@@ -29,11 +72,35 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        if (resolvedReleaseStore != null) {
+            create("release") {
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+                storePassword = releaseStorePassword
+                storeFile = resolvedReleaseStore
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Release key when android/key.properties or ANDROID_KEYSTORE_* env vars exist
+            // (GitHub Actions writes key.properties from secrets). Local builds without a
+            // key still use the debug certificate so `flutter run --release` works.
+            signingConfig =
+                if (resolvedReleaseStore != null) {
+                    signingConfigs.getByName("release")
+                } else if (runningInCi) {
+                    throw org.gradle.api.GradleException(
+                        "CI release builds require a release keystore. " +
+                            "Set GitHub Actions secrets ANDROID_KEYSTORE_BASE64, " +
+                            "ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_PASSWORD and ANDROID_KEY_ALIAS, " +
+                            "or provide android/key.properties (storeFile, storePassword, keyAlias, keyPassword).",
+                    )
+                } else {
+                    signingConfigs.getByName("debug")
+                }
         }
     }
 }

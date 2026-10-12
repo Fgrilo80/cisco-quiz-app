@@ -1,0 +1,168 @@
+# Signed arm64 release APK for Cisco Quiz 1.2.11+13.
+# The release keystore is never committed. GitHub Actions secrets:
+#   ANDROID_KEYSTORE_BASE64      base64 of the .jks (whitespace ignored)
+#   ANDROID_KEYSTORE_PASSWORD    store password
+#   ANDROID_KEY_PASSWORD         key password
+#   ANDROID_KEY_ALIAS            key alias (ciscoquiz)
+
+name: Android release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - app
+      # Feature branches so the APK can be built before merge to app.
+      - "cursor/**"
+    tags:
+      - "v1.2.11"
+    paths:
+      - "pubspec.yaml"
+      - "pubspec.lock"
+      - ".github/workflows/android-release.yml"
+      - "lib/**"
+      - "android/**"
+      - "assets/cricket.json"
+      - ".gitattributes"
+
+permissions:
+  contents: write
+
+jobs:
+  android:
+    name: Build signed arm64 APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout triggering ref
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.2
+          cache: true
+
+      - name: Check version and bundled bank
+        run: |
+          set -euo pipefail
+          version=$(sed -n 's/^version:[[:space:]]*//p' pubspec.yaml | head -1 | tr -d '\r')
+          if [ "$version" != "1.2.11+13" ]; then
+            echo "Expected pubspec version 1.2.11+13 (found '$version')."
+            exit 1
+          fi
+          count=$(grep -o '"question"[[:space:]]*:' assets/cricket.json | wc -l)
+          if [ "$count" -ne 1230 ]; then
+            echo "Bundled bank has $count questions; expected 1230."
+            exit 1
+          fi
+          echo "Version $version, bundled questions $count"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Decode release keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "${ANDROID_KEYSTORE_BASE64}" ] || missing+=("ANDROID_KEYSTORE_BASE64")
+          [ -n "${ANDROID_KEYSTORE_PASSWORD}" ] || missing+=("ANDROID_KEYSTORE_PASSWORD")
+          [ -n "${ANDROID_KEY_PASSWORD}" ] || missing+=("ANDROID_KEY_PASSWORD")
+          [ -n "${ANDROID_KEY_ALIAS}" ] || missing+=("ANDROID_KEY_ALIAS")
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "Release signing secrets are missing: ${missing[*]}"
+            echo "Create them in Settings → Secrets and variables → Actions."
+            echo "ANDROID_KEYSTORE_BASE64 is the base64 of the release .jks. Never commit the keystore."
+            exit 1
+          fi
+          keystore="${RUNNER_TEMP}/cisco-quiz-release.jks"
+          export KEYSTORE_PATH="$keystore"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | tr -d '[:space:]' | base64 -d > "$keystore"
+          python3 -c 'import os; from pathlib import Path; Path("android/key.properties").write_text("storePassword=%s\nkeyPassword=%s\nkeyAlias=%s\nstoreFile=%s\n" % (os.environ["ANDROID_KEYSTORE_PASSWORD"], os.environ["ANDROID_KEY_PASSWORD"], os.environ["ANDROID_KEY_ALIAS"], os.environ["KEYSTORE_PATH"]), encoding="utf-8")'
+
+      - name: Build arm64 release APK
+        run: flutter build apk --release --split-per-abi --target-platform android-arm64
+
+      - name: Name and verify the signed APK
+        run: |
+          set -euo pipefail
+          src="build/app/outputs/flutter-apk/app-arm64-v8a-release.apk"
+          if [ ! -f "$src" ]; then
+            echo "Expected APK not found: $src"
+            find build/app/outputs -name '*.apk' -print || true
+            exit 1
+          fi
+          cp "$src" CiscoQuiz-1.2.11-arm64.apk
+          sdk="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-}}"
+          apksigner=$(find "$sdk/build-tools" -name apksigner -type f | sort | tail -1)
+          if [ -z "$apksigner" ]; then
+            echo "apksigner not found under $sdk/build-tools"
+            exit 1
+          fi
+          certs=$("$apksigner" verify --print-certs CiscoQuiz-1.2.11-arm64.apk)
+          printf '%s\n' "$certs"
+          printf '%s\n' "$certs" | grep -q "CN=Android Debug" && {
+            echo "APK is still debug-signed."
+            exit 1
+          }
+          printf '%s\n' "$certs" | grep -q "CN=Cisco Quiz" || {
+            echo "APK certificate subject is not CN=Cisco Quiz."
+            exit 1
+          }
+          expected="453d1dc9486e76f4f52bc516b5105a9fafd8df87cfecf125dca4e4545bf0e6d8"
+          actual=$(printf '%s\n' "$certs" | sed -n 's/.*SHA-256 digest: //p' | head -1 | tr -d '[:space:]:' | tr '[:upper:]' '[:lower:]')
+          if [ "$actual" != "$expected" ]; then
+            echo "Certificate SHA-256 mismatch."
+            echo "expected $expected"
+            echo "actual   $actual"
+            exit 1
+          fi
+          aapt=$(find "$sdk/build-tools" -name aapt -type f | sort | tail -1)
+          "$aapt" dump badging CiscoQuiz-1.2.11-arm64.apk | grep -E "package:|native-code"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CiscoQuiz-1.2.11-arm64
+          path: CiscoQuiz-1.2.11-arm64.apk
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Attach APK to release v1.2.11
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          repo="${{ github.repository }}"
+          if ! gh release view v1.2.11 --repo "$repo" >/dev/null 2>&1; then
+            cat > "${RUNNER_TEMP}/release-notes.txt" <<'EOF'
+          Cisco Quiz 1.2.11+13.
+
+          - CiscoQuiz-1.2.11-arm64.apk is signed with the stable release key (CN=Cisco Quiz). Certificate SHA-256: 45:3D:1D:C9:48:6E:76:F4:F5:2B:C5:16:B5:10:5A:9F:AF:D8:DF:87:CF:EC:F1:25:DC:A4:E4:54:5B:F0:E6:D8.
+          - This is the last version that must be uninstalled first: the key changes from the debug certificate (a different one on every build machine) to this release key. Later versions install over this one.
+          - versionName 1.2.11; arm64 split versionCode 2013 (13 + arm64 offset 2000).
+          - CiscoQuiz-1.2.11-Windows.zip is the Release folder at the archive root.
+          - Bundled bank unchanged: 1230 questions.
+          - Site: https://fgrilo80.github.io/cricket/
+          EOF
+            if ! gh release create v1.2.11 --repo "$repo" --target "${{ github.sha }}" --title "Cisco Quiz 1.2.11 — chave de release" --notes-file "${RUNNER_TEMP}/release-notes.txt"; then
+              gh release view v1.2.11 --repo "$repo" >/dev/null
+            fi
+          fi
+          echo "Assets before upload:"
+          gh release view v1.2.11 --repo "$repo" --json assets --jq ".assets[].name"
+          gh release upload v1.2.11 "CiscoQuiz-1.2.11-arm64.apk" --repo "$repo" --clobber
+          echo "Assets after upload:"
+          gh release view v1.2.11 --repo "$repo" --json assets --jq ".assets[].name"

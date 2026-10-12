@@ -1,4 +1,4 @@
-# Windows desktop release for Cisco Quiz 1.2.10+12.
+# Windows desktop release for Cisco Quiz 1.2.11+13.
 # Remote path when DESKTOP-FGRILO cannot run a local Shell build.
 
 name: Windows release
@@ -11,7 +11,7 @@ on:
       # Feature branches so the zip can be built before merge to app.
       - "cursor/**"
     tags:
-      - "v1.2.10"
+      - "v1.2.11"
     paths:
       - "pubspec.yaml"
       - "pubspec.lock"
@@ -49,8 +49,8 @@ jobs:
           $versionLine = Select-String -Path pubspec.yaml -Pattern '^version:\s*(.+)\s*$' | Select-Object -First 1
           if (-not $versionLine) { throw 'pubspec.yaml has no version line.' }
           $version = $versionLine.Matches[0].Groups[1].Value.Trim()
-          if ($version -ne '1.2.10+12') {
-            throw "Expected pubspec version 1.2.10+12 (found '$version')."
+          if ($version -ne '1.2.11+13') {
+            throw "Expected pubspec version 1.2.11+13 (found '$version')."
           }
           $bank = Get-Content -Raw -Path assets/cricket.json
           $count = ([regex]::Matches($bank, '"question"\s*:')).Count
@@ -73,11 +73,11 @@ jobs:
           if (-not (Test-Path $exe)) {
             throw "Expected executable not found: $exe"
           }
-          if (Test-Path "CiscoQuiz-1.2.10-Windows.zip") {
-            Remove-Item -Force "CiscoQuiz-1.2.10-Windows.zip"
+          if (Test-Path "CiscoQuiz-1.2.11-Windows.zip") {
+            Remove-Item -Force "CiscoQuiz-1.2.11-Windows.zip"
           }
-          tar.exe -a -cf "CiscoQuiz-1.2.10-Windows.zip" -C $release .
-          $listing = tar.exe -tf "CiscoQuiz-1.2.10-Windows.zip"
+          tar.exe -a -cf "CiscoQuiz-1.2.11-Windows.zip" -C $release .
+          $listing = tar.exe -tf "CiscoQuiz-1.2.11-Windows.zip"
           $listing | Select-String -Pattern "cisco_quiz.exe" -SimpleMatch | Out-Host
           if (-not ($listing | Select-String -Pattern "cisco_quiz.exe" -SimpleMatch)) {
             throw "Zip is missing cisco_quiz.exe"
@@ -86,12 +86,12 @@ jobs:
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: CiscoQuiz-1.2.10-Windows
-          path: CiscoQuiz-1.2.10-Windows.zip
+          name: CiscoQuiz-1.2.11-Windows
+          path: CiscoQuiz-1.2.11-Windows.zip
           if-no-files-found: error
           compression-level: 0
 
-      - name: Attach zip to release v1.2.10
+      - name: Attach zip to release v1.2.11
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
@@ -99,15 +99,24 @@ jobs:
           $ErrorActionPreference = 'Continue'
           $PSNativeCommandUseErrorActionPreference = $false
           $repo = "${{ github.repository }}"
-          gh release view v1.2.10 --repo $repo
+          gh release view v1.2.11 --repo $repo
           if ($LASTEXITCODE -ne 0) {
-            $notes = "Cisco Quiz 1.2.10+12. Bank refresh compares SHA-256 of the remote body, so the same 1230 questions still update when the text changes. Windows openDownload uses windowsUrl (CiscoQuiz-1.2.10-Windows.zip) and keeps apkUrl on Android. CiscoQuiz-1.2.10-arm64.apk is debug-signed (no release keystore in the repo). The zip is the Release folder at the archive root. Site: https://fgrilo80.github.io/cricket/"
-            gh release create v1.2.10 --repo $repo --target "${{ github.sha }}" --title "Cisco Quiz 1.2.10 — hash da base e zip Windows" --notes $notes
+            $notes = @"
+          Cisco Quiz 1.2.11+13.
+
+          - CiscoQuiz-1.2.11-arm64.apk is signed with the stable release key (CN=Cisco Quiz). Certificate SHA-256: 45:3D:1D:C9:48:6E:76:F4:F5:2B:C5:16:B5:10:5A:9F:AF:D8:DF:87:CF:EC:F1:25:DC:A4:E4:54:5B:F0:E6:D8.
+          - This is the last version that must be uninstalled first: the key changes from the debug certificate (a different one on every build machine) to this release key. Later versions install over this one.
+          - versionName 1.2.11; arm64 split versionCode 2013 (13 + arm64 offset 2000).
+          - CiscoQuiz-1.2.11-Windows.zip is the Release folder at the archive root.
+          - Bundled bank unchanged: 1230 questions.
+          - Site: https://fgrilo80.github.io/cricket/
+          "@
+            gh release create v1.2.11 --repo $repo --target "${{ github.sha }}" --title "Cisco Quiz 1.2.11 — chave de release" --notes $notes
             if ($LASTEXITCODE -ne 0) { throw "gh release create failed with $LASTEXITCODE" }
           }
           Write-Host "Assets before upload:"
-          gh release view v1.2.10 --repo $repo --json assets --jq ".assets[].name"
-          gh release upload v1.2.10 "CiscoQuiz-1.2.10-Windows.zip" --repo $repo --clobber
+          gh release view v1.2.11 --repo $repo --json assets --jq ".assets[].name"
+          gh release upload v1.2.11 "CiscoQuiz-1.2.11-Windows.zip" --repo $repo --clobber
           if ($LASTEXITCODE -ne 0) { throw "gh release upload failed with $LASTEXITCODE" }
           Write-Host "Assets after upload:"
-          gh release view v1.2.10 --repo $repo --json assets --jq ".assets[].name"
+          gh release view v1.2.11 --repo $repo --json assets --jq ".assets[].name"

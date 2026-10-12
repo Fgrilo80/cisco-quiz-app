@@ -30,7 +30,7 @@ A app **não inventa perguntas**. A base vem do JSON público (Pages, com fallba
 - https://fgrilo80.github.io/cricket/cricket.json
 - https://raw.githubusercontent.com/Fgrilo80/cricket/main/cricket.json
 
-A cópia incluída tem **1230 perguntas**: clássicos **1190** (CCST 196, CCNA 202, CCNP 197 × PT/EN) + **Cybersegurança** 20×2. O 4.º trilho (`cyber`) acompanha o banco publicado. O snapshot **1.2.10+12** mantém esse `cricket.json` (pós length-bias). Clientes com a mesma contagem e texto antigo atualizam pelo hash do ficheiro.
+A cópia incluída tem **1230 perguntas**: clássicos **1190** (CCST 196, CCNA 202, CCNP 197 × PT/EN) + **Cybersegurança** 20×2. O 4.º trilho (`cyber`) acompanha o banco publicado. O snapshot **1.2.11+13** mantém esse `cricket.json` (pós length-bias). Clientes com a mesma contagem e texto antigo atualizam pelo hash do ficheiro.
 
 ### Atualizar perguntas (sem reinstalar)
 
@@ -74,11 +74,11 @@ flutter build apk --split-per-abi --release
 # saída arm64: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
 ```
 
-APKs de release (split-per-abi) ficam em `/workspace/cisco-quiz-apk/` (ex.: `CiscoQuiz-1.2.10-arm64.apk`). O APK de release usa a signingConfig de debug — não há keystore de release no repositório. Ver também [docs/ios-build.md](docs/ios-build.md) para iOS.
+O APK arm64 publicado é `CiscoQuiz-1.2.11-arm64.apk` (split-per-abi, `versionCode` 2013). A build de release usa a chave de release quando existe `android/key.properties` (não vai para o Git) ou as variáveis `ANDROID_KEYSTORE_FILE`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_PASSWORD` e `ANDROID_KEY_ALIAS`. No GitHub Actions esses valores vêm dos segredos `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_PASSWORD` e `ANDROID_KEY_ALIAS`. Sem chave, uma build local cai para a signingConfig de debug; em CI a build falha. O workflow é [Android release](.github/workflows/android-release.yml). Ver também [docs/ios-build.md](docs/ios-build.md) para iOS.
 
 A pasta `build/` não vai para o Git. Para voltar a gerar: Android SDK 36 + JDK 21 e o comando acima.
 
-O executável Windows **não se constrói neste Linux**; a pasta `windows/` está incluída. Sem o PC (DESKTOP-FGRILO), o workflow [Windows release](.github/workflows/windows-release.yml) gera `CiscoQuiz-1.2.10-Windows.zip` no GitHub. No PC: `scripts/build-windows-release.ps1`. Detalhe em [docs/windows-build.md](docs/windows-build.md). Saída local típica: `build/windows/x64/runner/Release`.
+O executável Windows **não se constrói neste Linux**; a pasta `windows/` está incluída. Sem o PC (DESKTOP-FGRILO), o workflow [Windows release](.github/workflows/windows-release.yml) gera `CiscoQuiz-1.2.11-Windows.zip` no GitHub. No PC: `scripts/build-windows-release.ps1`. Detalhe em [docs/windows-build.md](docs/windows-build.md). Saída local típica: `build/windows/x64/runner/Release`.
 
 ## Estrutura
 
