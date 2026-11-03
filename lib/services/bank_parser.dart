@@ -25,10 +25,27 @@ Map<String, Map<String, List<Question>>> emptyBank() => {
 
 /// Parses the GitHub / bundled JSON, dropping malformed items instead of
 /// silently turning a bad `correct` index into a scored answer.
+/// Track ids in a decoded bank: the four known ones first, then any other
+/// top-level `{pt: [...], en: [...]}` block in file order (future tracks).
+List<String> bankTrackKeys(dynamic decoded) {
+  final out = <String>[...certKeys];
+  if (decoded is! Map) return out;
+  for (final entry in decoded.entries) {
+    final key = '${entry.key}';
+    if (out.contains(key)) continue;
+    final block = entry.value;
+    if (block is Map && (block['pt'] is List || block['en'] is List)) {
+      out.add(key);
+    }
+  }
+  return out;
+}
+
 Map<String, Map<String, List<Question>>> parseQuestionBank(dynamic decoded) {
   final next = emptyBank();
   if (decoded is! Map) return next;
-  for (final cert in certKeys) {
+  for (final cert in bankTrackKeys(decoded)) {
+    next.putIfAbsent(cert, () => {'pt': [], 'en': []});
     final block = decoded[cert];
     if (block is! Map) continue;
     for (final lang in langKeys) {

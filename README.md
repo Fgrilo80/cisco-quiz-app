@@ -30,7 +30,9 @@ A app **não inventa perguntas**. A base vem do JSON público (Pages, com fallba
 - https://fgrilo80.github.io/cricket/cricket.json
 - https://raw.githubusercontent.com/Fgrilo80/cricket/main/cricket.json
 
-A cópia incluída tem **1230 perguntas**: clássicos **1190** (CCST 196, CCNA 202, CCNP 197 × PT/EN) + **Cybersegurança** 20×2. O 4.º trilho (`cyber`) acompanha o banco publicado. O snapshot **1.2.11+13** mantém esse `cricket.json` (pós length-bias). Clientes com a mesma contagem e texto antigo atualizam pelo hash do ficheiro.
+A cópia incluída tem **2000 perguntas** (banco Cricket v4.0.0): clássicos **1394** (CCST 227, CCNA 238, CCNP 232 × PT/EN) + **Cybersegurança** 303×2. Clientes com texto antigo atualizam pelo hash do ficheiro.
+
+Desde a **1.3.0+14**, a escolha de quizzes vem do catálogo `data/quiz-catalog.json` do Cricket (cópia em `assets/quiz-catalog.json`, atualizada online pelo SHA-256): no cartão Cybersegurança, «Escolher exame ou tema» abre os quizzes **por exame** (CCST Cybersecurity 100-160, CyberOps 200-201, CCNP Security SCOR 350-701) e **por tema**. Cada quiz é um filtro sobre o banco do trilho (campos como `exam` ou `topic`); trilhos e quizzes novos no catálogo aparecem sem alterar código.
 
 ### Atualizar perguntas (sem reinstalar)
 
@@ -74,11 +76,11 @@ flutter build apk --split-per-abi --release
 # saída arm64: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
 ```
 
-O APK arm64 publicado é `CiscoQuiz-1.2.11-arm64.apk` (split-per-abi, `versionCode` 2013). A build de release usa a chave de release quando existe `android/key.properties` (não vai para o Git) ou as variáveis `ANDROID_KEYSTORE_FILE`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_PASSWORD` e `ANDROID_KEY_ALIAS`. No GitHub Actions esses valores vêm dos segredos `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_PASSWORD` e `ANDROID_KEY_ALIAS`. Sem chave, uma build local cai para a signingConfig de debug; em CI a build falha. O workflow é [Android release](.github/workflows/android-release.yml). Ver também [docs/ios-build.md](docs/ios-build.md) para iOS.
+O APK arm64 publicado é `CiscoQuiz-1.3.0-arm64.apk` (split-per-abi, `versionCode` 2014). A build de release usa a chave de release quando existe `android/key.properties` (não vai para o Git) ou as variáveis `ANDROID_KEYSTORE_FILE`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_PASSWORD` e `ANDROID_KEY_ALIAS`. No GitHub Actions esses valores vêm dos segredos `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_PASSWORD` e `ANDROID_KEY_ALIAS`. Sem chave, uma build local cai para a signingConfig de debug; em CI a build falha. O workflow é [Android release](.github/workflows/android-release.yml). Ver também [docs/ios-build.md](docs/ios-build.md) para iOS.
 
 A pasta `build/` não vai para o Git. Para voltar a gerar: Android SDK 36 + JDK 21 e o comando acima.
 
-O executável Windows **não se constrói neste Linux**; a pasta `windows/` está incluída. Sem o PC (DESKTOP-FGRILO), o workflow [Windows release](.github/workflows/windows-release.yml) gera `CiscoQuiz-1.2.11-Windows.zip` no GitHub. No PC: `scripts/build-windows-release.ps1`. Detalhe em [docs/windows-build.md](docs/windows-build.md). Saída local típica: `build/windows/x64/runner/Release`.
+O executável Windows **não se constrói neste Linux**; a pasta `windows/` está incluída. Sem o PC (DESKTOP-FGRILO), o workflow [Windows release](.github/workflows/windows-release.yml) gera `CiscoQuiz-1.3.0-Windows.zip` no GitHub. No PC: `scripts/build-windows-release.ps1`. Detalhe em [docs/windows-build.md](docs/windows-build.md). Saída local típica: `build/windows/x64/runner/Release`.
 
 ## Estrutura
 

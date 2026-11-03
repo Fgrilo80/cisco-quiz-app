@@ -228,6 +228,7 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                   _Header(
                     ui: ui,
                     cert: session.cert,
+                    title: session.displayTitle(ui.certTitle),
                     examLang: session.examLang,
                     modeLabel: ui.modeLabel(session.mode.name),
                     clock: _clock(session.timeLeftSeconds),
@@ -343,6 +344,7 @@ class _Header extends StatelessWidget {
   const _Header({
     required this.ui,
     required this.cert,
+    required this.title,
     required this.examLang,
     required this.modeLabel,
     required this.clock,
@@ -354,6 +356,7 @@ class _Header extends StatelessWidget {
 
   final S ui;
   final String cert;
+  final String title;
   final String examLang;
   final String modeLabel;
   final String clock;
@@ -368,47 +371,64 @@ class _Header extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
       child: Row(
         children: [
-          InkWell(
-            onTap: onHome,
-            borderRadius: BorderRadius.circular(12),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-              child: Row(
-                children: [
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: ciscoBlue,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(Icons.lan, color: Colors.white, size: 18),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: InkWell(
+                onTap: onHome,
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 8,
                   ),
-                  const SizedBox(width: 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
-                        'Cisco Quiz',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 16,
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: ciscoBlue,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(
+                          Icons.lan,
+                          color: Colors.white,
+                          size: 18,
                         ),
                       ),
-                      Text(
-                        '${ui.certTitle(cert)} · ${examLang.toUpperCase()} · $modeLabel',
-                        style: const TextStyle(
-                          color: Color(0xFF94A3B8),
-                          fontSize: 11,
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Cisco Quiz',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              '$title · ${examLang.toUpperCase()} · $modeLabel',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Color(0xFF94A3B8),
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-          const Spacer(),
+          const SizedBox(width: 8),
           Column(
             children: [
               Text(

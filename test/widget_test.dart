@@ -23,7 +23,7 @@ void main() {
       expect(ui.retryMissed.toLowerCase().contains('cricket'), isFalse);
       expect(ui.statsTitle.toLowerCase().contains('cricket'), isFalse);
       expect(ui.reviewMode.toLowerCase().contains('cricket'), isFalse);
-      expect(ui.versionBadge.contains('1.2'), isTrue);
+      expect(ui.versionBadge.contains('1.3.0'), isTrue);
     }
   });
 }

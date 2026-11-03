@@ -1,0 +1,234 @@
+{
+  "version": "4.0.0",
+  "tracks": [
+    {
+      "id": "ccst",
+      "kind": "track",
+      "parent": null
+    },
+    {
+      "id": "ccna",
+      "kind": "track",
+      "parent": null
+    },
+    {
+      "id": "ccnp",
+      "kind": "track",
+      "parent": null
+    },
+    {
+      "id": "cyber",
+      "kind": "track",
+      "parent": null,
+      "labelPt": "Cyber (todas)",
+      "labelEn": "Cyber (all)"
+    }
+  ],
+  "quizzes": [
+    {
+      "id": "ccst-cyber",
+      "kind": "exam",
+      "parent": "cyber",
+      "filter": {
+        "exam": "ccst-cyber"
+      },
+      "labelPt": "CCST Cybersecurity (100-160)",
+      "labelEn": "CCST Cybersecurity (100-160)",
+      "badgePt": "CCST CYBER",
+      "badgeEn": "CCST CYBER",
+      "color": "rose",
+      "counts": {
+        "pt": 93,
+        "en": 93
+      }
+    },
+    {
+      "id": "cbrops",
+      "kind": "exam",
+      "parent": "cyber",
+      "filter": {
+        "exam": "cbrops"
+      },
+      "labelPt": "CyberOps / Cybersecurity Associate (200-201)",
+      "labelEn": "CyberOps / Cybersecurity Associate (200-201)",
+      "badgePt": "CBROPS",
+      "badgeEn": "CBROPS",
+      "color": "orange",
+      "counts": {
+        "pt": 111,
+        "en": 111
+      }
+    },
+    {
+      "id": "scor",
+      "kind": "exam",
+      "parent": "cyber",
+      "filter": {
+        "exam": "scor"
+      },
+      "labelPt": "CCNP Security SCOR (350-701)",
+      "labelEn": "CCNP Security SCOR (350-701)",
+      "badgePt": "SCOR",
+      "badgeEn": "SCOR",
+      "color": "fuchsia",
+      "counts": {
+        "pt": 99,
+        "en": 99
+      }
+    },
+    {
+      "id": "topic-ameacas",
+      "kind": "topic",
+      "parent": "cyber",
+      "filter": {
+        "topic": "ameacas"
+      },
+      "labelPt": "Ameaças e ataques",
+      "labelEn": "Threats and attacks",
+      "badgePt": "TEMA",
+      "badgeEn": "TOPIC",
+      "color": "slate",
+      "counts": {
+        "pt": 52,
+        "en": 52
+      }
+    },
+    {
+      "id": "topic-cripto",
+      "kind": "topic",
+      "parent": "cyber",
+      "filter": {
+        "topic": "cripto"
+      },
+      "labelPt": "Criptografia e PKI",
+      "labelEn": "Cryptography and PKI",
+      "badgePt": "TEMA",
+      "badgeEn": "TOPIC",
+      "color": "slate",
+      "counts": {
+        "pt": 16,
+        "en": 16
+      }
+    },
+    {
+      "id": "topic-firewall-vpn",
+      "kind": "topic",
+      "parent": "cyber",
+      "filter": {
+        "topic": "firewall-vpn"
+      },
+      "labelPt": "Firewalls/IPS/VPN",
+      "labelEn": "Firewalls/IPS/VPN",
+      "badgePt": "TEMA",
+      "badgeEn": "TOPIC",
+      "color": "slate",
+      "counts": {
+        "pt": 17,
+        "en": 17
+      }
+    },
+    {
+      "id": "topic-endpoint",
+      "kind": "topic",
+      "parent": "cyber",
+      "filter": {
+        "topic": "endpoint"
+      },
+      "labelPt": "Segurança de endpoints",
+      "labelEn": "Endpoint security",
+      "badgePt": "TEMA",
+      "badgeEn": "TOPIC",
+      "color": "slate",
+      "counts": {
+        "pt": 31,
+        "en": 31
+      }
+    },
+    {
+      "id": "topic-identidade",
+      "kind": "topic",
+      "parent": "cyber",
+      "filter": {
+        "topic": "identidade"
+      },
+      "labelPt": "Identidade e acesso",
+      "labelEn": "Identity and access",
+      "badgePt": "TEMA",
+      "badgeEn": "TOPIC",
+      "color": "slate",
+      "counts": {
+        "pt": 57,
+        "en": 57
+      }
+    },
+    {
+      "id": "topic-logs-ir",
+      "kind": "topic",
+      "parent": "cyber",
+      "filter": {
+        "topic": "logs-ir"
+      },
+      "labelPt": "Análise de logs e resposta a incidentes",
+      "labelEn": "Log analysis and incident response",
+      "badgePt": "TEMA",
+      "badgeEn": "TOPIC",
+      "color": "slate",
+      "counts": {
+        "pt": 66,
+        "en": 66
+      }
+    },
+    {
+      "id": "topic-rede-cloud",
+      "kind": "topic",
+      "parent": "cyber",
+      "filter": {
+        "topic": "rede-cloud"
+      },
+      "labelPt": "Segurança de rede e cloud",
+      "labelEn": "Network and cloud security",
+      "badgePt": "TEMA",
+      "badgeEn": "TOPIC",
+      "color": "slate",
+      "counts": {
+        "pt": 31,
+        "en": 31
+      }
+    },
+    {
+      "id": "topic-risco",
+      "kind": "topic",
+      "parent": "cyber",
+      "filter": {
+        "topic": "risco"
+      },
+      "labelPt": "Risco, conformidade e governação",
+      "labelEn": "Risk, compliance and governance",
+      "badgePt": "TEMA",
+      "badgeEn": "TOPIC",
+      "color": "slate",
+      "counts": {
+        "pt": 33,
+        "en": 33
+      }
+    }
+  ],
+  "trackCounts": {
+    "ccst": {
+      "pt": 227,
+      "en": 227
+    },
+    "ccna": {
+      "pt": 238,
+      "en": 238
+    },
+    "ccnp": {
+      "pt": 232,
+      "en": 232
+    },
+    "cyber": {
+      "pt": 303,
+      "en": 303
+    }
+  }
+}

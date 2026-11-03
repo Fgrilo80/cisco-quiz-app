@@ -44,6 +44,8 @@ class QuizSession {
     this.pendingSelection,
     this.mode = QuizMode.practice,
     int? durationSeconds,
+    this.quizId,
+    this.quizLabel,
   }) : durationSeconds = durationSeconds ?? quizSeconds;
 
   final String cert;
@@ -56,6 +58,18 @@ class QuizSession {
   final int startedAtMs;
   final QuizMode mode;
   final int durationSeconds;
+
+  /// Catalog quiz this session was started from (e.g. `scor`), if any.
+  final String? quizId;
+
+  /// Display label of that quiz, captured at start (e.g. «CCNP Security SCOR (350-701)»).
+  final String? quizLabel;
+
+  /// Title for headers: the quiz label when present, else the track title.
+  String displayTitle(String Function(String cert) certTitle) {
+    final label = quizLabel?.trim() ?? '';
+    return label.isNotEmpty ? label : certTitle(cert);
+  }
 
   /// Unconfirmed option on the current question (pause / process-death).
   int? pendingSelection;
@@ -121,6 +135,8 @@ class QuizSession {
     'pendingSelection': pendingSelection,
     'mode': mode.name,
     'durationSeconds': durationSeconds,
+    if (quizId != null) 'quizId': quizId,
+    if (quizLabel != null) 'quizLabel': quizLabel,
   };
 
   factory QuizSession.fromJson(Map<String, dynamic> json) {
@@ -172,6 +188,10 @@ class QuizSession {
       pendingSelection: pending,
       mode: QuizMode.parse(json['mode']),
       durationSeconds: duration,
+      quizId: json['quizId'] is String ? json['quizId'] as String : null,
+      quizLabel: json['quizLabel'] is String
+          ? json['quizLabel'] as String
+          : null,
     );
   }
 }
