@@ -1,0 +1,231 @@
+import 'package:flutter/material.dart';
+
+import '../l10n.dart';
+import '../theme.dart';
+
+class CertCard extends StatelessWidget {
+  const CertCard({
+    super.key,
+    required this.cert,
+    required this.s,
+    required this.ptCount,
+    required this.enCount,
+    required this.unseenPt,
+    required this.unseenEn,
+    required this.onStart,
+    this.exam = false,
+    this.quizCount = 0,
+    this.onOpenQuizzes,
+    this.titleOverride,
+    this.fullOverride,
+    this.badgeOverride,
+    this.colorName,
+  });
+
+  final String cert;
+  final S s;
+  final int ptCount;
+  final int enCount;
+  final int unseenPt;
+  final int unseenEn;
+  final void Function(String lang) onStart;
+  final bool exam;
+
+  /// Catalog quizzes (exams / themes) available for this track.
+  final int quizCount;
+  final VoidCallback? onOpenQuizzes;
+
+  /// Used for tracks the app does not know yet (from the catalog).
+  final String? titleOverride;
+  final String? fullOverride;
+  final String? badgeOverride;
+  final String? colorName;
+
+  static const knownTracks = {'ccst', 'ccna', 'ccnp', 'cyber'};
+
+  @override
+  Widget build(BuildContext context) {
+    final known = knownTracks.contains(cert);
+    final palette = known ? CertPalette.of(cert) : CertPalette.named(colorName);
+    final title = known
+        ? s.certTitle(cert)
+        : (titleOverride ?? s.certTitle(cert));
+    late final String badge;
+    late final String full;
+    late final String level;
+    late final String focus;
+    late final IconData icon;
+    switch (cert) {
+      case 'ccst':
+        badge = s.entryLevel;
+        full = s.ccstFull;
+        level = s.ccstLevel;
+        focus = s.ccstFocus;
+        icon = Icons.headset_mic_outlined;
+      case 'ccnp':
+        badge = s.professional;
+        full = s.ccnpFull;
+        level = s.ccnpLevel;
+        focus = s.ccnpFocus;
+        icon = Icons.security_outlined;
+      case 'cyber':
+        badge = s.cybersecurityBadge;
+        full = s.cyberFull;
+        level = s.cyberLevel;
+        focus = s.cyberFocus;
+        icon = Icons.shield_outlined;
+      case 'ccna':
+        badge = s.associate;
+        full = s.ccnaFull;
+        level = s.ccnaLevel;
+        focus = s.ccnaFocus;
+        icon = Icons.lan_outlined;
+      default:
+        badge = badgeOverride ?? cert.toUpperCase();
+        full = fullOverride ?? '';
+        level = '';
+        focus = '';
+        icon = Icons.quiz_outlined;
+    }
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: palette.badgeBg,
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          badge,
+                          style: TextStyle(
+                            color: palette.accent,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.6,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -1,
+                          height: 1.05,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        full,
+                        style: const TextStyle(
+                          color: Color(0xFF94A3B8),
+                          fontSize: 13.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  icon,
+                  size: 36,
+                  color: palette.accent.withValues(alpha: 0.75),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                const Expanded(child: Divider(color: Color(0xFF334155))),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    s.countsLine(ptCount, enCount),
+                    style: const TextStyle(
+                      color: Color(0xFF94A3B8),
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                const Expanded(child: Divider(color: Color(0xFF334155))),
+              ],
+            ),
+            if (level.isNotEmpty || focus.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                [level, focus].where((x) => x.isNotEmpty).join('  ·  '),
+                style: const TextStyle(
+                  color: Color(0xFF94A3B8),
+                  fontSize: 12.5,
+                ),
+              ),
+            ],
+            const SizedBox(height: 4),
+            Text(
+              '${s.unseenLine(unseenPt)} (PT)  ·  ${s.unseenLine(unseenEn)} (EN)',
+              style: const TextStyle(color: Color(0xFF64748B), fontSize: 11.5),
+            ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: palette.button,
+                      minimumSize: const Size.fromHeight(50),
+                    ),
+                    onPressed: ptCount == 0 ? null : () => onStart('pt'),
+                    child: Text(s.startPt(exam: exam)),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50),
+                    ),
+                    onPressed: enCount == 0 ? null : () => onStart('en'),
+                    child: Text(s.startEn(exam: exam)),
+                  ),
+                ),
+              ],
+            ),
+            if (quizCount > 0 && onOpenQuizzes != null) ...[
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  key: ValueKey('open-quizzes-$cert'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: palette.accent,
+                    side: BorderSide(
+                      color: palette.accent.withValues(alpha: 0.6),
+                    ),
+                    minimumSize: const Size.fromHeight(46),
+                  ),
+                  onPressed: onOpenQuizzes,
+                  icon: const Icon(Icons.view_list_rounded),
+                  label: Text(s.chooseQuiz(quizCount)),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
