@@ -51,7 +51,11 @@ void main() {
       };
       for (final quiz in catalog.quizzes) {
         for (final lang in const ['pt', 'en']) {
-          final n = quiz.apply(bank[quiz.parent]![lang]!).length;
+          final n = catalogQuizPool(
+            quiz,
+            lang,
+            (t, l) => bank[t]?[l] ?? const [],
+          ).length;
           expect(n, (byId[quiz.id] as Map)[lang], reason: '${quiz.id}/$lang');
           expect(n, greaterThan(0));
         }
@@ -78,9 +82,56 @@ void main() {
     );
 
     test('classic tracks keep their counts', () {
-      expect(bank['ccst']!['pt'], hasLength(227));
-      expect(bank['ccna']!['en'], hasLength(238));
-      expect(bank['ccnp']!['pt'], hasLength(232));
+      expect(bank['ccst']!['pt'], hasLength(268));
+      expect(bank['ccna']!['en'], hasLength(239));
+      expect(bank['ccnp']!['pt'], hasLength(274));
+    });
+
+    test('every catalog track and quiz parent exists in the bundled bank', () {
+      expect(catalog.version, '4.3.0');
+      expect(
+        catalog.trackOrder,
+        containsAll([
+          'ccst',
+          'ccna',
+          'ccnp',
+          'cyber',
+          'ccstit',
+          'iiot',
+          'field',
+          'automation',
+          'wireless',
+          'sdx',
+          'dc',
+          'collab',
+        ]),
+      );
+      for (final t in catalog.trackOrder) {
+        expect(bank[t]?['pt'], isNotEmpty, reason: t);
+      }
+      for (final q in catalog.quizzes) {
+        for (final t in q.sourceTracks) {
+          expect(bank.containsKey(t), isTrue, reason: '${q.id} → $t');
+        }
+      }
+      expect(catalog.quizzes, hasLength(21));
+    });
+
+    test('alsoFrom pulls tagged ccna/ccnp questions into phase 3 exams', () {
+      final wlsd = catalog.quiz('wlsd')!;
+      expect(wlsd.parent, 'wireless');
+      expect(wlsd.alsoFrom, ['ccna', 'ccnp']);
+      List<Question> qs(String t, String l) => bank[t]?[l] ?? const [];
+      final own = wlsd.apply(qs('wireless', 'pt')).length;
+      final pool = catalogQuizPool(wlsd, 'pt', qs);
+      expect(pool.length, 65);
+      expect(pool.length, greaterThan(own));
+      final extra = pool.skip(own).toList();
+      expect(extra.every((q) => q.exam == 'wlsd'), isTrue);
+      final ccnaIds = qs('ccna', 'pt').map((q) => q.id).toSet();
+      expect(extra.any((q) => ccnaIds.contains(q.id)), isTrue);
+      // Track-level pools stay as they are (no alsoFrom without a quiz).
+      expect(qs('wireless', 'pt'), hasLength(125));
     });
 
     test('topic slugs get catalog labels', () {
@@ -164,6 +215,60 @@ void main() {
       isFalse,
     );
     expect(QuizCatalog.tryParse([1, 2]), isNull);
+  });
+
+  test('alsoFrom parsing ignores junk, parent and duplicates', () {
+    final quiz = CatalogQuiz.fromJson({
+      'id': 'x',
+      'kind': 'exam',
+      'parent': 'wireless',
+      'filter': {'exam': 'wlsd'},
+      'labelPt': 'X',
+      'alsoFrom': ['ccna', 'wireless', 'ccna', 3, '', 'ccnp'],
+    })!;
+    expect(quiz.alsoFrom, ['ccna', 'ccnp']);
+    expect(quiz.sourceTracks, ['wireless', 'ccna', 'ccnp']);
+    final noAlso = CatalogQuiz.fromJson({
+      'id': 'y',
+      'parent': 'cyber',
+      'filter': {'exam': 'scor'},
+    })!;
+    expect(noAlso.alsoFrom, isEmpty);
+  });
+
+  test('catalogQuizPool merges alsoFrom matches once, own track first', () {
+    final bank = parseQuestionBank({
+      'ccst': {'pt': [], 'en': []},
+      'ccna': {
+        'pt': [
+          _q('shared', extra: {'exam': 'wlsd'}),
+          _q('ccna only', extra: {'exam': 'wlsd'}),
+          _q('other', extra: {'exam': 'ccna'}),
+        ],
+        'en': [],
+      },
+      'ccnp': {'pt': [], 'en': []},
+      'wireless': {
+        'pt': [
+          _q('own', extra: {'exam': 'wlsd'}),
+          _q('shared', extra: {'exam': 'wlsd'}),
+          _q('wlsi', extra: {'exam': 'wlsi'}),
+        ],
+        'en': [],
+      },
+    });
+    final quiz = CatalogQuiz.fromJson({
+      'id': 'wlsd',
+      'parent': 'wireless',
+      'filter': {'exam': 'wlsd'},
+      'alsoFrom': ['ccna', 'missing'],
+    })!;
+    final pool = catalogQuizPool(quiz, 'pt', (t, l) => bank[t]?[l] ?? const []);
+    expect(pool.map((q) => q.question), ['own', 'shared', 'ccna only']);
+    expect(
+      catalogQuizPool(quiz, 'en', (t, l) => bank[t]?[l] ?? const []),
+      isEmpty,
+    );
   });
 
   test('parser keeps extra tracks from a future bank', () {

@@ -1,5 +1,5 @@
 {
-  "version": "4.0.0",
+  "version": "4.3.0",
   "tracks": [
     {
       "id": "ccst",
@@ -22,6 +22,62 @@
       "parent": null,
       "labelPt": "Cyber (todas)",
       "labelEn": "Cyber (all)"
+    },
+    {
+      "id": "ccstit",
+      "kind": "track",
+      "parent": null,
+      "labelPt": "CCST IT Support (100-140)",
+      "labelEn": "CCST IT Support (100-140)"
+    },
+    {
+      "id": "iiot",
+      "kind": "track",
+      "parent": null,
+      "labelPt": "IIoT e redes industriais",
+      "labelEn": "IIoT and industrial networks"
+    },
+    {
+      "id": "field",
+      "kind": "track",
+      "parent": null,
+      "labelPt": "Field Support (cenários de terreno)",
+      "labelEn": "Field Support (on-site scenarios)"
+    },
+    {
+      "id": "automation",
+      "kind": "track",
+      "parent": null,
+      "labelPt": "Automação (CCNA/CCNP Automation)",
+      "labelEn": "Automation (CCNA/CCNP Automation)"
+    },
+    {
+      "id": "wireless",
+      "kind": "track",
+      "parent": null,
+      "labelPt": "Wireless (CCNP Wireless)",
+      "labelEn": "Wireless (CCNP Wireless)"
+    },
+    {
+      "id": "sdx",
+      "kind": "track",
+      "parent": null,
+      "labelPt": "SD-WAN e SD-Access",
+      "labelEn": "SD-WAN and SD-Access"
+    },
+    {
+      "id": "dc",
+      "kind": "track",
+      "parent": null,
+      "labelPt": "Data Center (CCNP Data Center)",
+      "labelEn": "Data Center (CCNP Data Center)"
+    },
+    {
+      "id": "collab",
+      "kind": "track",
+      "parent": null,
+      "labelPt": "Colaboração (CCNP Collaboration)",
+      "labelEn": "Collaboration (CCNP Collaboration)"
     }
   ],
   "quizzes": [
@@ -55,8 +111,8 @@
       "badgeEn": "CBROPS",
       "color": "orange",
       "counts": {
-        "pt": 111,
-        "en": 111
+        "pt": 114,
+        "en": 114
       }
     },
     {
@@ -74,6 +130,40 @@
       "counts": {
         "pt": 99,
         "en": 99
+      }
+    },
+    {
+      "id": "ccst-net",
+      "kind": "exam",
+      "parent": "ccst",
+      "filter": {
+        "exam": "ccst-net"
+      },
+      "labelPt": "CCST Networking (100-150)",
+      "labelEn": "CCST Networking (100-150)",
+      "badgePt": "CCST NET",
+      "badgeEn": "CCST NET",
+      "color": "emerald",
+      "counts": {
+        "pt": 246,
+        "en": 246
+      }
+    },
+    {
+      "id": "encor",
+      "kind": "exam",
+      "parent": "ccnp",
+      "filter": {
+        "exam": "encor"
+      },
+      "labelPt": "CCNP Enterprise ENCOR (350-401)",
+      "labelEn": "CCNP Enterprise ENCOR (350-401)",
+      "badgePt": "ENCOR",
+      "badgeEn": "ENCOR",
+      "color": "violet",
+      "counts": {
+        "pt": 173,
+        "en": 173
       }
     },
     {
@@ -174,8 +264,8 @@
       "badgeEn": "TOPIC",
       "color": "slate",
       "counts": {
-        "pt": 66,
-        "en": 66
+        "pt": 69,
+        "en": 69
       }
     },
     {
@@ -211,24 +301,212 @@
         "pt": 33,
         "en": 33
       }
+    },
+    {
+      "id": "ccnaauto",
+      "kind": "exam",
+      "parent": "automation",
+      "filter": {
+        "exam": "ccnaauto"
+      },
+      "labelPt": "CCNA Automation (200-901 CCNAAUTO)",
+      "labelEn": "CCNA Automation (200-901 CCNAAUTO)",
+      "badgePt": "CCNAAUTO",
+      "badgeEn": "CCNAAUTO",
+      "color": "cyan",
+      "counts": {
+        "pt": 71,
+        "en": 71
+      },
+      "alsoFrom": [
+        "ccna",
+        "ccnp"
+      ]
+    },
+    {
+      "id": "autocor",
+      "kind": "exam",
+      "parent": "automation",
+      "filter": {
+        "exam": "autocor"
+      },
+      "labelPt": "CCNP Automation AUTOCOR (350-901)",
+      "labelEn": "CCNP Automation AUTOCOR (350-901)",
+      "badgePt": "AUTOCOR",
+      "badgeEn": "AUTOCOR",
+      "color": "sky",
+      "counts": {
+        "pt": 76,
+        "en": 76
+      },
+      "alsoFrom": [
+        "ccnp"
+      ]
+    },
+    {
+      "id": "wlsd",
+      "kind": "exam",
+      "parent": "wireless",
+      "filter": {
+        "exam": "wlsd"
+      },
+      "labelPt": "CCNP Wireless WLSD — Design (300-110)",
+      "labelEn": "CCNP Wireless WLSD — Design (300-110)",
+      "badgePt": "WLSD",
+      "badgeEn": "WLSD",
+      "color": "indigo",
+      "counts": {
+        "pt": 65,
+        "en": 65
+      },
+      "alsoFrom": [
+        "ccna",
+        "ccnp"
+      ]
+    },
+    {
+      "id": "wlsi",
+      "kind": "exam",
+      "parent": "wireless",
+      "filter": {
+        "exam": "wlsi"
+      },
+      "labelPt": "CCNP Wireless WLSI — Implementação (300-120)",
+      "labelEn": "CCNP Wireless WLSI — Implementation (300-120)",
+      "badgePt": "WLSI",
+      "badgeEn": "WLSI",
+      "color": "blue",
+      "counts": {
+        "pt": 67,
+        "en": 67
+      },
+      "alsoFrom": [
+        "ccnp"
+      ]
+    },
+    {
+      "id": "ensdwi",
+      "kind": "exam",
+      "parent": "sdx",
+      "filter": {
+        "exam": "ensdwi"
+      },
+      "labelPt": "Cisco SD-WAN ENSDWI (300-415)",
+      "labelEn": "Cisco SD-WAN ENSDWI (300-415)",
+      "badgePt": "ENSDWI",
+      "badgeEn": "ENSDWI",
+      "color": "green",
+      "counts": {
+        "pt": 78,
+        "en": 78
+      }
+    },
+    {
+      "id": "sda",
+      "kind": "exam",
+      "parent": "sdx",
+      "filter": {
+        "exam": "sda"
+      },
+      "labelPt": "SD-Access (ENSLD 300-420, tópicos 2.4–2.5)",
+      "labelEn": "SD-Access (ENSLD 300-420, topics 2.4–2.5)",
+      "badgePt": "SD-ACCESS",
+      "badgeEn": "SD-ACCESS",
+      "color": "emerald",
+      "counts": {
+        "pt": 70,
+        "en": 70
+      }
+    },
+    {
+      "id": "dccor",
+      "kind": "exam",
+      "parent": "dc",
+      "filter": {
+        "exam": "dccor"
+      },
+      "labelPt": "CCNP Data Center DCCOR (350-601)",
+      "labelEn": "CCNP Data Center DCCOR (350-601)",
+      "badgePt": "DCCOR",
+      "badgeEn": "DCCOR",
+      "color": "orange",
+      "counts": {
+        "pt": 77,
+        "en": 77
+      },
+      "alsoFrom": [
+        "ccnp"
+      ]
+    },
+    {
+      "id": "clcor",
+      "kind": "exam",
+      "parent": "collab",
+      "filter": {
+        "exam": "clcor"
+      },
+      "labelPt": "CCNP Collaboration CLCOR (350-801)",
+      "labelEn": "CCNP Collaboration CLCOR (350-801)",
+      "badgePt": "CLCOR",
+      "badgeEn": "CLCOR",
+      "color": "pink",
+      "counts": {
+        "pt": 78,
+        "en": 78
+      },
+      "alsoFrom": [
+        "ccna"
+      ]
     }
   ],
   "trackCounts": {
     "ccst": {
-      "pt": 227,
-      "en": 227
+      "pt": 268,
+      "en": 268
     },
     "ccna": {
-      "pt": 238,
-      "en": 238
+      "pt": 239,
+      "en": 239
     },
     "ccnp": {
-      "pt": 232,
-      "en": 232
+      "pt": 274,
+      "en": 274
     },
     "cyber": {
-      "pt": 303,
-      "en": 303
+      "pt": 306,
+      "en": 306
+    },
+    "iiot": {
+      "pt": 82,
+      "en": 82
+    },
+    "ccstit": {
+      "pt": 81,
+      "en": 81
+    },
+    "field": {
+      "pt": 77,
+      "en": 77
+    },
+    "automation": {
+      "pt": 138,
+      "en": 138
+    },
+    "wireless": {
+      "pt": 125,
+      "en": 125
+    },
+    "sdx": {
+      "pt": 148,
+      "en": 148
+    },
+    "dc": {
+      "pt": 68,
+      "en": 68
+    },
+    "collab": {
+      "pt": 76,
+      "en": 76
     }
   }
 }

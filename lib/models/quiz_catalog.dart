@@ -65,6 +65,7 @@ class CatalogQuiz {
     this.badgePt,
     this.badgeEn,
     this.color,
+    this.alsoFrom = const [],
   });
 
   final String id;
@@ -78,6 +79,17 @@ class CatalogQuiz {
   final String? badgePt;
   final String? badgeEn;
   final String? color;
+
+  /// Other tracks whose questions also count when they match [filter]
+  /// (catalog `alsoFrom`, v4.2.0+), e.g. CCNA items tagged `exam: wlsd`.
+  final List<String> alsoFrom;
+
+  /// [parent] first, then the [alsoFrom] tracks (no duplicates).
+  List<String> get sourceTracks => [
+    parent,
+    for (final t in alsoFrom)
+      if (t != parent) t,
+  ];
 
   String label({required bool isPt}) => isPt ? labelPt : labelEn;
   String badge({required bool isPt}) =>
@@ -116,6 +128,14 @@ class CatalogQuiz {
       if (values.isNotEmpty) filter['$k'] = values;
     });
     if (filter.isEmpty) return null;
+    final rawAlso = raw['alsoFrom'];
+    final alsoFrom = <String>[];
+    if (rawAlso is List) {
+      for (final t in rawAlso) {
+        final v = _str(t);
+        if (v != null && v != parent && !alsoFrom.contains(v)) alsoFrom.add(v);
+      }
+    }
     final labelPt = _str(raw['labelPt']) ?? _str(raw['labelEn']) ?? id;
     final labelEn = _str(raw['labelEn']) ?? labelPt;
     return CatalogQuiz(
@@ -128,6 +148,7 @@ class CatalogQuiz {
       badgePt: _str(raw['badgePt']),
       badgeEn: _str(raw['badgeEn']),
       color: _str(raw['color']),
+      alsoFrom: alsoFrom,
     );
   }
 }
@@ -221,4 +242,29 @@ int quizKindRank(String kind) {
     default:
       return 3;
   }
+}
+
+/// Questions of [quiz] in [lang]: its own track ([ownTrack], defaults to the
+/// quiz parent) filtered by the quiz, plus matching questions from the
+/// catalog `alsoFrom` tracks. Same order as the site (`poolFor`); a question
+/// id already in the pool is not added twice.
+List<Question> catalogQuizPool(
+  CatalogQuiz quiz,
+  String lang,
+  List<Question> Function(String track, String lang) questionsOf, {
+  String? ownTrack,
+}) {
+  final own = ownTrack ?? quiz.parent;
+  final seen = <String>{};
+  final out = <Question>[];
+  for (final track in [
+    own,
+    for (final t in quiz.alsoFrom)
+      if (t != own) t,
+  ]) {
+    for (final q in quiz.apply(questionsOf(track, lang))) {
+      if (seen.add(q.id)) out.add(q);
+    }
+  }
+  return out;
 }

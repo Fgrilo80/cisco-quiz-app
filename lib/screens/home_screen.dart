@@ -95,16 +95,20 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> get _tracks => widget.bank.tracks;
 
   /// Catalog quizzes of [track] that match at least one loaded question.
+  /// Includes matches from the quiz's catalog `alsoFrom` tracks.
   List<CatalogQuiz> _quizzesFor(String track) => [
     for (final quiz in _catalog.catalog.quizzesFor(track))
-      if (widget.bank.questions(track, 'pt').any(quiz.matches) ||
-          widget.bank.questions(track, 'en').any(quiz.matches))
+      if (quiz.sourceTracks.any(
+        (t) =>
+            widget.bank.questions(t, 'pt').any(quiz.matches) ||
+            widget.bank.questions(t, 'en').any(quiz.matches),
+      ))
         quiz,
   ];
 
   List<Question> _quizPool(String cert, String lang, CatalogQuiz? quiz) {
-    final pool = _pool(cert, lang);
-    return quiz == null ? pool : quiz.apply(pool);
+    if (quiz == null) return _pool(cert, lang);
+    return catalogQuizPool(quiz, lang, _pool, ownTrack: cert);
   }
 
   String _trackTitle(String track) {

@@ -118,7 +118,7 @@ void main() {
     tester,
   ) async {
     await boot(tester);
-    expect(bank.total, 2000);
+    expect(bank.total, 3764);
     expect(catalog.source, 'bundle');
     final open = find.byKey(const ValueKey('open-quizzes-cyber'));
     await tester.scrollUntilVisible(open, 300);
@@ -140,7 +140,7 @@ void main() {
     expect(find.byType(TrackQuizzesScreen), findsOneWidget);
     expect(find.text('POR EXAME'), findsOneWidget);
     expect(find.text('CCST Cybersecurity (100-160)'), findsOneWidget);
-    expect(find.text('303 PT • 303 EN'), findsOneWidget);
+    expect(find.text('306 PT • 306 EN'), findsOneWidget);
     expect(find.text('93 PT • 93 EN'), findsOneWidget);
     await _shot(tester, 'quiz130-quizzes-por-exame');
     Future<void> expectTile(String id, String label, String counts) async {
@@ -165,7 +165,7 @@ void main() {
     await expectTile(
       'cbrops',
       'CyberOps / Cybersecurity Associate (200-201)',
-      '111 PT • 111 EN',
+      '114 PT • 114 EN',
     );
     await expectTile('scor', 'CCNP Security SCOR (350-701)', '99 PT • 99 EN');
     await tester.scrollUntilVisible(
@@ -182,7 +182,7 @@ void main() {
     await expectTile(
       'topic-logs-ir',
       'Análise de logs e resposta a incidentes',
-      '66 PT • 66 EN',
+      '69 PT • 69 EN',
     );
     await _shot(tester, 'quiz130-quizzes-por-tema');
 
@@ -230,5 +230,30 @@ void main() {
       findsOneWidget,
     );
     await _shot(tester, 'quiz130-quizzes-en');
+  });
+
+  testWidgets('wireless exams include tagged ccna/ccnp items (alsoFrom)', (
+    tester,
+  ) async {
+    await boot(tester);
+    final open = find.byKey(const ValueKey('open-quizzes-wireless'));
+    await tester.scrollUntilVisible(open, 300);
+    await tester.pump();
+    await tester.tap(open);
+    await tester.pumpAndSettle();
+    expect(find.byType(TrackQuizzesScreen), findsOneWidget);
+    for (final (id, counts) in const [
+      ('wlsd', '65 PT • 65 EN'),
+      ('wlsi', '67 PT • 67 EN'),
+    ]) {
+      final tile = find.byKey(ValueKey('quiz-tile-$id'));
+      await tester.scrollUntilVisible(tile, 150);
+      await tester.pump();
+      expect(
+        find.descendant(of: tile, matching: find.text(counts)),
+        findsOneWidget,
+        reason: id,
+      );
+    }
   });
 }
