@@ -1,5 +1,12 @@
 # Changelog — Cisco Quiz (Flutter)
 
+## 1.3.0+14 — 2026-11-03
+
+- Quizzes por **exame** e por **tema**, a partir do catálogo do Cricket (`data/quiz-catalog.json`, v4.0.0). No cartão Cybersegurança, «Escolher exame ou tema» lista CCST Cybersecurity (100-160), CyberOps (200-201), CCNP Security SCOR (350-701) e 8 temas. Cada quiz filtra o banco do trilho; o progresso e as estatísticas continuam por trilho.
+- O catálogo vem embutido (`assets/quiz-catalog.json`) e atualiza online como a base: só se o SHA-256 mudar, com cache local. Trilhos e quizzes novos no catálogo aparecem sem alterar código; trilhos desconhecidos usam a cor e os textos do catálogo.
+- Banco sincronizado com Cricket `main` `c05b9d4` (v4.0.0): **2000** perguntas — clássicos 1394 (CCST 227, CCNA 238, CCNP 232 × PT/EN) + Cybersegurança 303×2, com campos `exam`, `topic` e `domain`.
+- Mesma chave de release da 1.2.11 (`CN=Cisco Quiz`): instala por cima. `versionName` 1.3.0; APK arm64 com `versionCode` 2014 (14 + offset 2000).
+
 ## 1.2.11+13 — 2026-10-12
 
 - O APK arm64 de release passa a ser assinado com uma chave de release estável (`CN=Cisco Quiz`, alias `ciscoquiz`). O keystore não entra no repositório; o GitHub Actions lê os segredos `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_PASSWORD` e `ANDROID_KEY_ALIAS`.

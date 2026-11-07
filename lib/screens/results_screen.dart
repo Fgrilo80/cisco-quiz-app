@@ -52,7 +52,7 @@ class ResultsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            '${ui.doneSub}\n${ui.certTitle(session.cert)} · ${session.examLang.toUpperCase()} · ${ui.modeLabel(session.mode.name)}',
+            '${ui.doneSub}\n${session.displayTitle(ui.certTitle)} · ${session.examLang.toUpperCase()} · ${ui.modeLabel(session.mode.name)}',
             textAlign: TextAlign.center,
             style: const TextStyle(color: Color(0xFF94A3B8)),
           ),

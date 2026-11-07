@@ -3,10 +3,12 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../l10n.dart';
 import '../models/question.dart';
+import '../models/quiz_catalog.dart';
 import '../models/quiz_session.dart';
 import '../models/quiz_stats.dart';
 import '../services/app_update_service.dart';
 import '../services/bank_service.dart';
+import '../services/catalog_service.dart';
 import '../services/progress_store.dart';
 import '../services/quiz_filters.dart';
 import '../services/quiz_picker.dart';
@@ -14,12 +16,25 @@ import '../theme.dart';
 import '../widgets/cert_card.dart';
 import 'labs_screen.dart';
 import 'quiz_screen.dart';
+import 'track_quizzes_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.bank, required this.store});
+  const HomeScreen({
+    super.key,
+    required this.bank,
+    required this.store,
+    this.catalog,
+    this.autoUpdate = true,
+  });
 
   final BankService bank;
   final ProgressStore store;
+
+  /// Quiz catalog (exam / theme quizzes). Loaded here when not injected.
+  final CatalogService? catalog;
+
+  /// Probe the online bank / catalog after the first frame (off in tests).
+  final bool autoUpdate;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -34,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _checkingApp = false;
   String? _localAppVersion;
   final _appUpdates = AppUpdateService();
+  late final CatalogService _catalog;
 
   @override
   void initState() {
@@ -44,14 +60,20 @@ class _HomeScreenState extends State<HomeScreen> {
     _topic = widget.store.filterTopic;
     widget.bank.addListener(_onBank);
     widget.bank.attachStore(widget.store);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _bootstrapUpdates();
-    });
+    _catalog = widget.catalog ?? CatalogService();
+    _catalog.addListener(_onBank);
+    if (widget.catalog == null) _catalog.load();
+    if (widget.autoUpdate) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _bootstrapUpdates();
+      });
+    }
   }
 
   @override
   void dispose() {
     widget.bank.removeListener(_onBank);
+    _catalog.removeListener(_onBank);
     super.dispose();
   }
 
@@ -70,6 +92,69 @@ class _HomeScreenState extends State<HomeScreen> {
     topic: _topic,
   );
 
+  List<String> get _tracks => widget.bank.tracks;
+
+  /// Catalog quizzes of [track] that match at least one loaded question.
+  /// Includes matches from the quiz's catalog `alsoFrom` tracks.
+  List<CatalogQuiz> _quizzesFor(String track) => [
+    for (final quiz in _catalog.catalog.quizzesFor(track))
+      if (quiz.sourceTracks.any(
+        (t) =>
+            widget.bank.questions(t, 'pt').any(quiz.matches) ||
+            widget.bank.questions(t, 'en').any(quiz.matches),
+      ))
+        quiz,
+  ];
+
+  List<Question> _quizPool(String cert, String lang, CatalogQuiz? quiz) {
+    if (quiz == null) return _pool(cert, lang);
+    return catalogQuizPool(quiz, lang, _pool, ownTrack: cert);
+  }
+
+  String _trackTitle(String track) {
+    if (CertCard.knownTracks.contains(track)) return s.certTitle(track);
+    return _catalog.catalog.track(track)?.label(isPt: s.isPt) ??
+        s.certTitle(track);
+  }
+
+  QuizEntryCounts _countsFor(String cert, CatalogQuiz? quiz) {
+    int unseen(String lang) {
+      final seen = widget.store.loadSeen(cert, lang);
+      return _quizPool(
+        cert,
+        lang,
+        quiz,
+      ).where((q) => !seen.contains(q.id)).length;
+    }
+
+    return QuizEntryCounts(
+      pt: _quizPool(cert, 'pt', quiz).length,
+      en: _quizPool(cert, 'en', quiz).length,
+      unseenPt: unseen('pt'),
+      unseenEn: unseen('en'),
+    );
+  }
+
+  Future<void> _openQuizzes(String track) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => TrackQuizzesScreen(
+          ui: s,
+          track: track,
+          trackTitle: _trackTitle(track),
+          quizzes: _quizzesFor(track),
+          countsFor: (quiz) => _countsFor(track, quiz),
+          onStart: (quiz, lang) => _start(track, lang, quiz: quiz),
+          exam: _mode.isExam,
+          catalogVersion: _catalog.catalog.version.isEmpty
+              ? ''
+              : s.catalogLine(_catalog.catalog.version, _catalog.source),
+        ),
+      ),
+    );
+    if (mounted) setState(() {});
+  }
+
   int _unseen(String cert, String lang) {
     final pool = _pool(cert, lang);
     final seen = widget.store.loadSeen(cert, lang);
@@ -86,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Iterable<Question> get _allInLang sync* {
-    for (final cert in const ['ccst', 'ccna', 'ccnp', 'cyber']) {
+    for (final cert in _tracks) {
       yield* widget.bank.questions(cert, s.code);
       yield* widget.bank.questions(cert, s.code == 'pt' ? 'en' : 'pt');
     }
@@ -94,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int get _filteredTotal {
     var n = 0;
-    for (final cert in const ['ccst', 'ccna', 'ccnp', 'cyber']) {
+    for (final cert in _tracks) {
       n += _pool(cert, 'pt').length;
       n += _pool(cert, 'en').length;
     }
@@ -134,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   (String, String) _locate(Question q) {
-    for (final cert in const ['ccst', 'ccna', 'ccnp', 'cyber']) {
+    for (final cert in _tracks) {
       for (final lang in const ['pt', 'en']) {
         if (widget.bank.questions(cert, lang).any((x) => x.id == q.id)) {
           return (cert, lang);
@@ -157,9 +242,9 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => paused = widget.store.loadPaused());
   }
 
-  Future<void> _start(String cert, String lang) async {
+  Future<void> _start(String cert, String lang, {CatalogQuiz? quiz}) async {
     if (!await _confirmReplacePaused()) return;
-    final pool = _pool(cert, lang);
+    final pool = _quizPool(cert, lang, quiz);
     if (pool.isEmpty) {
       if (!mounted) return;
       ScaffoldMessenger.of(context)
@@ -182,6 +267,10 @@ class _HomeScreenState extends State<HomeScreen> {
       startedAtMs: DateTime.now().millisecondsSinceEpoch,
       mode: _mode,
       durationSeconds: duration,
+      quizId: quiz?.id,
+      quizLabel: quiz != null
+          ? quiz.label(isPt: lang == 'pt')
+          : (CertCard.knownTracks.contains(cert) ? null : _trackTitle(cert)),
     );
     await _pushSession(session);
   }
@@ -241,6 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _refresh() async {
+    await _catalog.refreshRemote();
     final ok = await widget.bank.refreshFromGithub();
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -256,12 +346,14 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) setState(() => _localAppVersion = info.version);
     } catch (_) {}
     if (!mounted) return;
+    // Catalog first: new quizzes show up even when the bank is unchanged.
+    await _catalog.refreshRemote();
+    if (!mounted) return;
     final applied = await widget.bank.checkAndAutoRefresh();
     if (!mounted) return;
     if (applied != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(s.refreshOk(applied))),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(s.refreshOk(applied))));
     }
   }
 
@@ -286,9 +378,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              remote == null ? s.appUpdateFail : s.appUpToDate,
-            ),
+            content: Text(remote == null ? s.appUpdateFail : s.appUpToDate),
           ),
         );
         return;
@@ -347,11 +437,15 @@ class _HomeScreenState extends State<HomeScreen> {
               child: const Icon(Icons.lan, color: Colors.white, size: 20),
             ),
             const SizedBox(width: 10),
-            const Text(
-              'Cisco Quiz',
-              style: TextStyle(
-                fontWeight: FontWeight.w800,
-                letterSpacing: -0.4,
+            const Flexible(
+              child: Text(
+                'Cisco Quiz',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.4,
+                ),
               ),
             ),
           ],
@@ -518,7 +612,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTopic: _setTopic,
                 ),
                 const SizedBox(height: 12),
-                _StatsCard(s: s, stats: stats),
+                _StatsCard(s: s, stats: stats, tracks: _tracks),
                 if (dueCount > 0) ...[
                   const SizedBox(height: 12),
                   _RetryCard(s: s, count: dueCount, onRetry: _startReview),
@@ -574,7 +668,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                for (final cert in const ['ccst', 'ccna', 'ccnp', 'cyber']) ...[
+                for (final cert in _tracks) ...[
                   CertCard(
                     cert: cert,
                     s: s,
@@ -584,6 +678,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     unseenEn: _unseen(cert, 'en'),
                     exam: _mode.isExam,
                     onStart: (lang) => _start(cert, lang),
+                    quizCount: _quizzesFor(cert).length,
+                    onOpenQuizzes: () => _openQuizzes(cert),
+                    titleOverride: _trackTitle(cert),
+                    fullOverride: _catalog.catalog
+                        .track(cert)
+                        ?.description(isPt: s.isPt),
+                    badgeOverride: _catalog.catalog
+                        .track(cert)
+                        ?.badge(isPt: s.isPt),
+                    colorName: _catalog.catalog.track(cert)?.color,
                   ),
                   const SizedBox(height: 14),
                 ],
@@ -822,10 +926,15 @@ class _FilterCard extends StatelessWidget {
 }
 
 class _StatsCard extends StatelessWidget {
-  const _StatsCard({required this.s, required this.stats});
+  const _StatsCard({
+    required this.s,
+    required this.stats,
+    required this.tracks,
+  });
 
   final S s;
   final QuizStats stats;
+  final List<String> tracks;
 
   @override
   Widget build(BuildContext context) {
@@ -871,7 +980,12 @@ class _StatsCard extends StatelessWidget {
                 Text(
                   s.lastByCertLine(
                     [
-                      for (final cert in const ['ccst', 'ccna', 'ccnp', 'cyber'])
+                      for (final cert in [
+                        ...tracks.where(stats.lastPctByCert.containsKey),
+                        ...stats.lastPctByCert.keys.where(
+                          (k) => !tracks.contains(k),
+                        ),
+                      ])
                         if (stats.lastPctByCert[cert] != null)
                           '${s.certTitle(cert)} ${stats.lastPctByCert[cert]}%',
                     ].join(' · '),
@@ -971,7 +1085,7 @@ class _PausedBanner extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              '${s.certTitle(session.cert)} · ${session.examLang.toUpperCase()} · '
+              '${session.displayTitle(s.certTitle)} · ${session.examLang.toUpperCase()} · '
               '${s.modeLabel(session.mode.name)} · '
               '${session.currentIndex + 1}/${session.length}',
               style: const TextStyle(color: Color(0xFFCBD5E1)),

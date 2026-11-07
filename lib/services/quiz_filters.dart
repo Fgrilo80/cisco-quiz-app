@@ -29,7 +29,13 @@ const kTopicCatalog = <TopicDef>[
     'stp',
     'bpdu',
   ]),
-  TopicDef('acl', 'ACL', 'ACL', ['access-list', 'access list', 'lista de acesso', 'acls', 'acl']),
+  TopicDef('acl', 'ACL', 'ACL', [
+    'access-list',
+    'access list',
+    'lista de acesso',
+    'acls',
+    'acl',
+  ]),
   TopicDef('nat', 'NAT', 'NAT', [
     'port address translation',
     'network address translation',
@@ -191,8 +197,19 @@ String resolveTopic({String? jsonTopic, required String haystack}) {
   return deriveTopic(haystack);
 }
 
+/// Labels for topic slugs that come from the quiz catalog (e.g. `cripto`).
+final Map<String, (String, String)> _catalogTopicLabels = {};
+
+void registerCatalogTopicLabels(Map<String, (String, String)> labels) {
+  _catalogTopicLabels
+    ..clear()
+    ..addAll({for (final e in labels.entries) slugTopic(e.key): e.value});
+}
+
 String topicLabel(String id, {required bool isPt}) {
   if (id == kOtherTopic) return isPt ? 'Outros' : 'Other';
+  final fromCatalog = _catalogTopicLabels[id];
+  if (fromCatalog != null) return isPt ? fromCatalog.$1 : fromCatalog.$2;
   final def = _topicsById[id];
   if (def == null) {
     return id

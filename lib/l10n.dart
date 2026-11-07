@@ -21,7 +21,8 @@ class S {
       ? 'Prática com feedback imediato, ou exame de 50 perguntas. Filtros, revisão de erros e labs CLI. Sem contas, sem anúncios.'
       : 'Practice with instant feedback, or a 50-question exam. Filters, missed-question review and CLI labs. No accounts, no ads.';
 
-  String get versionBadge => isPt ? 'VERSÃO 1.2.11 • 2026' : 'VERSION 1.2.11 • 2026';
+  String get versionBadge =>
+      isPt ? 'VERSÃO 1.3.0 • 2026' : 'VERSION 1.3.0 • 2026';
 
   String get portuguese => 'Português';
   String get english => 'English';
@@ -54,8 +55,8 @@ class S {
   String get ccnaFull => 'Cisco Certified Network Associate';
   String get ccnpFull => 'Cisco Certified Network Professional';
   String get cyberFull => isPt
-      ? 'CCST Cybersecurity (em expansão)'
-      : 'CCST Cybersecurity (growing)';
+      ? 'CCST Cyber · CyberOps · CCNP Security'
+      : 'CCST Cyber · CyberOps · CCNP Security';
 
   String get ccstFocus =>
       isPt ? 'Suporte e troubleshooting' : 'Support & troubleshooting';
@@ -65,8 +66,8 @@ class S {
       ? 'Enterprise, security, automation'
       : 'Enterprise, security, automation';
   String get cyberFocus => isPt
-      ? 'CIA, Zero Trust, AAA, VPN'
-      : 'CIA, Zero Trust, AAA, VPN';
+      ? 'Exames 100-160, 200-201, 350-701 e temas'
+      : 'Exams 100-160, 200-201, 350-701 and themes';
 
   String get ccstLevel => isPt ? 'Fácil a médio' : 'Easy to medium';
   String get ccnaLevel => isPt ? 'Fácil a avançado' : 'Easy to advanced';
@@ -82,8 +83,7 @@ class S {
   String unseenLine(int n) =>
       isPt ? '$n por ver neste ciclo' : '$n unseen in this cycle';
 
-  String get refreshTitle =>
-      isPt ? 'Atualizar perguntas' : 'Update questions';
+  String get refreshTitle => isPt ? 'Atualizar perguntas' : 'Update questions';
 
   String get refreshHint => isPt
       ? 'Novas perguntas chegam da base online — não precisas de reinstalar a app. A cópia offline serve sem internet.'
@@ -107,7 +107,11 @@ class S {
   String get bankSourceCache => isPt ? 'cache local' : 'local cache';
   String get bankSourceRemote => isPt ? 'online' : 'online';
 
-  String bankSyncLine({required String sourceLabel, int? total, DateTime? when}) {
+  String bankSyncLine({
+    required String sourceLabel,
+    int? total,
+    DateTime? when,
+  }) {
     final parts = <String>[];
     if (total != null) {
       parts.add(isPt ? '$total perguntas' : '$total questions');
@@ -142,9 +146,8 @@ class S {
       ? 'Não foi possível verificar atualizações da app.'
       : 'Could not check for app updates.';
 
-  String appUpdateAvailable(String version) => isPt
-      ? 'Nova versão da app: $version'
-      : 'New app version: $version';
+  String appUpdateAvailable(String version) =>
+      isPt ? 'Nova versão da app: $version' : 'New app version: $version';
 
   String get appUpdateDownload => isPt ? 'Descarregar' : 'Download';
 
@@ -312,8 +315,40 @@ class S {
         return 'CCNP';
       case 'cyber':
         return isPt ? 'Cybersegurança' : 'Cybersecurity';
-      default:
+      case 'ccna':
         return 'CCNA';
+      default:
+        return cert.isEmpty ? 'CCNA' : cert.toUpperCase();
+    }
+  }
+
+  // Catalog quizzes (1.3.0).
+  String chooseQuiz(int n) => isPt
+      ? 'Escolher exame ou tema ($n quizzes)'
+      : 'Choose exam or theme ($n quizzes)';
+  String get quizzesTitle => isPt ? 'Quizzes' : 'Quizzes';
+  String get byExam => isPt ? 'Por exame' : 'By exam';
+  String get byTopic => isPt ? 'Por tema' : 'By theme';
+  String get byScenario => isPt ? 'Cenários' : 'Scenarios';
+  String get otherQuizzes => isPt ? 'Outros quizzes' : 'Other quizzes';
+  String allOfTrack(String title) =>
+      isPt ? '$title — todas as perguntas' : '$title — all questions';
+  String get quizzesHint => isPt
+      ? 'Cada quiz é uma vista sobre o mesmo banco: as perguntas não se repetem entre listas e o progresso conta para o trilho. Os filtros de dificuldade e tema da página inicial também se aplicam.'
+      : 'Each quiz is a view over the same bank: questions are not duplicated and progress counts for the track. The difficulty and topic filters from the home page also apply.';
+  String catalogLine(String version, String source) => isPt
+      ? 'Catálogo de quizzes $version ($source)'
+      : 'Quiz catalog $version ($source)';
+  String kindLabel(String kind) {
+    switch (kind) {
+      case 'exam':
+        return byExam;
+      case 'topic':
+        return byTopic;
+      case 'scenario':
+        return byScenario;
+      default:
+        return otherQuizzes;
     }
   }
 

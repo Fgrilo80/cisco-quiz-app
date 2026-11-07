@@ -14,6 +14,12 @@ class CertCard extends StatelessWidget {
     required this.unseenEn,
     required this.onStart,
     this.exam = false,
+    this.quizCount = 0,
+    this.onOpenQuizzes,
+    this.titleOverride,
+    this.fullOverride,
+    this.badgeOverride,
+    this.colorName,
   });
 
   final String cert;
@@ -25,10 +31,25 @@ class CertCard extends StatelessWidget {
   final void Function(String lang) onStart;
   final bool exam;
 
+  /// Catalog quizzes (exams / themes) available for this track.
+  final int quizCount;
+  final VoidCallback? onOpenQuizzes;
+
+  /// Used for tracks the app does not know yet (from the catalog).
+  final String? titleOverride;
+  final String? fullOverride;
+  final String? badgeOverride;
+  final String? colorName;
+
+  static const knownTracks = {'ccst', 'ccna', 'ccnp', 'cyber'};
+
   @override
   Widget build(BuildContext context) {
-    final palette = CertPalette.of(cert);
-    final title = s.certTitle(cert);
+    final known = knownTracks.contains(cert);
+    final palette = known ? CertPalette.of(cert) : CertPalette.named(colorName);
+    final title = known
+        ? s.certTitle(cert)
+        : (titleOverride ?? s.certTitle(cert));
     late final String badge;
     late final String full;
     late final String level;
@@ -53,12 +74,18 @@ class CertCard extends StatelessWidget {
         level = s.cyberLevel;
         focus = s.cyberFocus;
         icon = Icons.shield_outlined;
-      default:
+      case 'ccna':
         badge = s.associate;
         full = s.ccnaFull;
         level = s.ccnaLevel;
         focus = s.ccnaFocus;
         icon = Icons.lan_outlined;
+      default:
+        badge = badgeOverride ?? cert.toUpperCase();
+        full = fullOverride ?? '';
+        level = '';
+        focus = '';
+        icon = Icons.quiz_outlined;
     }
 
     return Card(
@@ -137,11 +164,16 @@ class CertCard extends StatelessWidget {
                 const Expanded(child: Divider(color: Color(0xFF334155))),
               ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              '$level  ·  $focus',
-              style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12.5),
-            ),
+            if (level.isNotEmpty || focus.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                [level, focus].where((x) => x.isNotEmpty).join('  ·  '),
+                style: const TextStyle(
+                  color: Color(0xFF94A3B8),
+                  fontSize: 12.5,
+                ),
+              ),
+            ],
             const SizedBox(height: 4),
             Text(
               '${s.unseenLine(unseenPt)} (PT)  ·  ${s.unseenLine(unseenEn)} (EN)',
@@ -172,6 +204,25 @@ class CertCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (quizCount > 0 && onOpenQuizzes != null) ...[
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  key: ValueKey('open-quizzes-$cert'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: palette.accent,
+                    side: BorderSide(
+                      color: palette.accent.withValues(alpha: 0.6),
+                    ),
+                    minimumSize: const Size.fromHeight(46),
+                  ),
+                  onPressed: onOpenQuizzes,
+                  icon: const Icon(Icons.view_list_rounded),
+                  label: Text(s.chooseQuiz(quizCount)),
+                ),
+              ),
+            ],
           ],
         ),
       ),

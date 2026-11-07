@@ -5,6 +5,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+
 import 'local_store.dart';
 
 import '../models/question.dart';
@@ -50,11 +51,7 @@ class RemoteBankProbe {
 }
 
 class BankService extends ChangeNotifier {
-  BankService({
-    this._store,
-    this._httpClient,
-    this._cacheDirectory,
-  });
+  BankService({this._store, this._httpClient, this._cacheDirectory});
 
   ProgressStore? _store;
   final http.Client? _httpClient;
@@ -81,6 +78,14 @@ class BankService extends ChangeNotifier {
       _data[cert]?[lang] ?? const [];
 
   int count(String cert, String lang) => questions(cert, lang).length;
+
+  /// Tracks in display order: known ones always, extra ones when non-empty.
+  List<String> get tracks => [
+    for (final entry in _data.entries)
+      if (certKeys.contains(entry.key) ||
+          entry.value.values.any((l) => l.isNotEmpty))
+        entry.key,
+  ];
 
   int get total => bankQuestionCount(_data);
 
